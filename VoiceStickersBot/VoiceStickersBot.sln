@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.Core", "VoiceStickersBot.Core\VoiceStickersBot.Core.csproj", "{4AE56B2A-079F-49C5-A428-A6236685858C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.Infra", "VoiceStickersBot.Infra\VoiceStickersBot.Infra.csproj", "{147F57BD-1878-4B52-8051-8EA493623E84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.Tests", "VoiceStickersBot.Tests\VoiceStickersBot.Tests.csproj", "{685038DC-99E2-43FC-8034-4885C950B61A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{4AE56B2A-079F-49C5-A428-A6236685858C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AE56B2A-079F-49C5-A428-A6236685858C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AE56B2A-079F-49C5-A428-A6236685858C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{147F57BD-1878-4B52-8051-8EA493623E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{147F57BD-1878-4B52-8051-8EA493623E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{147F57BD-1878-4B52-8051-8EA493623E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{147F57BD-1878-4B52-8051-8EA493623E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{685038DC-99E2-43FC-8034-4885C950B61A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{685038DC-99E2-43FC-8034-4885C950B61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{685038DC-99E2-43FC-8034-4885C950B61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{685038DC-99E2-43FC-8034-4885C950B61A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
