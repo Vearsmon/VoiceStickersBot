@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.Infra", "V
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.Tests", "VoiceStickersBot.Tests\VoiceStickersBot.Tests.csproj", "{685038DC-99E2-43FC-8034-4885C950B61A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceStickersBot.TgGateway", "VoiceStickersBot.TgGateway\VoiceStickersBot.TgGateway.csproj", "{E9E08D78-3678-4A49-94A0-EBC7A4EE330D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{685038DC-99E2-43FC-8034-4885C950B61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{685038DC-99E2-43FC-8034-4885C950B61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{685038DC-99E2-43FC-8034-4885C950B61A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9E08D78-3678-4A49-94A0-EBC7A4EE330D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9E08D78-3678-4A49-94A0-EBC7A4EE330D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9E08D78-3678-4A49-94A0-EBC7A4EE330D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9E08D78-3678-4A49-94A0-EBC7A4EE330D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
