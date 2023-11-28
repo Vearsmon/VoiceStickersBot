@@ -10,7 +10,8 @@ public class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
     {
     }
 
-    private DbSet<TEntity> Entities { get; } = null!;
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+    private DbSet<TEntity> Entities { get; set; } = null!;
 
     public async Task<TEntity> PerformWriteRequestAsync(TEntity entity)
     {
