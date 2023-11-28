@@ -2,15 +2,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
 
-public class PostgresVsbDatabaseClusterOptionsProvider : IVsbDatabaseClusterOptionsProvider
+public class PostgresVsbDatabaseOptionsProvider : VsbDatabaseOptionsProviderBase
 {
-    public VsbDatabaseClusterOptions GetOptions()
+    protected override VsbDatabaseClusterOptions ExtractOptions(IConfigurationRoot config)
     {
-        var builder = new ConfigurationBuilder();
-        builder.SetBasePath(Directory.GetCurrentDirectory().Split("\\bin")[0]);
-        builder.AddJsonFile("VsbDatabaseOptions.json");
-        var config = builder.Build();
-
         var postgresOptions = config
             .GetSection("ClusterOptions")
             .GetSection("PostgresOptions");

@@ -1,6 +1,6 @@
 namespace VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
 
-public interface IVsbDatabaseClusterOptionsProvider
+public interface IVsbDatabaseOptionsProvider
 {
     VsbDatabaseClusterOptions GetOptions();
 }

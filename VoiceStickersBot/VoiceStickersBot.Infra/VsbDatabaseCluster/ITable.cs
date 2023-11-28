@@ -5,5 +5,7 @@ public interface ITable<TEntity> : IDisposable
 {
     Task<TEntity> PerformWriteRequestAsync(TEntity entity);
 
-    public Task<List<TEntity>> PerformReadonlyRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request);
+    Task<List<TEntity>> PerformReadonlyRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request);
+
+    Task<int> PerformDeletionRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request);
 }

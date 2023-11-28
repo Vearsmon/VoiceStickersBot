@@ -5,17 +5,17 @@ namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
 
 public class PostgresVsbDatabaseCluster : IVsbDatabaseCluster
 {
-    private readonly IVsbDatabaseClusterOptionsProvider optionsProvider;
+    private readonly IVsbDatabaseOptionsProvider vsbDatabaseOptionsProvider;
 
-    public PostgresVsbDatabaseCluster(IVsbDatabaseClusterOptionsProvider optionsProvider)
+    public PostgresVsbDatabaseCluster(IVsbDatabaseOptionsProvider vsbDatabaseOptionsProvider)
     {
-        this.optionsProvider = optionsProvider;
+        this.vsbDatabaseOptionsProvider = vsbDatabaseOptionsProvider;
     }
 
     public ITable<TEntity> GetTable<TEntity>()
         where TEntity : class
     {
-        var vsbOptions = optionsProvider.GetOptions();
+        var vsbOptions = vsbDatabaseOptionsProvider.GetOptions();
 
         var optionsBuilder = new DbContextOptionsBuilder<DatabaseTable<TEntity>>();
         var options = optionsBuilder
