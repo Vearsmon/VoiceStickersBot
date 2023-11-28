@@ -21,8 +21,8 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
         var entry = await Entities
             .AddAsync(entity, cancellationToken)
             .ConfigureAwait(false);
-
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         entry.State = EntityState.Detached;
     }
 
@@ -34,8 +34,8 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
             .Factory
             .StartNew(() => Entities.Update(entity), cancellationToken)
             .ConfigureAwait(false);
-
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         entry.State = EntityState.Detached;
     }
 
@@ -47,6 +47,7 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         return entities;
     }
 
@@ -58,6 +59,7 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
             .ExecuteDeleteAsync(cancellationToken)
             .ConfigureAwait(false);
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         return totalDeleted;
     }
 }
