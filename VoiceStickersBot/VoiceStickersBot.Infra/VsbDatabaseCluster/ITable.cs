@@ -3,9 +3,19 @@ namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
 public interface ITable<TEntity> : IDisposable
     where TEntity : class
 {
-    Task<TEntity> PerformWriteRequestAsync(TEntity entity);
+    Task PerformCreateRequestAsync(
+        TEntity entity,
+        CancellationToken cancellationToken);
 
-    Task<List<TEntity>> PerformReadonlyRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request);
+    Task PerformUpdateRequestAsync(
+        TEntity entity,
+        CancellationToken cancellationToken);
 
-    Task<int> PerformDeletionRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request);
+    Task<List<TEntity>> PerformReadonlyRequestAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
+        CancellationToken cancellationToken);
+
+    Task<int> PerformDeletionRequestAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
+        CancellationToken cancellationToken);
 }

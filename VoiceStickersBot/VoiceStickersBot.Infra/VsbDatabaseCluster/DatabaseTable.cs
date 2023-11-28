@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
 
-public class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
+public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
     where TEntity : class
 {
     public DatabaseTable(DbContextOptions<DatabaseTable<TEntity>> options)
@@ -13,32 +14,50 @@ public class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
     private DbSet<TEntity> Entities { get; set; } = null!;
 
-    public async Task<TEntity> PerformWriteRequestAsync(TEntity entity)
+    public async Task PerformCreateRequestAsync(
+        TEntity entity,
+        CancellationToken cancellationToken)
     {
-        var entityEntry = await Entities
-            .AddAsync(entity)
+        var entry = await Entities
+            .AddAsync(entity, cancellationToken)
             .ConfigureAwait(false);
 
-        await SaveChangesAsync().ConfigureAwait(false);
-        return entityEntry.Entity;
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        entry.State = EntityState.Detached;
+    }
+
+    public async Task PerformUpdateRequestAsync(
+        TEntity entity,
+        CancellationToken cancellationToken)
+    {
+        var entry = await Task<EntityEntry<TEntity>>
+            .Factory
+            .StartNew(() => Entities.Update(entity), cancellationToken)
+            .ConfigureAwait(false);
+
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        entry.State = EntityState.Detached;
     }
 
     public async Task<List<TEntity>> PerformReadonlyRequestAsync(
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> request)
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
+        CancellationToken cancellationToken)
     {
         var entities = await request(Entities)
-            .ToListAsync()
+            .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
-        await SaveChangesAsync().ConfigureAwait(false);
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         return entities;
     }
 
-    public async Task<int> PerformDeletionRequestAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> request)
+    public async Task<int> PerformDeletionRequestAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
+        CancellationToken cancellationToken)
     {
         var totalDeleted = await request(Entities)
-            .ExecuteDeleteAsync()
+            .ExecuteDeleteAsync(cancellationToken)
             .ConfigureAwait(false);
-        await SaveChangesAsync().ConfigureAwait(false);
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         return totalDeleted;
     }
 }

@@ -20,6 +20,7 @@ public class PostgresVsbDatabaseCluster : IVsbDatabaseCluster
         var optionsBuilder = new DbContextOptionsBuilder<DatabaseTable<TEntity>>();
         var options = optionsBuilder
             .UseNpgsql(vsbOptions.ConnectionString)
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .Options;
 
         return new DatabaseTable<TEntity>(options);
