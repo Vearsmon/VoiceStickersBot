@@ -15,7 +15,7 @@ public abstract class VsbDatabaseOptionsProviderBase : IVsbDatabaseOptionsProvid
     private IConfigurationRoot GetConfig()
     {
         var builder = new ConfigurationBuilder();
-        builder.SetBasePath(Directory.GetCurrentDirectory().Split("\\bin")[0]);
+        builder.SetBasePath(Directory.GetCurrentDirectory());
         builder.AddJsonFile("VsbDatabaseOptions.json");
         return builder.Build();
     }
