@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using VoiceStickersBot.Infra.DatabaseTable;
 
 namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
 
-public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
+public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchemaCreator
     where TEntity : class
 {
     public DatabaseTable(DbContextOptions<DatabaseTable<TEntity>> options)
@@ -13,6 +14,11 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>
 
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
     private DbSet<TEntity> Entities { get; set; } = null!;
+
+    public bool EnsureCreated()
+    {
+        return Database.EnsureCreated();
+    }
 
     public async Task PerformCreateRequestAsync(
         TEntity entity,
