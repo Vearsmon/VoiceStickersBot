@@ -29,8 +29,11 @@ public class SchemaConfiguratorCore
             typeof(IVsbDatabaseCluster).GetMethod(nameof(IVsbDatabaseCluster.GetSchemaCreator));
 
         foreach (var entityType in entityTypes)
-            tableCreationMethodInfo!
+        {
+            var schemaCreator = tableCreationMethodInfo!
                 .MakeGenericMethod(entityType!)
-                .Invoke(databaseCluster, null);
+                .Invoke(databaseCluster, null) as ISchemaCreator;
+            schemaCreator!.EnsureCreated();
+        }
     }
 }
