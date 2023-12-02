@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using VoiceStickersBot.Core.StickerPacksRepository;
 using VoiceStickersBot.Infra.DatabaseTable;
 
-namespace VoiceStickersBot.Core.UsersRepository;
+namespace VoiceStickersBot.Core;
 
 [Entity]
-[Table("users")]
-public class UserEntity
+[Table("chats")]
+public class ChatEntity
 {
     [Key] [Column("id")] public string Id { get; set; }
 

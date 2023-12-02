@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="SchemaDonfigurators\"/>
+        <ProjectReference Include="..\VoiceStickersBot.Infra\VoiceStickersBot.Infra.csproj"/>
     </ItemGroup>
 
 </Project>
