@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using VoiceStickersBot.Core.UsersRepository;
 using VoiceStickersBot.Infra.DatabaseTable;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
@@ -14,7 +13,7 @@ public class SchemaConfiguratorCore
         this.databaseCluster = databaseCluster;
     }
 
-    public void Configure()
+    public async void ConfigureAsync()
     {
         var entityTypes = Assembly.GetExecutingAssembly()
             .DefinedTypes
@@ -29,7 +28,7 @@ public class SchemaConfiguratorCore
             using var schemaCreator = tableCreationMethodInfo!
                 .MakeGenericMethod(entityType!)
                 .Invoke(databaseCluster, null) as ISchemaCreator;
-            schemaCreator!.EnsureCreatedAsync().GetAwaiter().GetResult();
+            await schemaCreator!.EnsureCreatedAsync().ConfigureAwait(false);
         }
     }
 }

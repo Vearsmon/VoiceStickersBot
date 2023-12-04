@@ -11,8 +11,11 @@ public class StickerEntity
 {
     [Key] [Column("id")] public Guid Id { get; set; }
 
-    [Column("location")] public string Location { get; set; }
+    [Column("Name")] public string? Name { get; set; }
+
+    //TODO: Жду когда илья сделает хранение аудиофайлов
+    [Column("location")] public string Location { get; set; } = null!;
 
     [Column("sticker_pack_id")] public Guid StickerPackId { get; set; }
-    public StickerPackEntity StickerPack { get; set; }
+    public StickerPackEntity? StickerPack { get; set; }
 }

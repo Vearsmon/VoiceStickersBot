@@ -11,9 +11,11 @@ public class StickerPackEntity
 {
     [Key] [Column("id")] public Guid Id { get; set; }
 
+    [Column("name")] public string? Name { get; set; }
+
     [Column("owner_id")] public Guid OwnerId { get; set; }
 
-    public List<ChatEntity> Chats { get; set; }
+    public List<ChatEntity>? Chats { get; set; }
 
-    public List<StickerEntity> Stickers { get; set; }
+    public List<StickerEntity>? Stickers { get; set; }
 }
