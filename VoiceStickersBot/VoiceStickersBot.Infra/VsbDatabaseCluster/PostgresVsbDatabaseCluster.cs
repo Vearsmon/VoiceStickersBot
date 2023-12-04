@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using VoiceStickersBot.Infra.DatabaseTable;
 using VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
 
@@ -34,6 +35,7 @@ public class PostgresVsbDatabaseCluster : IVsbDatabaseCluster
         var options = optionsBuilder
             .UseNpgsql(vsbOptions.ConnectionString)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            .LogTo(Console.WriteLine, LogLevel.Information)
             .Options;
 
         return new DatabaseTable<TEntity>(options);

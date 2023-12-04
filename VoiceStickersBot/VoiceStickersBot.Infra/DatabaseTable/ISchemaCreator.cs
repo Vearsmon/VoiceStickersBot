@@ -1,6 +1,6 @@
 ﻿namespace VoiceStickersBot.Infra.DatabaseTable;
 
-public interface ISchemaCreator
+public interface ISchemaCreator : IDisposable
 {
-    bool EnsureCreated();
+    Task<bool> EnsureCreatedAsync();
 }

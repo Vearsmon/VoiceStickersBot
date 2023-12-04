@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using VoiceStickersBot.Infra.DatabaseTable;
 
 namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
@@ -15,9 +17,18 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchema
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
     private DbSet<TEntity> Entities { get; set; } = null!;
 
-    public bool EnsureCreated()
+    public async Task<bool> EnsureCreatedAsync()
     {
-        return Database.EnsureCreated();
+        var dbCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+        try
+        {
+            await dbCreator.CreateTablesAsync().ConfigureAwait(false);
+        }
+        catch
+        {
+            return false;
+        }
+        return true;
     }
 
     public async Task PerformCreateRequestAsync(

@@ -10,6 +10,8 @@ namespace VoiceStickersBot.Core.UsersRepository;
 public class UserEntity
 {
     [Key] [Column("id")] public string Id { get; set; }
+    
+    [Column("text")] public string Text { get; set; }
 
-    public List<StickerPackEntity> StickerPacks { get; set; }
+//    public List<StickerPackEntity> StickerPacks { get; set; }
 }
