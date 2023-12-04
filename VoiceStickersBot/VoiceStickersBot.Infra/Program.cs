@@ -1,4 +1,16 @@
-﻿using VoiceStickersBot.Infra.VsbDatabaseCluster;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Ninject;
+using VoiceStickersBot.Infra.VsbDatabaseCluster;
+using VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
+
+var container = new StandardKernel();
+container.Bind<IVsbDatabaseCluster>().To<PostgresVsbDatabaseCluster>();
+container.Bind<IVsbDatabaseOptionsProvider>().To<PostgresVsbDatabaseOptionsProvider>();
+
+
+var cluster = container.Get<IVsbDatabaseCluster>();
+
 
 Console.WriteLine(nameof(IVsbDatabaseCluster.GetSchemaCreator));
 
