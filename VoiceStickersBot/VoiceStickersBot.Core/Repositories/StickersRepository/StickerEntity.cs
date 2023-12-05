@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using VoiceStickersBot.Core.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Infra.DatabaseTable;
 
-namespace VoiceStickersBot.Core.StickersRepository;
+namespace VoiceStickersBot.Core.Repositories.StickersRepository;
 
 [Entity]
 [Table("stickers")]

@@ -2,9 +2,9 @@
 
 namespace VoiceStickersBot.Core.CommandHandlers;
 
-public interface ICommandHandler
+public interface ICommandHandlerFactory
 {
     Type CommandType { get; }
 
-    ICommandResult Handle();
+    public ICommandHandler CreateCommandHandler(ICommand command);
 }

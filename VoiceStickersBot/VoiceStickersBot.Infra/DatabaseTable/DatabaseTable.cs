@@ -2,9 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using VoiceStickersBot.Infra.DatabaseTable;
 
-namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
+namespace VoiceStickersBot.Infra.DatabaseTable;
 
 public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchemaCreator
     where TEntity : class
@@ -28,6 +27,7 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchema
         {
             return false;
         }
+
         return true;
     }
 

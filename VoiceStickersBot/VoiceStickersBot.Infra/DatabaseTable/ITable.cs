@@ -1,4 +1,4 @@
-namespace VoiceStickersBot.Infra.VsbDatabaseCluster;
+namespace VoiceStickersBot.Infra.DatabaseTable;
 
 public interface ITable<TEntity> : IDisposable
     where TEntity : class

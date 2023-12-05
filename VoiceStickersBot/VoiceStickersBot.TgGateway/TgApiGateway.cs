@@ -4,7 +4,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
-using VoiceStickersBot.Core.CommandHandler;
+using VoiceStickersBot.Core.CommandHandlers;
+using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.TgGateway;
 
@@ -85,8 +86,8 @@ public class TgApiGateway
     private async Task HandleWatchAllCommand(ITelegramBotClient bot, long chatId, CancellationToken ct)
     {
         var command = new SwitchKeyboardCommand(0, 10, "pageright:1");
-        var handler = new SwitchKeyboardHandler();
-        var res = (SwitchKeyboardResult)handler.Handle(command);
+        var handler = new SwitchKeyboardHandler(command);
+        var res = (SwitchKeyboardResult)handler.Handle();
         var currentPageKeyboard = new List<InlineKeyboardButton[]>();
         foreach (var button in res.InlineKeyboardDto.Buttons)
             currentPageKeyboard.Add(new[]
@@ -136,8 +137,8 @@ public class TgApiGateway
         if (splitted.Length == 1) return;
         var command = new SwitchKeyboardCommand(int.Parse(splitted[1]), 10, splitted[0]);
         //var client = new Client();
-        var handler = new SwitchKeyboardHandler();
-        var res = (SwitchKeyboardResult)handler.Handle(command);
+        var handler = new SwitchKeyboardHandler(command);
+        var res = (SwitchKeyboardResult)handler.Handle();
         var keyboard = new List<InlineKeyboardButton[]>();
         foreach (var button in res.InlineKeyboardDto.Buttons)
             keyboard.Add(new[] { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });

@@ -1,13 +1,7 @@
-﻿namespace VoiceStickersBot.Core;
+﻿namespace VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 public class SwitchKeyboardCommand : ICommand
 {
-
-    public PageChangeType PageChangeType { get; }
-    public int pageFrom { get; }
-    public int stickersOnPage { get; }
-    
-
     public SwitchKeyboardCommand(int pageFrom, int stickersOnPage, string callbackText)
     {
         if (callbackText == "pageleft")
@@ -18,4 +12,8 @@ public class SwitchKeyboardCommand : ICommand
         this.pageFrom = pageFrom;
         this.stickersOnPage = stickersOnPage;
     }
+
+    public PageChangeType PageChangeType { get; }
+    public int pageFrom { get; }
+    public int stickersOnPage { get; }
 }

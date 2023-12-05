@@ -1,6 +1,5 @@
-﻿namespace VoiceStickersBot.Core;
+﻿namespace VoiceStickersBot.Core.Client;
 
 public class Client
 {
-    
 }

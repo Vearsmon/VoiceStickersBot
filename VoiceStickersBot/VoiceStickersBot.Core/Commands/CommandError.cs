@@ -1,6 +1,5 @@
-﻿namespace VoiceStickersBot.Core;
+﻿namespace VoiceStickersBot.Core.Commands;
 
 public class CommandError
 {
-    
 }

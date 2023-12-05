@@ -1,18 +1,23 @@
-﻿namespace VoiceStickersBot.Core.CommandHandler;
+﻿using VoiceStickersBot.Core.Commands;
 
-public class MainCommandHandler : ICommandHandler<ICommand>
+namespace VoiceStickersBot.Core.CommandHandlers;
+
+public class MainCommandHandler
 {
-    public Dictionary<Type, ICommandHandler<ICommand>> CommandHandlers;
+    private readonly Dictionary<Type, ICommandHandlerFactory> commandHandlers;
 
-    public MainCommandHandler(List<ICommandHandler<ICommand>> commandHandlers)
+    public MainCommandHandler(List<ICommandHandlerFactory> commandHandlers)
     {
-        CommandHandlers = commandHandlers.ToDictionary(key => key.GetType(), value => value);
+        this.commandHandlers = commandHandlers.ToDictionary(
+            key => key.CommandType,
+            value => value);
     }
 
     public Type CommandType { get; }
 
     public ICommandResult Handle(ICommand command)
     {
-        throw new NotImplementedException();
+        var commandHandler = commandHandlers[command.GetType()].CreateCommandHandler(command);
+        return commandHandler.Handle();
     }
 }
