@@ -2,7 +2,7 @@
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
-var m = new MainCommandHandler(new List<ICommandHandlerFactory> { new SwitchKeyboardCommandHandlerFactory() });
+var m = new TgApiCommandHandlerService(new List<ICommandHandlerFactory> { new SwitchKeyboardCommandHandlerFactory() });
 var t = m.Handle(new SwitchKeyboardCommand(1, 10, "pageright"));
 var c = t as SwitchKeyboardResult;
 foreach (var k in c.InlineKeyboardDto.Buttons) Console.WriteLine(k.ButtonText);

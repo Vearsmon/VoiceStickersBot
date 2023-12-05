@@ -3,11 +3,11 @@ using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
-public class MainCommandHandler
+public class TgApiCommandHandlerService
 {
     private readonly Dictionary<Type, ICommandHandlerFactory> commandHandlers;
 
-    public MainCommandHandler(List<ICommandHandlerFactory> commandHandlers)
+    public TgApiCommandHandlerService(List<ICommandHandlerFactory> commandHandlers)
     {
         this.commandHandlers = commandHandlers.ToDictionary(
             key => key.CommandType,
