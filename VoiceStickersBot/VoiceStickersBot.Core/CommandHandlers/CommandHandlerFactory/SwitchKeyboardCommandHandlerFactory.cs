@@ -1,6 +1,7 @@
-﻿using VoiceStickersBot.Core.Commands.SwitchKeyboard;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
-namespace VoiceStickersBot.Core.CommandHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
 public class SwitchKeyboardCommandHandlerFactory : CommandHandlerFactoryBase<SwitchKeyboardCommand>
 {

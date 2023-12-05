@@ -1,6 +1,7 @@
-﻿using VoiceStickersBot.Core.Commands;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+using VoiceStickersBot.Core.Commands;
 
-namespace VoiceStickersBot.Core.CommandHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
 public abstract class CommandHandlerFactoryBase<TCommand> : ICommandHandlerFactory
     where TCommand : class, ICommand

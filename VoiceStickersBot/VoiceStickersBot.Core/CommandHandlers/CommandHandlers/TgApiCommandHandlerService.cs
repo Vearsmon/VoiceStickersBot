@@ -1,6 +1,7 @@
-﻿using VoiceStickersBot.Core.Commands;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
+using VoiceStickersBot.Core.Commands;
 
-namespace VoiceStickersBot.Core.CommandHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public class MainCommandHandler
 {
@@ -12,8 +13,6 @@ public class MainCommandHandler
             key => key.CommandType,
             value => value);
     }
-
-    public Type CommandType { get; }
 
     public ICommandResult Handle(ICommand command)
     {

@@ -1,4 +1,5 @@
-﻿using VoiceStickersBot.Core.CommandHandlers;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 var m = new MainCommandHandler(new List<ICommandHandlerFactory> { new SwitchKeyboardCommandHandlerFactory() });

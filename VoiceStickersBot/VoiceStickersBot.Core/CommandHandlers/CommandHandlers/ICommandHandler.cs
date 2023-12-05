@@ -1,6 +1,6 @@
 ﻿using VoiceStickersBot.Core.Commands;
 
-namespace VoiceStickersBot.Core.CommandHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public interface ICommandHandler
 {
