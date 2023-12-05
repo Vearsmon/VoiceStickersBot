@@ -9,11 +9,11 @@ public class SwitchKeyboardCommand : ICommand
         else if (callbackText == "pageright")
             PageChangeType = PageChangeType.Increase;
 
-        this.pageFrom = pageFrom;
-        this.stickersOnPage = stickersOnPage;
+        PageFrom = pageFrom;
+        StickersOnPage = stickersOnPage;
     }
 
     public PageChangeType PageChangeType { get; }
-    public int pageFrom { get; }
-    public int stickersOnPage { get; }
+    public int PageFrom { get; }
+    public int StickersOnPage { get; }
 }

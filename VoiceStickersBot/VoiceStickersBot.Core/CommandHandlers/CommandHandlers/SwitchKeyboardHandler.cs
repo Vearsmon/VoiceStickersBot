@@ -25,13 +25,13 @@ public class SwitchKeyboardHandler : ICommandHandler
 
     public ICommandResult Handle()
     {
-        var pageTo = command.PageChangeType == PageChangeType.Increase ? command.pageFrom + 1 : command.pageFrom - 1;
+        var pageTo = command.PageChangeType == PageChangeType.Increase ? command.PageFrom + 1 : command.PageFrom - 1;
         var startIndex = command.PageChangeType == PageChangeType.Increase
-            ? (pageTo - 1) * command.stickersOnPage
-            : (command.pageFrom - 2) * command.stickersOnPage;
+            ? (pageTo - 1) * command.StickersOnPage
+            : (command.PageFrom - 2) * command.StickersOnPage;
         var endIndex = command.PageChangeType == PageChangeType.Increase
-            ? command.stickersOnPage * (command.pageFrom + 1)
-            : pageTo * command.stickersOnPage;
+            ? command.StickersOnPage * (command.PageFrom + 1)
+            : pageTo * command.StickersOnPage;
 
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < packs.Length && i < endIndex; i++)
@@ -43,7 +43,7 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", "pagenum"));
 
-        if (pageTo <= packs.Length / command.stickersOnPage)
+        if (pageTo <= packs.Length / command.StickersOnPage)
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", $"pageright:{pageTo}"));
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);

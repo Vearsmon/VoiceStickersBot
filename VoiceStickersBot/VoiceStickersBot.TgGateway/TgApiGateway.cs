@@ -4,6 +4,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
+using VoiceStickersBot.Core.Client;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
@@ -15,7 +17,7 @@ public class TgApiGateway
     {
         new[] // first row
         {
-            new KeyboardButton("Посмотреть все")
+            new KeyboardButton("Показать все")
         },
         new[] // second row
         {
@@ -29,12 +31,14 @@ public class TgApiGateway
         }
     }) { ResizeKeyboard = true };
 
+    private Client client = new Client();
+    
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
         if (update.Type == UpdateType.CallbackQuery)
         {
-            await HandleCallbackQuery(botClient, update.CallbackQuery!, update.CallbackQuery!.Data![^1]);
+            await HandleCallbackQuery(botClient, update.CallbackQuery!);
         }
 
         if (update.Message is not { } message)
@@ -43,30 +47,32 @@ public class TgApiGateway
         if (message.Text is not { } messageText)
             return;
 
-        switch (messageText)
+        switch (messageText.Split('@').First())
         {
-            case "Посмотреть все":
+            case "/show_all":
+            case "Показать все":
                 await HandleWatchAllCommand(botClient, message.Chat.Id, cancellationToken);
                 break;
+            case "/add_sticker":
             case "Добавить стикер":
                 break;
+            case "/create_pack":
             case "Создать пак":
                 break;
+            case "/delete_sticker":
             case "Удалить стикер":
                 break;
+            case "/delete_pack":
             case "Удалить пак":
                 break;
             default:
+                await botClient.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: "Неизвестная команда броу, попробуй чето другое",
+                    replyMarkup: mainKeyboard,
+                    cancellationToken: cancellationToken);
                 break;
         }
-
-        var chatId = message.Chat.Id;
-
-        var sentMessage = await botClient.SendTextMessageAsync(
-            chatId: chatId,
-            text: messageText,
-            replyMarkup: mainKeyboard,
-            cancellationToken: cancellationToken);
     }
 
     public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,
@@ -86,8 +92,8 @@ public class TgApiGateway
     private async Task HandleWatchAllCommand(ITelegramBotClient bot, long chatId, CancellationToken ct)
     {
         var command = new SwitchKeyboardCommand(0, 10, "pageright:1");
-        var handler = new SwitchKeyboardHandler(command);
-        var res = (SwitchKeyboardResult)handler.Handle();
+        var res = client.Handle<SwitchKeyboardResult>(command);
+        
         var currentPageKeyboard = new List<InlineKeyboardButton[]>();
         foreach (var button in res.InlineKeyboardDto.Buttons)
             currentPageKeyboard.Add(new[]
@@ -97,8 +103,7 @@ public class TgApiGateway
             lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
         currentPageKeyboard.Add(lastRow.ToArray());
         var markup = new InlineKeyboardMarkup(currentPageKeyboard.ToArray());
-
-        //var currentPageKeyboard = SwitchKeyboardPage(allPacks, 10, 0, PageChangeType.Increase);
+        
         var sentMessage = await bot.SendTextMessageAsync(
             chatId: chatId,
             text: "Вот все ваши стикеры:",
@@ -107,38 +112,14 @@ public class TgApiGateway
         );
     }
 
-    private InlineKeyboardMarkup SwitchKeyboardPage(string[] packs, int count, int pageFrom, PageChangeType pcs)
-    {
-        var pageTo = pcs == PageChangeType.Increase ? pageFrom + 1 : pageFrom - 1;
-        var startIndex = pcs == PageChangeType.Increase ? (pageTo - 1) * count : (pageFrom - 2) * count;
-        var endIndex = pcs == PageChangeType.Increase ? count * (pageFrom + 1) : pageTo * count;
-
-        var keyboard = new List<InlineKeyboardButton[]>();
-        for (var i = startIndex; i < packs.Length && i < endIndex; i++)
-            keyboard.Add(new[] { InlineKeyboardButton.WithCallbackData(packs[i], "pack_id") });
-
-        var lastLineButtons = new List<InlineKeyboardButton>();
-        if (pageTo > 1)
-            lastLineButtons.Add(InlineKeyboardButton.WithCallbackData("\u25c0\ufe0f", $"pageleft:{pageTo}"));
-
-        lastLineButtons.Add(InlineKeyboardButton.WithCallbackData($"{pageTo}", "pagenum"));
-
-        if (pageTo <= packs.Length / count)
-            lastLineButtons.Add(InlineKeyboardButton.WithCallbackData("\u25b6\ufe0f", $"pageright:{pageTo}"));
-
-        keyboard.Add(lastLineButtons.ToArray());
-
-        return new InlineKeyboardMarkup(keyboard.ToArray());
-    }
-
-    private async Task HandleCallbackQuery(ITelegramBotClient bot, CallbackQuery callback, int pageFrom)
+    private async Task HandleCallbackQuery(ITelegramBotClient bot, CallbackQuery callback)
     {
         var splitted = callback.Data!.Split(':');
         if (splitted.Length == 1) return;
+        
         var command = new SwitchKeyboardCommand(int.Parse(splitted[1]), 10, splitted[0]);
-        //var client = new Client();
-        var handler = new SwitchKeyboardHandler(command);
-        var res = (SwitchKeyboardResult)handler.Handle();
+        var res = client.Handle<SwitchKeyboardResult>(command);
+        
         var keyboard = new List<InlineKeyboardButton[]>();
         foreach (var button in res.InlineKeyboardDto.Buttons)
             keyboard.Add(new[] { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
@@ -148,9 +129,7 @@ public class TgApiGateway
         keyboard.Add(lastRow.ToArray());
         var markup = new InlineKeyboardMarkup(keyboard.ToArray());
 
-        //var lastRow = new List<InlineKeyboardButton>();
-        //keyboard.Add(new []{});
-        //var keyboard = client.Obrabotat(command);
+        
 
         await bot.EditMessageReplyMarkupAsync(
             chatId: callback.From.Id,
