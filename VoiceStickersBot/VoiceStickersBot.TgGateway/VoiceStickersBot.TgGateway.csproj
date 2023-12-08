@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="SkbKontur.Cassandra.TimeGuid" Version="1.0.16"/>
         <PackageReference Include="Telegram.Bot" Version="19.0.0"/>
     </ItemGroup>
 

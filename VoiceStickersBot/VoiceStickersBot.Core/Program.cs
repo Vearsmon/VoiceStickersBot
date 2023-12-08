@@ -1,23 +1,45 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
-using VoiceStickersBot.Core.Commands.SwitchKeyboard;
+﻿using Ninject;
+using VoiceStickersBot.Core.Contracts;
+using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickersRepository;
+using VoiceStickersBot.Core.Repositories.UsersRepository;
+using VoiceStickersBot.Core.SchemaConfigurators;
+using VoiceStickersBot.Infra.VsbDatabaseCluster;
+using VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
 
-var m = new TgApiCommandHandlerService(new List<ICommandHandlerFactory> { new SwitchKeyboardCommandHandlerFactory() });
-var t = m.Handle(new SwitchKeyboardCommand(1, 10, "pageright"));
-var c = t as SwitchKeyboardResult;
-foreach (var k in c.InlineKeyboardDto.Buttons) Console.WriteLine(k.ButtonText);
+var container = new StandardKernel();
 
-// var container = new StandardKernel();
-//
-// container.Bind<IVsbDatabaseCluster>().To<PostgresVsbDatabaseCluster>();
-// container.Bind<IVsbDatabaseOptionsProvider>().To<PostgresVsbDatabaseOptionsProvider>();
-//
-// var t = container.Get<SchemaConfiguratorCore>();
-// t.Configure();
-//
-// var cl = container.Get<IVsbDatabaseCluster>();
-// using var db = cl.GetTable<UserEntity>();
-// await db.PerformCreateRequestAsync(new UserEntity(){Id="123", Text = "123"}, new CancellationToken());
-//
-// Console.WriteLine((await db.PerformReadonlyRequestAsync(x => x.Where(entity => entity.Id == "123")
-//     , new CancellationToken()))[0].Id);
+container.Bind<IVsbDatabaseCluster>().To<PostgresVsbDatabaseCluster>();
+container.Bind<IVsbDatabaseOptionsProvider>().To<PostgresVsbDatabaseOptionsProvider>();
+
+container.Bind<IStickersRepository>().To<StickersRepository>();
+container.Bind<IStickerPacksRepository>().To<StickerPacksRepository>();
+container.Bind<IUsersRepository>().To<UsersRepository>();
+
+var stickersPacksRepository = container.Get<StickerPacksRepository>();
+var stickersRepository = container.Get<StickersRepository>();
+var usersRepository = container.Get<UsersRepository>();
+
+var schemaCreator = container.Get<SchemaConfiguratorCore>();
+await schemaCreator.ConfigureAsync().ConfigureAwait(false);
+
+var userId = Guid.NewGuid().ToString();
+var stickerPackId = Guid.NewGuid();
+await usersRepository.Create(userId).ConfigureAwait(false);
+await stickersPacksRepository.CreateStickerPackAsync(stickerPackId, "pack", userId).ConfigureAwait(false);
+await stickersRepository.CreateAsync(Guid.NewGuid(), "sticker", "location", stickerPackId).ConfigureAwait(false);
+
+var stickers = await stickersPacksRepository
+    .GetStickerPackAsync(stickerPackId)
+    .ConfigureAwait(false);
+// foreach (var s in stickers)
+// {
+//     Console.WriteLine(s.Id);
+// }
+
+var stickerPacks = await usersRepository.GetStickerPacksOwned(userId, true).ConfigureAwait(false);
+foreach (var s in stickerPacks)
+{
+    Console.WriteLine(s.Id);
+    foreach (var st in s.Stickers ?? new List<Sticker>()) Console.WriteLine(st.Id);
+}
