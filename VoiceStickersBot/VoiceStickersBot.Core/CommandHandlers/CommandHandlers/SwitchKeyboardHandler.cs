@@ -23,7 +23,7 @@ public class SwitchKeyboardHandler : ICommandHandler
 
     public Type CommandType => typeof(SwitchKeyboardCommand);
 
-    public ICommandResult Handle()
+    public IHandleCommandResult Handle()
     {
         var pageTo = command.PageChangeType == PageChangeType.Increase ? command.PageFrom + 1 : command.PageFrom - 1;
         var startIndex = command.PageChangeType == PageChangeType.Increase

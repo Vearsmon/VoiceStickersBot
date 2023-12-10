@@ -5,18 +5,30 @@ namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public class TgApiCommandHandlerService
 {
-    private readonly Dictionary<Type, ICommandHandlerFactory> commandHandlers;
+    private readonly Dictionary<Type, ICommandHandlerFactory> commandHandlersFactories;
 
-    public TgApiCommandHandlerService(List<ICommandHandlerFactory> commandHandlers)
+    public TgApiCommandHandlerService(List<ICommandHandlerFactory> commandHandlersFactories)
     {
-        this.commandHandlers = commandHandlers.ToDictionary(
+        this.commandHandlersFactories = commandHandlersFactories.ToDictionary(
             key => key.CommandType,
             value => value);
     }
 
     public ICommandResult Handle(ICommand command)
     {
-        var commandHandler = commandHandlers[command.GetType()].CreateCommandHandler(command);
-        return commandHandler.Handle();
+        IHandleCommandResult result = null;
+        Exception error = null;
+        try
+        {
+            var commandHandler = commandHandlersFactories[command.GetType()].CreateCommandHandler(command); 
+            result = commandHandler.Handle();
+        }
+        catch (Exception ex)
+        {
+            error = ex;
+            Console.WriteLine("oh boy :(");
+        }
+
+        return new CommandResult(result, error);
     }
 }
