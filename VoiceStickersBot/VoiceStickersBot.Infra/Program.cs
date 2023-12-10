@@ -1,38 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Ninject;
-using VoiceStickersBot.Infra.VsbDatabaseCluster;
-using VoiceStickersBot.Infra.VsbDatabaseClusterProvider;
+﻿using VoiceStickersBot.Infra.VSBApplication.Log;
 
-var container = new StandardKernel();
-container.Bind<IVsbDatabaseCluster>().To<PostgresVsbDatabaseCluster>();
-container.Bind<IVsbDatabaseOptionsProvider>().To<PostgresVsbDatabaseOptionsProvider>();
+var log = new ConsoleLog();
 
+try
+{
+    Foo2();
+}
+catch (Exception ex)
+{
+    log.Log(LogLevel.Error, ex, "Test {0} {1}", 1, "fucks");
+}
 
-var cluster = container.Get<IVsbDatabaseCluster>();
+void Foo2()
+{
+    Foo1();
+}
 
+void Foo1()
+{
+    Foo();
+}
 
-Console.WriteLine(nameof(IVsbDatabaseCluster.GetSchemaCreator));
-
-// var container = new StandardKernel();
-// container.Bind<IVsbDatabaseCluster>().To<PostgresVsbDatabaseCluster>();
-// container.Bind<IVsbDatabaseOptionsProvider>().To<PostgresVsbDatabaseOptionsProvider>();
-//
-//
-// var cluster = container.Get<IVsbDatabaseCluster>();
-// using var t = cluster.GetTable<User>();
-// using var t2 = cluster.GetTable<User>();
-//
-// [Table("Users")]
-// public class User
-// {
-//     [Key] public int Id { get; set; }
-//
-//     public string? Name { get; set; }
-//     public int Age { get; set; }
-//
-//     public override string ToString()
-//     {
-//         return $"Id: {Id}; Name: {Name}; Age: {Age}";
-//     }
-// }
+void Foo()
+{
+    throw new NotImplementedException("foo");
+}

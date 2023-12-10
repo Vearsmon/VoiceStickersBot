@@ -6,5 +6,5 @@ public interface IStickerPacksRepository
 {
     Task CreateStickerPackAsync(Guid stickerPackId, string name, string ownerId);
 
-    Task<StickerPack> GetStickerPackAsync(Guid stickerPackId, bool includeStickers);
+    Task<StickerPack> GetStickerPackAsync(Guid stickerPackId, bool includeStickers = false);
 }
