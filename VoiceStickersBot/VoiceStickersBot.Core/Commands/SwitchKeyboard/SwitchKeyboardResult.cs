@@ -2,7 +2,7 @@
 
 namespace VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
-public class SwitchKeyboardResult : IHandleCommandResult
+public class SwitchKeyboardResult : ICommandResult
 {
     public SwitchKeyboardResult(InlineKeyboardDto inlineKeyboardDto)
     {

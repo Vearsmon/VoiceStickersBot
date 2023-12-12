@@ -1,8 +1,8 @@
 ﻿namespace VoiceStickersBot.Core.Commands;
 
-public class CommandResult : ICommandResult
+public class HandleCommandResult : IHandleCommandResult
 {
-    public CommandResult(IHandleCommandResult result, Exception? error)
+    public HandleCommandResult(ICommandResult result, Exception? error)
     {
         if (error is null)
             EnsureSuccess = true;
@@ -10,7 +10,7 @@ public class CommandResult : ICommandResult
         Error = error;
     }
     
-    public IHandleCommandResult Result { get; set; }
+    public ICommandResult Result { get; set; }
     public bool EnsureSuccess { get; set; }
     public Exception Error { get; set; }
     

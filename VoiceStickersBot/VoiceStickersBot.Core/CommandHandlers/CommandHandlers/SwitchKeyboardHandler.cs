@@ -15,33 +15,37 @@ public class SwitchKeyboardHandler : ICommandHandler
         "Набор 20",
         "Набор 21", "Набор 22", "Набор 23", "Набор 24", "Набор 25", "Набор 26", "Набор 27"
     };
-
+    public Type CommandType => typeof(SwitchKeyboardCommand);
+    
     public SwitchKeyboardHandler(SwitchKeyboardCommand command)
     {
         this.command = command;
     }
 
-    public Type CommandType => typeof(SwitchKeyboardCommand);
-
-    public IHandleCommandResult Handle()
+    public ICommandResult Handle()
     {
-        var pageTo = command.PageChangeType == PageChangeType.Increase ? command.PageFrom + 1 : command.PageFrom - 1;
+        if (!command.PageFrom.HasValue) 
+            throw new ArgumentException($"{nameof(command.PageFrom)} была null, ожидалось число");
+
+        var pageFrom = command.PageFrom.Value;
+        
+        var pageTo = command.PageChangeType == PageChangeType.Increase ? pageFrom + 1 : pageFrom - 1;
         var startIndex = command.PageChangeType == PageChangeType.Increase
             ? (pageTo - 1) * command.StickersOnPage
-            : (command.PageFrom - 2) * command.StickersOnPage;
+            : (pageFrom - 2) * command.StickersOnPage;
         var endIndex = command.PageChangeType == PageChangeType.Increase
-            ? command.StickersOnPage * (command.PageFrom + 1)
+            ? command.StickersOnPage * (pageFrom + 1)
             : pageTo * command.StickersOnPage;
 
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < packs.Length && i < endIndex; i++)
-            buttons.Add(new InlineKeyboardButtonDto(packs[i], "pack_id"));
+            buttons.Add(new InlineKeyboardButtonDto(packs[i], "pack:{pack_id}"));
 
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", $"pageleft:{pageTo}"));
 
-        lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", "pagenum"));
+        lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", $"page:{pageTo}"));
 
         if (pageTo <= packs.Length / command.StickersOnPage)
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", $"pageright:{pageTo}"));

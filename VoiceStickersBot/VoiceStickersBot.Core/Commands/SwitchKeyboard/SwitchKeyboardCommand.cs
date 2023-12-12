@@ -2,18 +2,21 @@
 
 public class SwitchKeyboardCommand : ICommand
 {
-    public SwitchKeyboardCommand(int pageFrom, int stickersOnPage, string callbackText)
+    public PageChangeType PageChangeType { get; }
+    public int? PageFrom { get; }
+    public int StickersOnPage { get; }
+    public Type CommandType => typeof(SwitchKeyboardCommand);
+    
+    public SwitchKeyboardCommand(int? pageFrom, string commandText, int stickersOnPage)
     {
-        if (callbackText == "pageleft")
+        var pageDirection = commandText.Split(':').First();
+        
+        if (pageDirection == "pageleft")
             PageChangeType = PageChangeType.Decrease;
-        else if (callbackText == "pageright")
+        else if (pageDirection == "pageright")
             PageChangeType = PageChangeType.Increase;
 
         PageFrom = pageFrom;
         StickersOnPage = stickersOnPage;
     }
-
-    public PageChangeType PageChangeType { get; }
-    public int PageFrom { get; }
-    public int StickersOnPage { get; }
 }
