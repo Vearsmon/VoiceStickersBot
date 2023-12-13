@@ -1,48 +1,50 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using System;
+using System.Net.Mime;
 
 namespace VoiceStickersBot.Infra.ObjectStorageCluster;
 
-public class ObjectStorageCluster : IObjectStorageCluster
+public class ObjectStorageClient : IObjectStorageClient
 {
     public static AmazonS3Config objectStorageConfig = new() { ServiceURL = "https://s3.yandexcloud.net" };
     public AmazonS3Client objectStorageClient = new (objectStorageConfig);
 
-    public byte[] GetObjectFromStorage(S3Bucket bucket, string objectName)
+    public async Task<byte[]> GetObjectFromStorage(ObjectLocation location)
     {
-        var objectResponse = objectStorageClient.GetObjectAsync(bucket.BucketName, objectName);
-        using var bytes = objectResponse.Result.ResponseStream;
+        var objectResponse = await objectStorageClient.GetObjectAsync(location.Path, location.FileName).ConfigureAwait(false);
+        using var bytes = objectResponse.ResponseStream;
         var byteBuffer = new byte[16*1024];
         using var memoryStream = new MemoryStream();
-        int read;
-        while ((read = bytes.Read(byteBuffer, 0, byteBuffer.Length)) > 0)
+        while (await bytes.ReadAsync(byteBuffer).ConfigureAwait(false) > 0)
         {
-            memoryStream.Write(byteBuffer, 0, read);
+            await memoryStream.WriteAsync(byteBuffer).ConfigureAwait(false);
         }
         return memoryStream.ToArray();
     }
 
-    public PutObjectResponse PutObjectInStorage(S3Bucket bucket, byte[] objBytes, Guid guid)
+    public async Task<ObjectLocation> PutObjectInStorage(string path, Guid objectId, string contentType, byte[] objBytes)
     {
         var putRequest = new PutObjectRequest
         {
-            BucketName = bucket.BucketName,
-            Key = guid.ToString(),
-            ContentType = "audio/mpeg"
+            BucketName = path,
+            Key = objectId.ToString(),
+            ContentType = contentType
         };
-        
-        using (putRequest.InputStream = new MemoryStream())
+
+        await using (putRequest.InputStream = new MemoryStream())
         {
             var byteBuffer = new byte[16*1024];
-            int read;
             using (var stream = new MemoryStream(objBytes))
             {
-                while ((read = stream.Read(byteBuffer, 0, byteBuffer.Length)) > 0)
+                var read = 0;
+                while ((read = await stream.ReadAsync(byteBuffer).ConfigureAwait(false)) > 0)
                 {
-                    putRequest.InputStream.Write(byteBuffer, 0, read);
+                    await putRequest.InputStream.WriteAsync(byteBuffer, 0, read).ConfigureAwait(false);
+                    byteBuffer.Initialize();
                 }
-                var putResponse = objectStorageClient.PutObjectAsync(putRequest);
-                return putResponse.Result;
+                var putResponse = await objectStorageClient.PutObjectAsync(putRequest).ConfigureAwait(false);
+                return new ObjectLocation(path, objectId.ToString(), contentType);
             }
         }
     }

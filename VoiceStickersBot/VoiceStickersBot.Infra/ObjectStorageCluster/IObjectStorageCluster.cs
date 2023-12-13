@@ -2,9 +2,9 @@
 
 namespace VoiceStickersBot.Infra.ObjectStorageCluster;
 
-public interface IObjectStorageCluster
+public interface IObjectStorageClient
 {
-    public byte[] GetObjectFromStorage(S3Bucket bucket, string objectName);
+    public Task<byte[]> GetObjectFromStorage(ObjectLocation location);
 
-    public PutObjectResponse PutObjectInStorage(S3Bucket bucket, byte[] objBytes, Guid guid);
+    public Task<ObjectLocation> PutObjectInStorage(string path, Guid objectId, string contentType, byte[] objBytes);
 }
