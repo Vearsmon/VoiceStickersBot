@@ -7,6 +7,7 @@ public class SwitchKeyboardHandler : ICommandHandler
 {
     private readonly SwitchKeyboardCommand command;
 
+    //Этого тоже не должно быть и все достается из команды
     private readonly string[] packs =
     {
         "Набор 1", "Набор 2", "Набор 3", "Набор 4", "Набор 5", "Набор 6", "Набор 7", "Набор 8", "Набор 9",
@@ -39,7 +40,9 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < packs.Length && i < endIndex; i++)
-            buttons.Add(new InlineKeyboardButtonDto(packs[i], "pack:{pack_id}"));
+            buttons.Add(new InlineKeyboardButtonDto(packs[i], "open_id:{pack/sticker_id}")); 
+        //pack-sticker id - то что лежит в элементе command.EnumerableEntity = List<Entity>, где entity - какаято
+        //сущность общая для паков и стикеров, содержащая имя и id (пока что так)
 
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
@@ -52,6 +55,6 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new SwitchKeyboardResult(keyboard);
+        return new SwitchKeyboardResult(keyboard, command.KeyboardCapture);
     }
 }

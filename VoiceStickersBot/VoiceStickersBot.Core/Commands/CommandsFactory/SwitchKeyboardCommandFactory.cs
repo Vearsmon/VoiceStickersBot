@@ -9,6 +9,8 @@ public class SwitchKeyboardCommandFactory : CommandFactoryBase
     public override ICommand CreateCommand(CommandObject commandObject)
     {
         var pageFrom = int.Parse(commandObject.CommandText.Split(':')[1]);
+        //В команду лучше добавить список всех единиц (паков или стикеров),
+        //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
         return new SwitchKeyboardCommand(pageFrom, commandObject.CommandText, 10);
     }
 }

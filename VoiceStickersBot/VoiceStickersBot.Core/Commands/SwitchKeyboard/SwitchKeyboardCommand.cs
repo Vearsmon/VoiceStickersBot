@@ -5,9 +5,11 @@ public class SwitchKeyboardCommand : ICommand
     public PageChangeType PageChangeType { get; }
     public int? PageFrom { get; }
     public int StickersOnPage { get; }
+    public string KeyboardCapture { get; }
     public Type CommandType => typeof(SwitchKeyboardCommand);
     
-    public SwitchKeyboardCommand(int? pageFrom, string commandText, int stickersOnPage)
+    
+    public SwitchKeyboardCommand(int? pageFrom, string commandText, int stickersOnPage, string keyboardCapture="")
     {
         var pageDirection = commandText.Split(':').First();
         
@@ -18,5 +20,6 @@ public class SwitchKeyboardCommand : ICommand
 
         PageFrom = pageFrom;
         StickersOnPage = stickersOnPage;
+        KeyboardCapture = keyboardCapture;
     }
 }

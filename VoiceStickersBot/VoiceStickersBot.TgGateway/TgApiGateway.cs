@@ -5,6 +5,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Client;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.CommandsFactory;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
@@ -37,10 +38,21 @@ public class TgApiGateway
     private Client client = new Client();
 
     private TgApiCommandService commandService =
-        new (new List<ICommandFactory>() { new SwitchKeyboardCommandFactory(), new ShowAllCommandFactory() });
+        new (new List<ICommandFactory>() 
+            { 
+                new SwitchKeyboardCommandFactory(),
+                new ShowAllCommandFactory(), 
+                new AddStickerCommandFactory() 
+            }
+        );
 
-    private TgApiCommandResultCallbackHandlerService resultCallbackHandlerService = new(
-        new List<ICommandResultHandler>() { new SwitchKeyboardResultHandler(), new ShowAllResultHandler() }
+    private TgApiCommandResultCallbackHandlerService resultCallbackHandlerService = 
+        new(new List<ICommandResultHandler>()
+            {
+                new SwitchKeyboardResultHandler(), 
+                new ShowAllResultHandler(),
+                new AddStickerResultHandler()
+            }
         );
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,

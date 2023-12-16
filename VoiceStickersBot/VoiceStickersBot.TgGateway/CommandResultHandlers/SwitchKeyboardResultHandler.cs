@@ -22,7 +22,7 @@ public class SwitchKeyboardResultHandler : CommandResultHandlerBase<SwitchKeyboa
     {
         await bot.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "Вот все ваши стикеры:",
+            text: commandResult.KeyboardCapture,
             replyMarkup: GetMarkup(commandResult)
         );
     }
