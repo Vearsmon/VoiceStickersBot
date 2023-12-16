@@ -1,5 +1,6 @@
 ﻿using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.ShowAll;
+using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
@@ -16,6 +17,9 @@ public class ShowAllHandler : ICommandHandler
     
     public ICommandResult Handle()
     {
-        return new ShowAllResult();
+        var switchCommand = new SwitchKeyboardCommand(0, "pageright:1", 10);
+        var switchHandler = new SwitchKeyboardHandler(switchCommand);
+        
+        return switchHandler.Handle();
     }
 }

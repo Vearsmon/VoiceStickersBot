@@ -37,10 +37,10 @@ public class TgApiGateway
     private Client client = new Client();
 
     private TgApiCommandService commandService =
-        new (new List<ICommandFactory>() { new SwitchKeyboardCommandFactory() });
+        new (new List<ICommandFactory>() { new SwitchKeyboardCommandFactory(), new ShowAllCommandFactory() });
 
     private TgApiCommandResultCallbackHandlerService resultCallbackHandlerService = new(
-        new List<ICommandResultHandler>() { new SwitchKeyboardResultHandler() }
+        new List<ICommandResultHandler>() { new SwitchKeyboardResultHandler(), new ShowAllResultHandler() }
         );
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
@@ -58,7 +58,9 @@ public class TgApiGateway
         {
             var message = update.Message;
             var command =
-                commandService.CreateInlineCommand(new CommandObject(message.Text, new RequestContex(message.Chat.Id)));
+                commandService.CreateTextCommand(new CommandObject(message!.Text, new RequestContex(message.Chat.Id)));
+            //стоит принимать только текстовые меседжы
+            
             var commandResult = client.Handle(command);
             await resultCallbackHandlerService.HandleWithMessage(botClient, commandResult, message);
         }

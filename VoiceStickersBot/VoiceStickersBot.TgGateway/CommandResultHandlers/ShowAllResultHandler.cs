@@ -2,19 +2,23 @@
 using Telegram.Bot.Types;
 using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.ShowAll;
+using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
-public class ShowAllResultHandler : ICommandResultHandler
+public class ShowAllResultHandler : CommandResultHandlerBase<ShowAllResult>
 {
-    public Type ResultType => typeof(ShowAllResult);
-    public Task HandleWithCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
+    public override Type ResultType => typeof(ShowAllResult);
+    public override Task HandleWithCallback(ITelegramBotClient bot, ShowAllResult commandResult, CallbackQuery callbackQuery)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
-    public Task HandleWithMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
+    public override async Task HandleWithMessage(ITelegramBotClient bot, ShowAllResult commandResult, Message message)
     {
-        throw new NotImplementedException();
+        var a = (ICommandResult)commandResult;
+        var b = (SwitchKeyboardResult)a;
+        var handler = new SwitchKeyboardResultHandler();
+        await handler.HandleWithMessage(bot, b, message);
     }
 }
