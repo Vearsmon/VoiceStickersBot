@@ -11,6 +11,6 @@ public class SwitchKeyboardCommandFactory : CommandFactoryBase
         var pageFrom = int.Parse(commandObject.CommandText.Split(':')[1]);
         //В команду лучше добавить список всех единиц (паков или стикеров),
         //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
-        return new SwitchKeyboardCommand(pageFrom, commandObject.CommandText, 10);
+        return new SwitchKeyboardCommand(commandObject.RequestContext.UserBotState, pageFrom, commandObject.CommandText, 10);
     }
 }

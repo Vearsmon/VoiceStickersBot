@@ -3,11 +3,11 @@
 public class CommandObject
 {
     public string CommandText { get; }
-    public RequestContex RequestContex { get; }
+    public RequestContext RequestContext { get; }
 
-    public CommandObject(string commandText, RequestContex requestContex)
+    public CommandObject(string commandText, RequestContext requestContext)
     {
         CommandText = commandText;
-        RequestContex = requestContex;
+        RequestContext = requestContext;
     }
 }

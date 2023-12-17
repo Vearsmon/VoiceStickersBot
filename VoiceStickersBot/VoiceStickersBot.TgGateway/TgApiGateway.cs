@@ -5,19 +5,17 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Client;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.CommandsFactory;
-using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 namespace VoiceStickersBot.TgGateway;
 
 public class TgApiGateway
 {
-    private Dictionary<long, bool> userWait = new ();
+    private Dictionary<long, UserBotState> userStates = new ();
     
-    private ReplyKeyboardMarkup mainKeyboard = new ReplyKeyboardMarkup(new[]
+    private ReplyKeyboardMarkup commandsKeyboard = new ReplyKeyboardMarkup(new[]
     {
         new[] // first row
         {
@@ -46,7 +44,7 @@ public class TgApiGateway
             }
         );
 
-    private TgApiCommandResultCallbackHandlerService resultCallbackHandlerService = 
+    private TgApiCommandResultCallbackHandlerService resultHandlerService = 
         new(new List<ICommandResultHandler>()
             {
                 new SwitchKeyboardResultHandler(), 
@@ -62,20 +60,30 @@ public class TgApiGateway
         {
             var callbackData = update.CallbackQuery!.Data!;
             var callbackMsg = update.CallbackQuery!.Message!;
-            var command = commandService.CreateInlineCommand(new CommandObject(callbackData, new RequestContex(callbackMsg.Chat.Id)));
+            var chatId = callbackMsg.Chat.Id;
+            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
+            Console.WriteLine(currentState);
+            var context = new RequestContext(chatId, currentState);
+            var command = commandService.CreateInlineCommand(new CommandObject(callbackData, context));
             var commandResult = client.Handle(command);
-            await resultCallbackHandlerService.HandleWithCallback(botClient, commandResult, update.CallbackQuery);
+            userStates[chatId] = 
+                await resultHandlerService.HandleFromCallback(botClient, commandResult, update.CallbackQuery);
+            Console.WriteLine(userStates[chatId]);
         }
-        else if (update.Type == UpdateType.Message)
+        else if (update.Type == UpdateType.Message && update.Message.Text is not null)
         {
             var message = update.Message;
-            var command =
-                commandService.CreateTextCommand(new CommandObject(message!.Text, new RequestContex(message.Chat.Id)));
-            //стоит принимать только текстовые меседжы
-            
+            var chatId = message!.Chat.Id;
+            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
+            Console.WriteLine(currentState);
+            var context = new RequestContext(chatId, currentState);
+            var command = commandService.CreateTextCommand(new CommandObject(message.Text, context));
             var commandResult = client.Handle(command);
-            await resultCallbackHandlerService.HandleWithMessage(botClient, commandResult, message);
+            userStates[chatId] =
+                await resultHandlerService.HandleFromMessage(botClient, commandResult, message);
+            Console.WriteLine(userStates[chatId]);
         }
+        
         //Кароче щас не очень хорошо работает только кнопки переключение страниц работают на старых отправленных
         //сообщениях. Надо замутить вложенные команды както, видимо послезавтра займусь. И уже можно начинать
         //реализовывать логику всех кнопочек по аналогии с готовым.

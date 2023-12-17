@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
@@ -8,24 +9,24 @@ public abstract class CommandResultHandlerBase<TCommandResult> : ICommandResultH
     where TCommandResult : class, ICommandResult
 {
     public abstract Type ResultType { get; }
-    public Task HandleWithMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
+    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
     {
         if (commandResult is not TCommandResult typedCommand)
             throw new InvalidOperationException(
                 $"Invalid command type [{commandResult.GetType()}] for [{ResultType}] command handler");
 
-        return HandleWithMessage(bot, typedCommand, message);
+        return HandleFromMessage(bot, typedCommand, message);
     }
 
-    public Task HandleWithCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
+    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
     {
         if (commandResult is not TCommandResult typedCommand)
             throw new InvalidOperationException(
                 $"Invalid command type [{commandResult.GetType()}] for [{ResultType}] command handler");
 
-        return HandleWithCallback(bot, typedCommand, callback);
+        return HandleFromCallback(bot, typedCommand, callback);
     }
 
-    public abstract Task HandleWithCallback(ITelegramBotClient bot, TCommandResult commandResult, CallbackQuery callbackQuery);
-    public abstract Task HandleWithMessage(ITelegramBotClient bot, TCommandResult commandResult, Message message);
+    public abstract Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, TCommandResult commandResult, CallbackQuery callbackQuery);
+    public abstract Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, TCommandResult commandResult, Message message);
 }

@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
@@ -15,15 +16,15 @@ public class TgApiCommandResultCallbackHandlerService
             value => value);
     }
 
-    public async Task HandleWithCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
+    public async Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
     {
         var resultHandler = commandResultHandlers[commandResult.GetType()];
-        await resultHandler.HandleWithCallback(bot, commandResult, callback);
+        return await resultHandler.HandleFromCallback(bot, commandResult, callback);
     }
     
-    public async Task HandleWithMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
+    public async Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
     {
         var resultHandler = commandResultHandlers[commandResult.GetType()]; 
-        await resultHandler.HandleWithMessage(bot, commandResult, message);
+        return await resultHandler.HandleFromMessage(bot, commandResult, message);
     }
 }

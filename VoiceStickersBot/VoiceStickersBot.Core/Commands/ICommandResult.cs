@@ -2,4 +2,5 @@
 
 public interface ICommandResult
 {
+    public UserBotState UserBotStateFrom { get; }
 }

@@ -2,6 +2,10 @@
 
 public class HandleCommandResult : IHandleCommandResult
 {
+    public ICommandResult Result { get; set; }
+    public bool EnsureSuccess { get; set; }
+    public Exception Error { get; set; }
+    
     public HandleCommandResult(ICommandResult result, Exception? error)
     {
         if (error is null)
@@ -9,9 +13,4 @@ public class HandleCommandResult : IHandleCommandResult
         Result = result;
         Error = error;
     }
-    
-    public ICommandResult Result { get; set; }
-    public bool EnsureSuccess { get; set; }
-    public Exception Error { get; set; }
-    
 }

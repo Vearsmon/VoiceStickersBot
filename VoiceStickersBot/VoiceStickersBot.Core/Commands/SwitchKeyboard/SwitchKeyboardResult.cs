@@ -6,12 +6,12 @@ public class SwitchKeyboardResult : ICommandResult
 {
     public string KeyboardCapture { get; }
     public InlineKeyboardDto InlineKeyboardDto { get; }
-    public bool EnsureSuccess { get; set; }
-    
-    public SwitchKeyboardResult(InlineKeyboardDto inlineKeyboardDto, string keyboardCapture="")
+    public UserBotState UserBotStateFrom { get; }
+
+    public SwitchKeyboardResult(InlineKeyboardDto inlineKeyboardDto, UserBotState userBotState, string keyboardCapture = "")
     {
         InlineKeyboardDto = inlineKeyboardDto;
+        UserBotStateFrom = userBotState;
         KeyboardCapture = keyboardCapture;
-        EnsureSuccess = true;
     }
 }

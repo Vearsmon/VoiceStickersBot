@@ -18,7 +18,7 @@ public class AddStickerCommandHandler : ICommandHandler
     {
         //В команду лучше добавить список всех единиц (паков или стикеров),
         //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
-        var switchCommand = new SwitchKeyboardCommand(0, "pageright:1",
+        var switchCommand = new SwitchKeyboardCommand(command.UserBotState,0, "pageright:1",
             10, "Выберите набор, в который хотите добавить стикер:");
         var switchHandler = new SwitchKeyboardHandler(switchCommand);
         

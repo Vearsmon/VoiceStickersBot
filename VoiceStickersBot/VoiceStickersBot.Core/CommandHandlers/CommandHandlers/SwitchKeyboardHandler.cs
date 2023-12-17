@@ -54,7 +54,7 @@ public class SwitchKeyboardHandler : ICommandHandler
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", $"pageright:{pageTo}"));
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
-
-        return new SwitchKeyboardResult(keyboard, command.KeyboardCapture);
+        
+        return new SwitchKeyboardResult(keyboard, command.UserBotState, command.KeyboardCapture);
     }
 }
