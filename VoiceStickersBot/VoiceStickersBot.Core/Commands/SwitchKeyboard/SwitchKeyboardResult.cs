@@ -2,14 +2,16 @@
 
 namespace VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
-public class SwitchKeyboardResult : IHandleCommandResult
+public class SwitchKeyboardResult : ICommandResult
 {
-    public SwitchKeyboardResult(InlineKeyboardDto inlineKeyboardDto)
+    public string KeyboardCapture { get; }
+    public InlineKeyboardDto InlineKeyboardDto { get; }
+    public UserBotState UserBotStateFrom { get; }
+
+    public SwitchKeyboardResult(InlineKeyboardDto inlineKeyboardDto, UserBotState userBotState, string keyboardCapture = "")
     {
         InlineKeyboardDto = inlineKeyboardDto;
-        EnsureSuccess = true;
+        UserBotStateFrom = userBotState;
+        KeyboardCapture = keyboardCapture;
     }
-
-    public InlineKeyboardDto InlineKeyboardDto { get; }
-    public bool EnsureSuccess { get; set; }
 }

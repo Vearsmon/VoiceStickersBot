@@ -13,7 +13,7 @@ using CancellationTokenSource cts = new();
 // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
 ReceiverOptions receiverOptions = new()
 {
-    AllowedUpdates = Array.Empty<UpdateType>() // receive all update types except ChatMember related updates
+    AllowedUpdates = Array.Empty<UpdateType>()
 };
 
 var handler = new TgApiGateway();

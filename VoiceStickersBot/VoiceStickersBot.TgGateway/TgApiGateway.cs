@@ -5,15 +5,17 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Client;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
-using VoiceStickersBot.Core.Commands.SwitchKeyboard;
+using VoiceStickersBot.Core.Commands;
+using VoiceStickersBot.Core.Commands.CommandsFactory;
+using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 namespace VoiceStickersBot.TgGateway;
 
 public class TgApiGateway
 {
-    private ReplyKeyboardMarkup mainKeyboard = new ReplyKeyboardMarkup(new[]
+    private Dictionary<long, UserBotState> userStates = new ();
+    
+    private ReplyKeyboardMarkup commandsKeyboard = new ReplyKeyboardMarkup(new[]
     {
         new[] // first row
         {
@@ -32,47 +34,78 @@ public class TgApiGateway
     }) { ResizeKeyboard = true };
 
     private Client client = new Client();
+
+    private TgApiCommandService commandService =
+        new (new List<ICommandFactory>() 
+            { 
+                new SwitchKeyboardCommandFactory(),
+                new ShowAllCommandFactory(), 
+                new AddStickerCommandFactory() 
+            }
+        );
+
+    private TgApiCommandResultCallbackHandlerService resultHandlerService = 
+        new(new List<ICommandResultHandler>()
+            {
+                new SwitchKeyboardResultHandler(), 
+                new ShowAllResultHandler(),
+                new AddStickerResultHandler()
+            }
+        );
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
         if (update.Type == UpdateType.CallbackQuery)
         {
-            await HandleCallbackQuery(botClient, update.CallbackQuery!);
+            var callbackData = update.CallbackQuery!.Data!;
+            var callbackMsg = update.CallbackQuery!.Message!;
+            var chatId = callbackMsg.Chat.Id;
+            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
+            Console.WriteLine($"was {chatId}:{currentState}");
+            var context = new RequestContext(callbackData, chatId, currentState);
+            var command = commandService.CreateInlineCommand(context);
+            var commandResult = client.Handle(command);
+            userStates[chatId] = 
+                await resultHandlerService.HandleFromCallback(botClient, commandResult, update.CallbackQuery);
+            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
         }
-
-        if (update.Message is not { } message)
-            return;
-
-        if (message.Text is not { } messageText)
-            return;
-
-        switch (messageText.Split('@').First())
+        else if (update.Type == UpdateType.Message && update.Message.Text is not null)
         {
-            case "/show_all":
-            case "Показать все":
-                await HandleWatchAllCommand(botClient, message.Chat.Id, cancellationToken);
-                break;
-            case "/add_sticker":
-            case "Добавить стикер":
-                break;
-            case "/create_pack":
-            case "Создать пак":
-                break;
-            case "/delete_sticker":
-            case "Удалить стикер":
-                break;
-            case "/delete_pack":
-            case "Удалить пак":
-                break;
-            default:
-                await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Неизвестная команда броу, попробуй чето другое",
-                    replyMarkup: mainKeyboard,
-                    cancellationToken: cancellationToken);
-                break;
+            var message = update.Message;
+            var chatId = message!.Chat.Id;
+            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
+            Console.WriteLine($"was {chatId}:{currentState}");
+            var context = new RequestContext(message.Text, chatId, currentState);
+            var command = commandService.CreateTextCommand(context);
+            var commandResult = client.Handle(command);
+            userStates[chatId] =
+                await resultHandlerService.HandleFromMessage(botClient, commandResult, message);
+            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
         }
+        
+        //Кароче щас не очень хорошо работает только кнопки переключение страниц работают на старых отправленных
+        //сообщениях. Надо замутить вложенные команды както, видимо послезавтра займусь. И уже можно начинать
+        //реализовывать логику всех кнопочек по аналогии с готовым.
+
+        /*if (userWait.TryGetValue(message.Chat.Id, out var isWaiting) && isWaiting)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "Получил месагу без напрягу",
+                replyMarkup: mainKeyboard,
+                cancellationToken: cancellationToken);
+            userWait[message.Chat.Id] = false;
+        }
+        else
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "Начинаю ждать",
+                replyMarkup: mainKeyboard,
+                cancellationToken: cancellationToken);
+            userWait[message.Chat.Id] = true;
+        }*/
     }
 
     public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,
@@ -87,54 +120,5 @@ public class TgApiGateway
 
         Console.WriteLine(ErrorMessage);
         return Task.CompletedTask;
-    }
-
-    private async Task HandleWatchAllCommand(ITelegramBotClient bot, long chatId, CancellationToken ct)
-    {
-        var command = new SwitchKeyboardCommand(0, 10, "pageright:1");
-        var res = client.Handle<SwitchKeyboardResult>(command);
-        
-        var currentPageKeyboard = new List<InlineKeyboardButton[]>();
-        foreach (var button in res.InlineKeyboardDto.Buttons)
-            currentPageKeyboard.Add(new[]
-                { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
-        var lastRow = new List<InlineKeyboardButton>();
-        foreach (var lastButton in res.InlineKeyboardDto.LastButtons)
-            lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
-        currentPageKeyboard.Add(lastRow.ToArray());
-        var markup = new InlineKeyboardMarkup(currentPageKeyboard.ToArray());
-        
-        var sentMessage = await bot.SendTextMessageAsync(
-            chatId: chatId,
-            text: "Вот все ваши стикеры:",
-            replyMarkup: markup,
-            cancellationToken: ct
-        );
-    }
-
-    private async Task HandleCallbackQuery(ITelegramBotClient bot, CallbackQuery callback)
-    {
-        var splitted = callback.Data!.Split(':');
-        if (splitted.Length == 1) return;
-        
-        var command = new SwitchKeyboardCommand(int.Parse(splitted[1]), 10, splitted[0]);
-        var res = client.Handle<SwitchKeyboardResult>(command);
-        
-        var keyboard = new List<InlineKeyboardButton[]>();
-        foreach (var button in res.InlineKeyboardDto.Buttons)
-            keyboard.Add(new[] { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
-        var lastRow = new List<InlineKeyboardButton>();
-        foreach (var lastButton in res.InlineKeyboardDto.LastButtons)
-            lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
-        keyboard.Add(lastRow.ToArray());
-        var markup = new InlineKeyboardMarkup(keyboard.ToArray());
-
-        
-
-        await bot.EditMessageReplyMarkupAsync(
-            chatId: callback.From.Id,
-            messageId: callback.Message!.MessageId,
-            replyMarkup: markup
-        );
     }
 }

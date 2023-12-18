@@ -14,9 +14,9 @@ public class TgApiCommandHandlerService
             value => value);
     }
 
-    public ICommandResult Handle(ICommand command)
+    public IHandleCommandResult Handle(ICommand command)
     {
-        IHandleCommandResult result = null;
+        ICommandResult result = null;
         Exception error = null;
         try
         {
@@ -29,6 +29,6 @@ public class TgApiCommandHandlerService
             Console.WriteLine("oh boy :(");
         }
 
-        return new CommandResult(result, error);
+        return new HandleCommandResult(result, error);
     }
 }
