@@ -9,7 +9,7 @@ public class FileLog : ILog
         this.writer = writer;
     }
 
-    public void WriteToLog(string record)
+    public void WriteLine(string record)
     {
         writer.WriteLine(record);
     }

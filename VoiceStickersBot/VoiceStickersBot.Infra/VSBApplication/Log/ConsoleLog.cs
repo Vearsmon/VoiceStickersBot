@@ -2,7 +2,7 @@
 
 public class ConsoleLog : ILog
 {
-    public void WriteToLog(string record)
+    public void WriteLine(string record)
     {
         Console.WriteLine(record);
     }

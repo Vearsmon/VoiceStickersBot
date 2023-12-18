@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VoiceStickersBot.Core.Contracts;
+﻿using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
 namespace VoiceStickersBot.Core.Repositories.ChatsRepository;
@@ -25,22 +24,8 @@ public class ChatsRepository : IChatsRepository
             .ConfigureAwait(false);
     }
 
-    public async Task<List<StickerPack>> GetStickerPacksAvailable(
-        string id,
-        bool includeStickers = false)
+    public Task<List<StickerPack>> GetStickerPacksAvailable(string id, bool includeStickers)
     {
-        using var table = vsbDatabaseCluster.GetTable<ChatEntity>();
-        var chats = await table.PerformReadonlyRequestAsync(
-                r => r
-                    .Where(user => user.Id == id)
-                    .Include(user => user.StickerPacks)!
-                    .IncludeStickers(includeStickers),
-                new CancellationToken())
-            .ConfigureAwait(false);
-
-        return chats.Single()
-            .StickerPacks?
-            .Select(stickerPack => stickerPack.ToStickerPack())
-            .ToList() ?? new List<StickerPack>();
+        throw new NotImplementedException();
     }
 }

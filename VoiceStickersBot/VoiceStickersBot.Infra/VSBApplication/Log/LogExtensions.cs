@@ -82,9 +82,9 @@ public static partial class LogExtensions
         ValidateArgumentsCount(messageTemplate, arguments.Length);
 
         var logRecord = ArgumentsRegex().Replace(messageTemplate, match => Replace(match, arguments));
-        log.WriteToLog($"{level} {DateTime.Now}: {logRecord}");
+        log.WriteLine($"{level} {DateTime.Now}: {logRecord}");
 
-        if (exception != null) log.WriteToLog(exception.ToString());
+        if (exception != null) log.WriteLine(exception.ToString());
     }
 
     private static string Replace(Match match, object[] arguments)
