@@ -3,10 +3,10 @@
 public class EnterCommand : ICommand
 {
     public Type CommandType => typeof(EnterCommand);
-    public UserBotState UserBotState { get; }
+    public RequestContext RequestContext { get; }
     
-    public EnterCommand(UserBotState userBotState)
+    public EnterCommand(RequestContext requestContext)
     {
-        UserBotState = userBotState;
+        RequestContext = requestContext;
     }
 }

@@ -3,11 +3,11 @@
 public class ShowAllCommand : ICommand
 {
     public Type CommandType => typeof(ShowAllCommand);
-    public UserBotState UserBotState { get; }
-    
-    public ShowAllCommand(UserBotState userBotState)
+    public RequestContext RequestContext { get; }
+
+    public ShowAllCommand(RequestContext requestContext)
     {
-        UserBotState = userBotState;
+        RequestContext = requestContext;
     }
 
 }

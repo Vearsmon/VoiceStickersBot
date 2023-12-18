@@ -2,9 +2,9 @@
 
 public class EnterCommandFactory : CommandFactoryBase
 {
-    public override IReadOnlyList<string> CommandPrefixes { get; }
-    public override ICommand CreateCommand(CommandObject commandObject)
+    public override IReadOnlyList<string> CommandPrefixes { get; } = new[] { "pack_id" };
+    public override ICommand CreateCommand(RequestContext requestContext)
     {
-        return new EnterCommand.EnterCommand(commandObject.RequestContext.UserBotState);
+        return new EnterCommand.EnterCommand(requestContext);
     }
 }

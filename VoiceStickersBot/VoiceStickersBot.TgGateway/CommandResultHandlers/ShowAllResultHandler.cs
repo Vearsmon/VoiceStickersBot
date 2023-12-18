@@ -17,8 +17,7 @@ public class ShowAllResultHandler : CommandResultHandlerBase<ShowAllResult>
 
     public override async Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ShowAllResult commandResult, Message message)
     {
-        var abstractCommandResult = (ICommandResult)commandResult;
-        var switchKeyboardResult = (SwitchKeyboardResult)abstractCommandResult;
+        var switchKeyboardResult = commandResult.SwitchKeyboardResult;
         
         var handler = new SwitchKeyboardResultHandler();
         await handler.HandleFromMessage(bot, switchKeyboardResult, message);

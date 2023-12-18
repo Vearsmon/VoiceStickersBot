@@ -19,10 +19,10 @@ public class ShowAllHandler : ICommandHandler
     {
         //В команду лучше добавить список всех единиц (паков или стикеров),
         //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
-        var switchCommand = new SwitchKeyboardCommand(command.UserBotState, 0, "pageright:1",
+        var switchCommand = new SwitchKeyboardCommand(command.RequestContext, 0, "pageright:1",
             10, "Вот все ваши стикеры:");
         var switchHandler = new SwitchKeyboardHandler(switchCommand);
         
-        return switchHandler.Handle();
+        return new ShowAllResult(command.RequestContext.UserBotState, (SwitchKeyboardResult)switchHandler.Handle());
     }
 }

@@ -3,10 +3,10 @@
 public class AddStickerCommand : ICommand
 {
     public Type CommandType => typeof(AddStickerCommand);
-    public UserBotState UserBotState { get; }
+    public RequestContext RequestContext { get; }
     
-    public AddStickerCommand(UserBotState userBotState)
+    public AddStickerCommand(RequestContext requestContext)
     {
-        UserBotState = userBotState;
+        RequestContext = requestContext;
     }
 }

@@ -3,5 +3,5 @@
 public interface ICommandFactory
 {
     public IReadOnlyList<string> CommandPrefixes { get; }
-    public ICommand CreateCommand(CommandObject commandObject);
+    public ICommand CreateCommand(RequestContext requestContext);
 }

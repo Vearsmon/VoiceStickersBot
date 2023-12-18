@@ -3,5 +3,5 @@
 public interface ICommand
 {
     public Type CommandType { get; }
-    public UserBotState UserBotState { get; }
+    public RequestContext RequestContext { get; }
 }

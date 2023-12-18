@@ -62,26 +62,26 @@ public class TgApiGateway
             var callbackMsg = update.CallbackQuery!.Message!;
             var chatId = callbackMsg.Chat.Id;
             var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
-            Console.WriteLine(currentState);
-            var context = new RequestContext(chatId, currentState);
-            var command = commandService.CreateInlineCommand(new CommandObject(callbackData, context));
+            Console.WriteLine($"was {chatId}:{currentState}");
+            var context = new RequestContext(callbackData, chatId, currentState);
+            var command = commandService.CreateInlineCommand(context);
             var commandResult = client.Handle(command);
             userStates[chatId] = 
                 await resultHandlerService.HandleFromCallback(botClient, commandResult, update.CallbackQuery);
-            Console.WriteLine(userStates[chatId]);
+            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
         }
         else if (update.Type == UpdateType.Message && update.Message.Text is not null)
         {
             var message = update.Message;
             var chatId = message!.Chat.Id;
             var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
-            Console.WriteLine(currentState);
-            var context = new RequestContext(chatId, currentState);
-            var command = commandService.CreateTextCommand(new CommandObject(message.Text, context));
+            Console.WriteLine($"was {chatId}:{currentState}");
+            var context = new RequestContext(message.Text, chatId, currentState);
+            var command = commandService.CreateTextCommand(context);
             var commandResult = client.Handle(command);
             userStates[chatId] =
                 await resultHandlerService.HandleFromMessage(botClient, commandResult, message);
-            Console.WriteLine(userStates[chatId]);
+            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
         }
         
         //Кароче щас не очень хорошо работает только кнопки переключение страниц работают на старых отправленных

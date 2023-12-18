@@ -15,12 +15,12 @@ public class TgApiCommandService
             .ToDictionary(t => t.p, t => t.f);
     }
     
-    public ICommand CreateTextCommand(CommandObject commandObject)
+    public ICommand CreateTextCommand(RequestContext requestContext)
     {
         ICommand command = null;
         try
         {
-            command = commandFactories[commandObject.CommandText.Split('@').First()].CreateCommand(commandObject);
+            command = commandFactories[requestContext.CommandText.Split('@').First()].CreateCommand(requestContext);
         }
         catch(Exception ex)
         {
@@ -29,12 +29,12 @@ public class TgApiCommandService
         return command;
     }
 
-    public ICommand CreateInlineCommand(CommandObject commandObject)
+    public ICommand CreateInlineCommand(RequestContext requestContext)
     {
         ICommand command = null;
         try
         {
-            command = commandFactories[commandObject.CommandText.Split(':').First()].CreateCommand(commandObject);
+            command = commandFactories[requestContext.CommandText.Split(':').First()].CreateCommand(requestContext);
         }
         catch (Exception ex)
         {

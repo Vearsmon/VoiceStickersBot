@@ -55,6 +55,6 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
         
-        return new SwitchKeyboardResult(keyboard, command.UserBotState, command.KeyboardCapture);
+        return new SwitchKeyboardResult(keyboard, command.RequestContext.UserBotState, command.KeyboardCapture);
     }
 }

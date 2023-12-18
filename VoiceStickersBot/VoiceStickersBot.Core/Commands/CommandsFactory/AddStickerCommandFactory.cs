@@ -5,8 +5,8 @@ namespace VoiceStickersBot.Core.Commands.CommandsFactory;
 public class AddStickerCommandFactory : CommandFactoryBase
 {
     public override IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Добавить стикер", "/add_sticker" };
-    public override ICommand CreateCommand(CommandObject commandObject)
+    public override ICommand CreateCommand(RequestContext requestContext)
     {
-        return new AddStickerCommand(commandObject.RequestContext.UserBotState);
+        return new AddStickerCommand(requestContext);
     }
 }

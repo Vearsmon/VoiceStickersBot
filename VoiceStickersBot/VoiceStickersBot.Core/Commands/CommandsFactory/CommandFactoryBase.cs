@@ -6,5 +6,5 @@ namespace VoiceStickersBot.Core.Commands.CommandsFactory;
 public abstract class CommandFactoryBase : ICommandFactory
 {
     public abstract IReadOnlyList<string> CommandPrefixes { get; }
-    public abstract ICommand CreateCommand(CommandObject commandObject);
+    public abstract ICommand CreateCommand(RequestContext requestContext);
 }
