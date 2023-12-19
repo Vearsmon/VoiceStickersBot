@@ -1,19 +1,28 @@
 ﻿namespace VoiceStickersBot.Core.CommandArguments;
 
-public class RequestContext<StepNameType>
+public class RequestContext
 {
-    public string CommandText { get; }
+    public string CommandType { get; }
+
+    public string CommandStep { get; }
+
+    public IReadOnlyList<string> CommandArguments { get; }
+
     public long ChatId { get; }
     public int? MenuPage { get; }
-    public UserBotState UserBotState { get; }
-    public StepNameType StepName { get; }
-    
-    public RequestContext(string commandText, long chatId, UserBotState userBotState, StepNameType stepName, int? menuPage = null)
+
+    public RequestContext(
+        string commandType,
+        string commandStep,
+        IReadOnlyList<string> commandArguments,
+        long chatId,
+        int? menuPage = null)
     {
-        CommandText = commandText;
+        CommandType = commandType;
+        CommandStep = commandStep;
+        CommandArguments = commandArguments;
+
         ChatId = chatId;
-        UserBotState = userBotState;
         MenuPage = menuPage;
-        StepName = stepName;
     }
 }

@@ -1,11 +1,12 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
+﻿using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public class TgApiCommandHandlerService
 {
-    private readonly Dictionary<Type, ICommandHandlerFactory> commandHandlersFactories;
+    private readonly Dictionary<CommandType, ICommandHandlerFactory> commandHandlersFactories;
 
     public TgApiCommandHandlerService(List<ICommandHandlerFactory> commandHandlersFactories)
     {
@@ -14,13 +15,14 @@ public class TgApiCommandHandlerService
             value => value);
     }
 
-    public IHandleCommandResult Handle(ICommand command)
+    public IHandleCommandResult Handle(ICommandArguments commandArguments)
     {
         ICommandResult result = null;
         Exception error = null;
         try
         {
-            var commandHandler = commandHandlersFactories[command.GetType()].CreateCommandHandler(command); 
+            var commandHandler = commandHandlersFactories[commandArguments.CommandType]
+                .CreateCommandHandler(commandArguments);
             result = commandHandler.Handle();
         }
         catch (Exception ex)

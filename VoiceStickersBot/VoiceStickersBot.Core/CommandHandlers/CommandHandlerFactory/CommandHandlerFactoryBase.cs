@@ -3,13 +3,12 @@ using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
-public abstract class CommandHandlerFactoryBase<StepNameType, TCommandArguments> : ICommandHandlerFactory<StepNameType>
-    where TCommandArguments : class, ICommandArguments<StepNameType>
-    where StepNameType : Enum
+public abstract class CommandHandlerFactoryBase<TCommandArguments> : ICommandHandlerFactory
+    where TCommandArguments : class, ICommandArguments
 {
     public abstract CommandType CommandType { get; }
 
-    public ICommandHandler CreateCommandHandler(ICommandArguments<StepNameType> commandArguments)
+    public ICommandHandler CreateCommandHandler(ICommandArguments commandArguments)
     {
         if (commandArguments is not TCommandArguments typedCommand)
             throw new InvalidOperationException(

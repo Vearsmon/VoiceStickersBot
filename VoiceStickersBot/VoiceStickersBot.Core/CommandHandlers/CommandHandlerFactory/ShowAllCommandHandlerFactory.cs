@@ -1,23 +1,25 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
-public class ShowAllCommandHandlerFactory<TCommandArguments> : CommandHandlerFactoryBase<ShowAllStepName, TCommandArguments>
-    where TCommandArguments : class, ICommandArguments<ShowAllStepName>
+public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<IShowAllCommandArguments>
 {
     public override CommandType CommandType => CommandType.ShowAll;
-    private Dictionary<ShowAllStepName, Func<ICommandArguments<ShowAllStepName>, ICommandHandler>> stepHandlers = new() 
+
+    private readonly Dictionary<ShowAllStepName, Func<IShowAllCommandArguments, ICommandHandler>> stepHandlerBuilders =
+        new()
+        {
+            { ShowAllStepName.Cancel, commandArguments =>  },
+            { ShowAllStepName.SwitchKeyboardPacks, commandArguments },
+            ShowAllStepName.SwitchKeyboardStickers,
+            ShowAllStepName.SendSticker
+        };
+
+    protected override ICommandHandler CreateCommandHandler(IShowAllCommandArguments commandArguments)
     {
-        { ShowAllStepName.Cancel,  },
-        { ShowAllStepName.SwitchKeyboardPacks,  },
-        { ShowAllStepName.SwitchKeyboardStickers,  },
-        { ShowAllStepName.SendSticker,  }
-    }
-    
-    protected override ICommandHandler CreateCommandHandler(TCommandArguments commandArguments)
-    {
-        return new ShowAllHandler(commandArguments.);
+        return stepHandlerBuilders[commandArguments.StepName](commandArguments);
     }
 }

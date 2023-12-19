@@ -3,10 +3,9 @@ using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
-public interface ICommandHandlerFactory<StepNameType>
-    where StepNameType : Enum
+public interface ICommandHandlerFactory
 {
     CommandType CommandType { get; }
 
-    public ICommandHandler CreateCommandHandler(ICommandArguments<StepNameType> command);
+    public ICommandHandler CreateCommandHandler(ICommandArguments command);
 }

@@ -2,13 +2,16 @@ using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
-public class ShowAllSwitchKeyboardStickersCommandArguments : ICommandArguments<ShowAllStepName>
+public class ShowAllSwitchKeyboardStickersCommandArguments : IShowAllCommandArguments
 {
     public CommandType CommandType => CommandType.ShowAll;
-    public RequestContext<ShowAllStepName> RequestContext { get; }
 
-    public ShowAllSwitchKeyboardStickersCommandArguments(RequestContext<ShowAllStepName> requestContext)
+    public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardStickers;
+
+    private readonly Guid stickerPackId;
+
+    public ShowAllSwitchKeyboardStickersCommandArguments(Guid stickerPackId)
     {
-        RequestContext = requestContext;
+        this.stickerPackId = stickerPackId;
     }
 }
