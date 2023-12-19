@@ -1,8 +1,0 @@
-namespace VoiceStickersBot.Core.CommandArguments;
-
-public interface ICommandArguments
-{
-    public CommandType CommandType { get; }
-    public int State { get; }
-    public long ChatId { get; }
-}

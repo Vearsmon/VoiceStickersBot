@@ -1,7 +1,0 @@
-namespace VoiceStickersBot.Core.CommandArguments;
-
-enum CommandType
-{
-    SwitchKeyboardCommand,
-    
-}
