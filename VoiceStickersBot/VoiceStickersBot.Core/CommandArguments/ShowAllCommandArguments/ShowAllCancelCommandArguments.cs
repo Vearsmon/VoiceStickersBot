@@ -4,10 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
 public class ShowAllCancelCommandArguments : ICommandArguments<ShowAllStepName>
 {
-    public CommandType CommandType => CommandType.ShowAllCommand;
-
-    public ShowAllStepName StepName => ShowAllStepName.Cancel;
-
+    public CommandType CommandType => CommandType.ShowAll;
     public RequestContext<ShowAllStepName> RequestContext { get; }
 
     public ShowAllCancelCommandArguments(RequestContext<ShowAllStepName> requestContext)

@@ -4,10 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
 public class ShowAllSwitchKeyboardStickersCommandArguments : ICommandArguments<ShowAllStepName>
 {
-    public CommandType CommandType => CommandType.ShowAllCommand;
-
-    public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardStickers;
-
+    public CommandType CommandType => CommandType.ShowAll;
     public RequestContext<ShowAllStepName> RequestContext { get; }
 
     public ShowAllSwitchKeyboardStickersCommandArguments(RequestContext<ShowAllStepName> requestContext)

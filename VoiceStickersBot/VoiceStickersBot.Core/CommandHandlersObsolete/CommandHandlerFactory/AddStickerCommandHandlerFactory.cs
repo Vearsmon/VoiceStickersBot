@@ -1,7 +1,7 @@
 ﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.AddSticker;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
+namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
 
 public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<AddStickerCommand>
 {

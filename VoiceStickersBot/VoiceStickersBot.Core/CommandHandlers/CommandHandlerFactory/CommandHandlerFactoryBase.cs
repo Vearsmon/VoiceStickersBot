@@ -1,21 +1,22 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
-using VoiceStickersBot.Core.Commands;
+﻿using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
-public abstract class CommandHandlerFactoryBase<TCommand> : ICommandHandlerFactory
-    where TCommand : class, ICommand
+public abstract class CommandHandlerFactoryBase<StepNameType, TCommandArguments> : ICommandHandlerFactory<StepNameType>
+    where TCommandArguments : class, ICommandArguments<StepNameType>
+    where StepNameType : Enum
 {
-    public abstract Type CommandType { get; }
+    public abstract CommandType CommandType { get; }
 
-    public ICommandHandler CreateCommandHandler(ICommand command)
+    public ICommandHandler CreateCommandHandler(ICommandArguments<StepNameType> commandArguments)
     {
-        if (command is not TCommand typedCommand)
+        if (commandArguments is not TCommandArguments typedCommand)
             throw new InvalidOperationException(
-                $"Invalid command type [{command.GetType()}] for [{CommandType}] command handler");
+                $"Invalid command arguments type [{commandArguments.GetType()}] for [{CommandType}] command handler");
 
         return CreateCommandHandler(typedCommand);
     }
 
-    protected abstract ICommandHandler CreateCommandHandler(TCommand command);
+    protected abstract ICommandHandler CreateCommandHandler(TCommandArguments commandArguments);
 }

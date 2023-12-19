@@ -1,7 +1,7 @@
 ﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.EnterCommand;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
+namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
 
 public class EnterCommandHandlerFactory : CommandHandlerFactoryBase<EnterCommand>
 {

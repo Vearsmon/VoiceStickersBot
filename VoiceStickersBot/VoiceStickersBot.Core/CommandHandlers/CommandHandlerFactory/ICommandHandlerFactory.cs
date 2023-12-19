@@ -1,11 +1,12 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
-using VoiceStickersBot.Core.Commands;
+﻿using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
-public interface ICommandHandlerFactory
+public interface ICommandHandlerFactory<StepNameType>
+    where StepNameType : Enum
 {
-    Type CommandType { get; }
+    CommandType CommandType { get; }
 
-    public ICommandHandler CreateCommandHandler(ICommand command);
+    public ICommandHandler CreateCommandHandler(ICommandArguments<StepNameType> command);
 }
