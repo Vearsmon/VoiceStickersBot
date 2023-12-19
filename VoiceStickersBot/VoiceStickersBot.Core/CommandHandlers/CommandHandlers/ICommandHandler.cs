@@ -1,10 +1,11 @@
-﻿using VoiceStickersBot.Core.Commands;
+﻿using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public interface ICommandHandler
 {
-    Type CommandType { get; }
+    CommandType CommandType { get; }
 
     ICommandResult Handle();
 }

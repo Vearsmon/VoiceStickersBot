@@ -12,7 +12,7 @@ public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<IShowAllCo
     private readonly Dictionary<ShowAllStepName, Func<IShowAllCommandArguments, ICommandHandler>> stepHandlerBuilders =
         new()
         {
-            { ShowAllStepName.Cancel, commandArguments =>  },
+            { ShowAllStepName.Cancel, commandArguments =>  new ShowAllCancelCommandHandler() },
             { ShowAllStepName.SwitchKeyboardPacks, commandArguments },
             ShowAllStepName.SwitchKeyboardStickers,
             ShowAllStepName.SendSticker
