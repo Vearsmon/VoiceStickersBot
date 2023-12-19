@@ -23,18 +23,18 @@ public class SwitchKeyboardHandler : ICommandHandler
         this.command = command;
     }
 
-    public ICommandResult Handle()
+    public ICommandResultObsolete Handle()
     {
         if (!command.PageFrom.HasValue) 
             throw new ArgumentException($"{nameof(command.PageFrom)} была null, ожидалось число");
 
         var pageFrom = command.PageFrom.Value;
         
-        var pageTo = command.PageChangeType == PageChangeType.Increase ? pageFrom + 1 : pageFrom - 1;
-        var startIndex = command.PageChangeType == PageChangeType.Increase
+        var pageTo = command.PageChangeDirection == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
+        var startIndex = command.PageChangeDirection == PageChangeDirection.Increase
             ? (pageTo - 1) * command.StickersOnPage
             : (pageFrom - 2) * command.StickersOnPage;
-        var endIndex = command.PageChangeType == PageChangeType.Increase
+        var endIndex = command.PageChangeDirection == PageChangeDirection.Increase
             ? command.StickersOnPage * (pageFrom + 1)
             : pageTo * command.StickersOnPage;
 
@@ -55,6 +55,6 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
         
-        return new SwitchKeyboardResult(keyboard, command.RequestContext.UserBotState, command.KeyboardCapture);
+        return new SwitchKeyboardResultObsolete(keyboard, command.RequestContext.UserBotState, command.KeyboardCapture);
     }
 }

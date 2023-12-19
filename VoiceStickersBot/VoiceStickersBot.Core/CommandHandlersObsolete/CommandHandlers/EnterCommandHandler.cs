@@ -14,7 +14,7 @@ public class EnterCommandHandler : ICommandHandler
         this.command = command;
     }
 
-    public ICommandResult Handle()
+    public ICommandResultObsolete Handle()
     {
         var botMessageText = "";
         if (command.RequestContext.CommandText is "/show_all" or "Показать все")
@@ -23,6 +23,6 @@ public class EnterCommandHandler : ICommandHandler
         var switchCommand = new SwitchKeyboardCommand(command.RequestContext, 0,
             "pageright:1", 10, botMessageText);
         var switchHandler = new SwitchKeyboardHandler(switchCommand);
-        return new EnterResult(command.RequestContext.UserBotState, (SwitchKeyboardResult)switchHandler.Handle());
+        return new EnterResultObsolete(command.RequestContext.UserBotState, (SwitchKeyboardResultObsolete)switchHandler.Handle());
     }
 }

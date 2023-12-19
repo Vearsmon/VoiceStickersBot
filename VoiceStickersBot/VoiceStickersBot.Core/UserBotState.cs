@@ -3,7 +3,10 @@
 public enum UserBotState
 {
     WaitCommand,
-    WaitChoosePack,
+    WaitChoosePackToDeleteSticker,
+    WaitChoosePackToDeletePack,
+    WaitChoosePackToShow,
+    WaitChoosePackToAddSticker,
     WaitChooseSticker,
     WaitConfirm,
     WaitSendName,

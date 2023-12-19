@@ -8,6 +8,6 @@ namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 public interface ICommandResultHandler
 {
     public Type ResultType { get; }
-    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback);
-    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message);
+    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, CallbackQuery callback);
+    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, Message message);
 }

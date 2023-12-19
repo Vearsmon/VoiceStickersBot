@@ -14,7 +14,7 @@ public class AddStickerCommandHandler : ICommandHandler
         this.command = command;
     }
     
-    public ICommandResult Handle()
+    public ICommandResultObsolete Handle()
     {
         //В команду лучше добавить список всех единиц (паков или стикеров),
         //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
@@ -22,6 +22,6 @@ public class AddStickerCommandHandler : ICommandHandler
             10, "Выберите набор, в который хотите добавить стикер:");
         var switchHandler = new SwitchKeyboardHandler(switchCommand);
         
-        return new AddStickerResult(command.RequestContext.UserBotState, (SwitchKeyboardResult)switchHandler.Handle());
+        return new AddStickerResultObsolete(command.RequestContext.UserBotState, (SwitchKeyboardResultObsolete)switchHandler.Handle());
     }
 }

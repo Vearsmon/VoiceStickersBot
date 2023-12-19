@@ -7,17 +7,17 @@ using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
-public class AddStickerResultHandler : CommandResultHandlerBase<AddStickerResult>
+public class AddStickerResultHandler : CommandResultHandlerBase<AddStickerResultObsolete>
 {
-    public override Type ResultType => typeof(AddStickerResult);
-    public override Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, AddStickerResult commandResult, CallbackQuery callbackQuery)
+    public override Type ResultType => typeof(AddStickerResultObsolete);
+    public override Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, AddStickerResultObsolete commandResultObsolete, CallbackQuery callbackQuery)
     {
         throw new NotSupportedException();
     }
 
-    public override async Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, AddStickerResult commandResult, Message message)
+    public override async Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, AddStickerResultObsolete commandResultObsolete, Message message)
     {
-        var switchKeyboardResult = commandResult.SwitchKeyboardResult;
+        var switchKeyboardResult = commandResultObsolete.SwitchKeyboardResultObsolete;
         
         var handler = new SwitchKeyboardResultHandler();
         await handler.HandleFromMessage(bot, switchKeyboardResult, message);

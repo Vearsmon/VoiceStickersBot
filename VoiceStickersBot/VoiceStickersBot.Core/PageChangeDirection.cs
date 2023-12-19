@@ -1,6 +1,6 @@
 ﻿namespace VoiceStickersBot.Core;
 
-public enum PageChangeType
+public enum PageChangeDirection
 {
     Increase,
     Decrease

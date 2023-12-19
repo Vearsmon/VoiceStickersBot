@@ -17,13 +17,13 @@ public class TgApiCommandHandlerService
 
     public IHandleCommandResult Handle(ICommandArguments commandArguments)
     {
-        ICommandResult result = null;
+        ICommandResultObsolete resultObsolete = null;
         Exception error = null;
         try
         {
             var commandHandler = commandHandlersFactories[commandArguments.CommandType]
                 .CreateCommandHandler(commandArguments);
-            result = commandHandler.Handle();
+            resultObsolete = commandHandler.Handle();
         }
         catch (Exception ex)
         {
@@ -31,6 +31,6 @@ public class TgApiCommandHandlerService
             Console.WriteLine("oh boy :(");
         }
 
-        return new HandleCommandResult(result, error);
+        return new HandleCommandResult(resultObsolete, error);
     }
 }

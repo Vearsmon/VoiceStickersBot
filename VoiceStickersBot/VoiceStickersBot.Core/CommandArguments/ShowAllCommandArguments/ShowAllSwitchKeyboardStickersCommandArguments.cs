@@ -8,10 +8,20 @@ public class ShowAllSwitchKeyboardStickersCommandArguments : IShowAllCommandArgu
 
     public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardStickers;
 
-    private readonly Guid stickerPackId;
+    public readonly Guid StickerPackId;
+    public int PageFrom { get; }
+    public PageChangeDirection  Direction { get; }
+    public int PacksOnPage { get; }
 
-    public ShowAllSwitchKeyboardStickersCommandArguments(Guid stickerPackId)
+    public ShowAllSwitchKeyboardStickersCommandArguments(
+        Guid stickerPackId, 
+        int pageFrom, 
+        PageChangeDirection direction, 
+        int packsOnPage)
     {
-        this.stickerPackId = stickerPackId;
+        StickerPackId = stickerPackId;
+        PageFrom = pageFrom;
+        Direction = direction;
+        PacksOnPage = packsOnPage;
     }
 }

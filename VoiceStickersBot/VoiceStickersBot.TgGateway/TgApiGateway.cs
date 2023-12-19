@@ -53,7 +53,9 @@ public class TgApiGateway
             }
         );
     
-    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
+    public async Task HandleUpdateAsync(
+        ITelegramBotClient botClient, 
+        Update update,
         CancellationToken cancellationToken)
     {
         if (update.Type == UpdateType.CallbackQuery)
@@ -83,29 +85,6 @@ public class TgApiGateway
                 await resultHandlerService.HandleFromMessage(botClient, commandResult, message);
             Console.WriteLine($"now {chatId}:{userStates[chatId]}");
         }
-        
-        //Кароче щас не очень хорошо работает только кнопки переключение страниц работают на старых отправленных
-        //сообщениях. Надо замутить вложенные команды както, видимо послезавтра займусь. И уже можно начинать
-        //реализовывать логику всех кнопочек по аналогии с готовым.
-
-        /*if (userWait.TryGetValue(message.Chat.Id, out var isWaiting) && isWaiting)
-        {
-            await botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "Получил месагу без напрягу",
-                replyMarkup: mainKeyboard,
-                cancellationToken: cancellationToken);
-            userWait[message.Chat.Id] = false;
-        }
-        else
-        {
-            await botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "Начинаю ждать",
-                replyMarkup: mainKeyboard,
-                cancellationToken: cancellationToken);
-            userWait[message.Chat.Id] = true;
-        }*/
     }
 
     public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,

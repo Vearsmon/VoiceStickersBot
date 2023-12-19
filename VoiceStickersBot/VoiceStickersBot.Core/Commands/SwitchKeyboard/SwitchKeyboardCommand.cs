@@ -2,7 +2,7 @@
 
 public class SwitchKeyboardCommand : ICommand
 {
-    public PageChangeType PageChangeType { get; }
+    public PageChangeDirection PageChangeDirection { get; }
     public int? PageFrom { get; }
     public int StickersOnPage { get; }
     public string KeyboardCapture { get; }
@@ -15,9 +15,9 @@ public class SwitchKeyboardCommand : ICommand
         var pageDirection = commandText.Split(':').First();
         
         if (pageDirection == "pageleft")
-            PageChangeType = PageChangeType.Decrease;
+            PageChangeDirection = PageChangeDirection.Decrease;
         else if (pageDirection == "pageright")
-            PageChangeType = PageChangeType.Increase;
+            PageChangeDirection = PageChangeDirection.Increase;
 
         RequestContext = requestContext;
         PageFrom = pageFrom;

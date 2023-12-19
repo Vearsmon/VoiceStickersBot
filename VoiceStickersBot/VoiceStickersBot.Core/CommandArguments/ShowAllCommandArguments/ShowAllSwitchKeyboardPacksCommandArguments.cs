@@ -7,4 +7,21 @@ public class ShowAllSwitchKeyboardPacksCommandArguments : IShowAllCommandArgumen
     public CommandType CommandType => CommandType.ShowAll;
 
     public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardPacks;
+    
+    public string UserId { get; }
+    public int PageFrom { get; }
+    public PageChangeDirection  Direction { get; }
+    public int PacksOnPage { get; }
+    
+    public ShowAllSwitchKeyboardPacksCommandArguments(
+        string userId, 
+        int pageFrom, 
+        PageChangeDirection direction, 
+        int packsOnPage)
+    {
+        UserId = userId;
+        PageFrom = pageFrom;
+        Direction = direction;
+        PacksOnPage = packsOnPage;
+    }
 }

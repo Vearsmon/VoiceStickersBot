@@ -20,13 +20,13 @@ public class Client
             factoriesList.Add((ICommandHandlerFactory)Activator.CreateInstance(type)!);
     }
 
-    public ICommandResult Handle(ICommand command)
+    public ICommandResultObsolete Handle(ICommand command)
     {
         var mainHandler = new TgApiCommandHandlerService(factoriesList);
 
         var result = mainHandler.Handle(command);
         if (result.EnsureSuccess)
-            return result.Result;
+            return result.ResultObsolete;
         
         throw result.Error; //обработка ошибок
     }

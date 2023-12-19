@@ -6,10 +6,10 @@ using NotSupportedException = System.NotSupportedException;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
-public class EnterResultHandler : CommandResultHandlerBase<EnterResult>
+public class EnterResultHandler : CommandResultHandlerBase<EnterResultObsolete>
 {
-    public override Type ResultType => typeof(EnterResult);
-    public override async Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, EnterResult commandResult, CallbackQuery callbackQuery)
+    public override Type ResultType => typeof(EnterResultObsolete);
+    public override async Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, EnterResultObsolete commandResultObsolete, CallbackQuery callbackQuery)
     {
         
         /*await n
@@ -17,7 +17,7 @@ public class EnterResultHandler : CommandResultHandlerBase<EnterResult>
         throw new NotImplementedException();
     }
 
-    public override Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, EnterResult commandResult, Message message)
+    public override Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, EnterResultObsolete commandResultObsolete, Message message)
     {
         throw new NotSupportedException();
     }

@@ -15,7 +15,7 @@ public class ShowAllHandler : ICommandHandler
         this.command = command;
     }
     
-    public ICommandResult Handle()
+    public ICommandResultObsolete Handle()
     {
         //В команду лучше добавить список всех единиц (паков или стикеров),
         //чтото обобщенное чтобы можно было использовать один метод для паков и стикеров
@@ -23,6 +23,6 @@ public class ShowAllHandler : ICommandHandler
             10, "Вот все ваши стикеры:");
         var switchHandler = new SwitchKeyboardHandler(switchCommand);
         
-        return new ShowAllResult(command.RequestContext.UserBotState, (SwitchKeyboardResult)switchHandler.Handle());
+        return new ShowAllResultObsolete(command.RequestContext.UserBotState, (SwitchKeyboardResultObsolete)switchHandler.Handle());
     }
 }

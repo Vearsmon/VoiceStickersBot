@@ -6,23 +6,23 @@ using VoiceStickersBot.Core.Commands;
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 public abstract class CommandResultHandlerBase<TCommandResult> : ICommandResultHandler
-    where TCommandResult : class, ICommandResult
+    where TCommandResult : class, ICommandResultObsolete
 {
     public abstract Type ResultType { get; }
-    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResult commandResult, Message message)
+    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, Message message)
     {
-        if (commandResult is not TCommandResult typedCommand)
+        if (commandResultObsolete is not TCommandResult typedCommand)
             throw new InvalidOperationException(
-                $"Invalid command type [{commandResult.GetType()}] for [{ResultType}] command handler");
+                $"Invalid command type [{commandResultObsolete.GetType()}] for [{ResultType}] command handler");
 
         return HandleFromMessage(bot, typedCommand, message);
     }
 
-    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResult commandResult, CallbackQuery callback)
+    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, CallbackQuery callback)
     {
-        if (commandResult is not TCommandResult typedCommand)
+        if (commandResultObsolete is not TCommandResult typedCommand)
             throw new InvalidOperationException(
-                $"Invalid command type [{commandResult.GetType()}] for [{ResultType}] command handler");
+                $"Invalid command type [{commandResultObsolete.GetType()}] for [{ResultType}] command handler");
 
         return HandleFromCallback(bot, typedCommand, callback);
     }
