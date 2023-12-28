@@ -1,12 +1,17 @@
-﻿using Telegram.Bot;
+﻿using Amazon.Runtime.Internal;
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Client;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.CommandsFactory;
+using VoiceStickersBot.Core.CommandsObsolete.CommandsFactoryObsolete;
+using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 namespace VoiceStickersBot.TgGateway;
@@ -33,23 +38,19 @@ public class TgApiGateway
         }
     }) { ResizeKeyboard = true };
 
-    private Client client = new Client();
+    private readonly Client client = new Client();
 
     private TgApiCommandService commandService =
-        new (new List<ICommandFactory>() 
+        new (new List<ICommandArgumentsFactory>() 
             { 
-                new SwitchKeyboardCommandFactory(),
-                new ShowAllCommandFactory(), 
-                new AddStickerCommandFactory() 
+                new ShowAllCommandArgumentsFactory()
             }
         );
 
-    private TgApiCommandResultCallbackHandlerService resultHandlerService = 
+    private TgApiCommandResultHandlerService resultHandlerService = 
         new(new List<ICommandResultHandler>()
-            {
-                new SwitchKeyboardResultHandler(), 
+            { 
                 new ShowAllResultHandler(),
-                new AddStickerResultHandler()
             }
         );
     
@@ -60,30 +61,35 @@ public class TgApiGateway
     {
         if (update.Type == UpdateType.CallbackQuery)
         {
-            var callbackData = update.CallbackQuery!.Data!;
+            var callbackData = update.CallbackQuery!.Data!.Split(':');
             var callbackMsg = update.CallbackQuery!.Message!;
             var chatId = callbackMsg.Chat.Id;
-            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
-            Console.WriteLine($"was {chatId}:{currentState}");
-            var context = new RequestContext(callbackData, chatId, currentState);
-            var command = commandService.CreateInlineCommand(context);
-            var commandResult = client.Handle(command);
-            userStates[chatId] = 
-                await resultHandlerService.HandleFromCallback(botClient, commandResult, update.CallbackQuery);
-            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
+            var commandType = callbackData[0];
+            var commandStep = callbackData[1];
+            var callbackArguments = callbackData.Skip(2).ToArray();
+            var botMessageId = callbackMsg.MessageId;
+            
+            var context = new QueryContext(
+                commandType, 
+                commandStep, 
+                callbackArguments,
+                chatId, 
+                botMessageId.ToString());
+            
+            var commandArguments = commandService.CreateCommandArguments(context);
+            var commandResult = await client.Handle(commandArguments);
+            await resultHandlerService.HandleResult(botClient, commandResult);
         }
         else if (update.Type == UpdateType.Message && update.Message.Text is not null)
         {
             var message = update.Message;
             var chatId = message!.Chat.Id;
-            var currentState = userStates.GetValueOrDefault(chatId, UserBotState.WaitCommand);
-            Console.WriteLine($"was {chatId}:{currentState}");
-            var context = new RequestContext(message.Text, chatId, currentState);
-            var command = commandService.CreateTextCommand(context);
-            var commandResult = client.Handle(command);
-            userStates[chatId] =
-                await resultHandlerService.HandleFromMessage(botClient, commandResult, message);
-            Console.WriteLine($"now {chatId}:{userStates[chatId]}");
+
+            var args = new[] { "794999620",  "1", "Increase", "10" };
+            var context = new QueryContext("Показать все", "SwitchKeyboardPacks", args, chatId);
+            var command = commandService.CreateCommandArguments(context);
+            var commandResult = await client.Handle(command);
+            await resultHandlerService.HandleResult(botClient, commandResult);
         }
     }
 

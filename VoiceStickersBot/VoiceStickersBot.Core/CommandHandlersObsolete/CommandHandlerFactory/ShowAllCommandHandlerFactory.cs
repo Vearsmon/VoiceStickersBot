@@ -1,15 +1,15 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+﻿/*using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.ShowAll;
 
 namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
 
-public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<ShowAllCommand>
+public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<ShowAllCommandObsolete>
 {
-    public override Type CommandType => typeof(ShowAllCommand);
+    public override Type CommandType => typeof(ShowAllCommandObsolete);
     
-    protected override ICommandHandler CreateCommandHandler(ShowAllCommand command)
+    protected override ICommandHandler CreateCommandHandler(ShowAllCommandObsolete commandObsolete)
     {
-        return new ShowAllHandler(command);
+        return new ShowAllHandler(commandObsolete);
     }
-}
+}*/

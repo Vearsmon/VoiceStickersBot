@@ -1,4 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+﻿/*using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
@@ -18,4 +18,4 @@ public abstract class CommandHandlerFactoryBase<TCommand> : ICommandHandlerFacto
     }
 
     protected abstract ICommandHandler CreateCommandHandler(TCommand command);
-}
+}*/

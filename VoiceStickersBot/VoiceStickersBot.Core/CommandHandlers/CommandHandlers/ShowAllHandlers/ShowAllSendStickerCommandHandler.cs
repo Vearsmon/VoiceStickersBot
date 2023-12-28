@@ -2,7 +2,6 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
-using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
@@ -29,6 +28,6 @@ public class ShowAllSendStickerCommandHandler : ICommandHandler
             .ConfigureAwait(false);
 
         var sticker = stickerPack.Stickers!.First(p => p.StickerPackId == commandArguments.StickerId);
-        return new ShowAllSendStickerResult(chatId, sticker);
+        return new ShowAllSendStickerResult(commandArguments.ChatId, sticker);
     }
 }

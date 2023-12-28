@@ -62,6 +62,6 @@ public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
         }
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
         
-        return new ShowAllSwitchKeyboardStickersResult(chatId, keyboard, botMessageId);
+        return new ShowAllSwitchKeyboardStickersResult(commandArguments.ChatId, keyboard, commandArguments.BotMessageId);
     }
 }

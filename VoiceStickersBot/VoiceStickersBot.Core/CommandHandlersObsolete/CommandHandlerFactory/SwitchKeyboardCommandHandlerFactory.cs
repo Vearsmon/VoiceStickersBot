@@ -1,14 +1,14 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+﻿/*using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
 
-public class SwitchKeyboardCommandHandlerFactory : CommandHandlerFactoryBase<SwitchKeyboardCommand>
+public class SwitchKeyboardCommandHandlerFactory : CommandHandlerFactoryBase<SwitchKeyboardCommandObsolete>
 {
-    public override Type CommandType => typeof(SwitchKeyboardCommand);
+    public override Type CommandType => typeof(SwitchKeyboardCommandObsolete);
 
-    protected override ICommandHandler CreateCommandHandler(SwitchKeyboardCommand command)
+    protected override ICommandHandler CreateCommandHandler(SwitchKeyboardCommandObsolete commandObsolete)
     {
-        return new SwitchKeyboardHandler(command);
+        return new SwitchKeyboardHandler(commandObsolete);
     }
-}
+}*/

@@ -1,11 +1,11 @@
-﻿using VoiceStickersBot.Core.Commands;
+﻿/*using VoiceStickersBot.Core.Commands;
 using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 
 namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlers;
 
 public class SwitchKeyboardHandler : ICommandHandler
 {
-    private readonly SwitchKeyboardCommand command;
+    private readonly SwitchKeyboardCommandObsolete commandObsolete;
 
     //Этого тоже не должно быть и все достается из команды
     private readonly string[] packs =
@@ -16,27 +16,27 @@ public class SwitchKeyboardHandler : ICommandHandler
         "Набор 20",
         "Набор 21", "Набор 22", "Набор 23", "Набор 24", "Набор 25", "Набор 26", "Набор 27"
     };
-    public Type CommandType => typeof(SwitchKeyboardCommand);
+    public Type CommandType => typeof(SwitchKeyboardCommandObsolete);
     
-    public SwitchKeyboardHandler(SwitchKeyboardCommand command)
+    public SwitchKeyboardHandler(SwitchKeyboardCommandObsolete commandObsolete)
     {
-        this.command = command;
+        this.commandObsolete = commandObsolete;
     }
 
-    public ICommandResultObsolete Handle()
+    public ICommandResultObsoleteObsolete Handle()
     {
-        if (!command.PageFrom.HasValue) 
-            throw new ArgumentException($"{nameof(command.PageFrom)} была null, ожидалось число");
+        if (!commandObsolete.PageFrom.HasValue) 
+            throw new ArgumentException($"{nameof(commandObsolete.PageFrom)} была null, ожидалось число");
 
-        var pageFrom = command.PageFrom.Value;
+        var pageFrom = commandObsolete.PageFrom.Value;
         
-        var pageTo = command.PageChangeDirection == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
-        var startIndex = command.PageChangeDirection == PageChangeDirection.Increase
-            ? (pageTo - 1) * command.StickersOnPage
-            : (pageFrom - 2) * command.StickersOnPage;
-        var endIndex = command.PageChangeDirection == PageChangeDirection.Increase
-            ? command.StickersOnPage * (pageFrom + 1)
-            : pageTo * command.StickersOnPage;
+        var pageTo = commandObsolete.PageChangeDirection == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
+        var startIndex = commandObsolete.PageChangeDirection == PageChangeDirection.Increase
+            ? (pageTo - 1) * commandObsolete.StickersOnPage
+            : (pageFrom - 2) * commandObsolete.StickersOnPage;
+        var endIndex = commandObsolete.PageChangeDirection == PageChangeDirection.Increase
+            ? commandObsolete.StickersOnPage * (pageFrom + 1)
+            : pageTo * commandObsolete.StickersOnPage;
 
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < packs.Length && i < endIndex; i++)
@@ -50,11 +50,11 @@ public class SwitchKeyboardHandler : ICommandHandler
 
         lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", $"page:{pageTo}"));
 
-        if (pageTo <= packs.Length / command.StickersOnPage)
+        if (pageTo <= packs.Length / commandObsolete.StickersOnPage)
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", $"pageright:{pageTo}"));
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
         
-        return new SwitchKeyboardResultObsolete(keyboard, command.RequestContext.UserBotState, command.KeyboardCapture);
+        return new SwitchKeyboardResultObsoleteObsolete(keyboard, commandObsolete.RequestContext.UserBotState, commandObsolete.KeyboardCapture);
     }
-}
+}*/

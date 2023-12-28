@@ -12,16 +12,22 @@ public class ShowAllSwitchKeyboardStickersCommandArguments : IShowAllCommandArgu
     public int PageFrom { get; }
     public PageChangeDirection  Direction { get; }
     public int PacksOnPage { get; }
+    public long ChatId { get; }
+    public string BotMessageId { get; }
 
     public ShowAllSwitchKeyboardStickersCommandArguments(
         Guid stickerPackId, 
         int pageFrom, 
         PageChangeDirection direction, 
-        int packsOnPage)
+        int packsOnPage,
+        long chatId, 
+        string botMessageId)
     {
         StickerPackId = stickerPackId;
         PageFrom = pageFrom;
         Direction = direction;
         PacksOnPage = packsOnPage;
+        ChatId = chatId;
+        BotMessageId = botMessageId;
     }
 }

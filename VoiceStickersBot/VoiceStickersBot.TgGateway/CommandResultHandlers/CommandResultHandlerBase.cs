@@ -1,4 +1,4 @@
-﻿using Telegram.Bot;
+﻿/*using Telegram.Bot;
 using Telegram.Bot.Types;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Commands;
@@ -6,27 +6,28 @@ using VoiceStickersBot.Core.Commands;
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 public abstract class CommandResultHandlerBase<TCommandResult> : ICommandResultHandler
-    where TCommandResult : class, ICommandResultObsolete
+    where TCommandResult : class, ICommandResultObsoleteObsolete
 {
     public abstract Type ResultType { get; }
-    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, Message message)
+    public Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, ICommandResultObsoleteObsolete commandResultObsoleteObsolete, Message message)
     {
-        if (commandResultObsolete is not TCommandResult typedCommand)
+        if (commandResultObsoleteObsolete is not TCommandResult typedCommand)
             throw new InvalidOperationException(
-                $"Invalid command type [{commandResultObsolete.GetType()}] for [{ResultType}] command handler");
+                $"Invalid command type [{commandResultObsoleteObsolete.GetType()}] for [{ResultType}] command handler");
 
         return HandleFromMessage(bot, typedCommand, message);
     }
 
-    public Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, ICommandResultObsolete commandResultObsolete, CallbackQuery callback)
+    public void HandleResult(ITelegramBotClient bot, ICommandResultObsoleteObsolete commandResultObsoleteObsolete,
+        CallbackQuery callback)
     {
-        if (commandResultObsolete is not TCommandResult typedCommand)
+        if (commandResultObsoleteObsolete is not TCommandResult typedCommand)
             throw new InvalidOperationException(
-                $"Invalid command type [{commandResultObsolete.GetType()}] for [{ResultType}] command handler");
+                $"Invalid command type [{commandResultObsoleteObsolete.GetType()}] for [{ResultType}] command handler");
 
         return HandleFromCallback(bot, typedCommand, callback);
     }
 
     public abstract Task<UserBotState> HandleFromCallback(ITelegramBotClient bot, TCommandResult commandResult, CallbackQuery callbackQuery);
     public abstract Task<UserBotState> HandleFromMessage(ITelegramBotClient bot, TCommandResult commandResult, Message message);
-}
+}*/

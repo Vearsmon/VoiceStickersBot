@@ -1,4 +1,5 @@
-﻿using VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
+﻿/*using VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlerFactory;
+using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlersObsolete.CommandHandlers;
@@ -16,12 +17,12 @@ public class TgApiCommandHandlerService
 
     public IHandleCommandResult Handle(ICommand command)
     {
-        ICommandResultObsolete resultObsolete = null;
+        ICommandResultObsoleteObsolete resultObsoleteObsolete = null;
         Exception error = null;
         try
         {
             var commandHandler = commandHandlersFactories[command.GetType()].CreateCommandHandler(command); 
-            resultObsolete = commandHandler.Handle();
+            resultObsoleteObsolete = commandHandler.Handle();
         }
         catch (Exception ex)
         {
@@ -29,6 +30,6 @@ public class TgApiCommandHandlerService
             Console.WriteLine("oh boy :(");
         }
 
-        return new HandleCommandResult(resultObsolete, error);
+        return new HandleCommandResult(resultObsoleteObsolete, error);
     }
-}
+}*/

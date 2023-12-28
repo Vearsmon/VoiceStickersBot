@@ -6,5 +6,5 @@ public interface ICommandHandler
 {
     Type CommandType { get; }
 
-    ICommandResultObsolete Handle();
+    ICommandResultObsoleteObsolete Handle();
 }

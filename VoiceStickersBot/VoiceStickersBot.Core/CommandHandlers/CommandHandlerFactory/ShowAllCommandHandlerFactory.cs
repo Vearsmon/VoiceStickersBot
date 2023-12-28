@@ -23,9 +23,9 @@ public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<IShowAllCo
         
         stepHandlerBuilders = new Dictionary<ShowAllStepName, Func<IShowAllCommandArguments, ICommandHandler>>()
         {
-            { ShowAllStepName.Cancel, commandArguments =>  
+            { ShowAllStepName.Cancel, ca =>  
                 new ShowAllCancelCommandHandler(
-                    (ShowAllCancelCommandArguments)commandArguments) 
+                    (ShowAllCancelCommandArguments)ca) 
             },
             { ShowAllStepName.SwitchKeyboardPacks, ca => 
                 new ShowAllSwitchKeyboardPacksCommandHandler(

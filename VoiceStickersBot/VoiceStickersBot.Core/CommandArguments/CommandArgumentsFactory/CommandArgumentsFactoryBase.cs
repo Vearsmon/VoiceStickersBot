@@ -5,7 +5,7 @@ public abstract class CommandArgumentsFactoryBase<TCommandArgument> : ICommandAr
 {
     public abstract IReadOnlyList<string> CommandPrefixes { get; }
 
-    public ICommandArguments CreateCommand(RequestContext requestContext)
+    public ICommandArguments CreateCommand(QueryContext queryContext)
     {
         throw new NotImplementedException();
     }

@@ -57,6 +57,6 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
         }
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
         
-        return new ShowAllSwitchKeyboardPacksResult(chatId, keyboard, botMessageId);
+        return new ShowAllSwitchKeyboardPacksResult(commandArguments.ChatId, keyboard, commandArguments.BotMessageId);
     }
 }

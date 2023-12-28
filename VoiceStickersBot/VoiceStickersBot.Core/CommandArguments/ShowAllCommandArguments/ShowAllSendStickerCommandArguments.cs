@@ -9,10 +9,12 @@ public class ShowAllSendStickerCommandArguments : IShowAllCommandArguments
     public ShowAllStepName StepName => ShowAllStepName.SendSticker;
     public Guid StickerPackId { get; }
     public Guid StickerId { get; }
+    public long ChatId { get; }
     
-    public ShowAllSendStickerCommandArguments(Guid stickerPackId, Guid stickerId)
+    public ShowAllSendStickerCommandArguments(Guid stickerPackId, Guid stickerId, long chatId)
     {
         StickerPackId = stickerPackId;
         StickerId = stickerId;
+        ChatId = chatId;
     }
 }
