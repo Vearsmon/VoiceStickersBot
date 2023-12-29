@@ -85,7 +85,7 @@ public class TgApiGateway
             var message = update.Message;
             var chatId = message!.Chat.Id;
 
-            var args = new[] { "794999620",  "1", "Increase", "10" };
+            var args = new[] { $"{chatId}",  "1", "Increase", "10" };
             var context = new QueryContext("Показать все", "SwitchKeyboardPacks", args, chatId);
             var command = commandService.CreateCommandArguments(context);
             var commandResult = await client.Handle(command);

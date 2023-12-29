@@ -3,7 +3,7 @@ namespace VoiceStickersBot.Core.CommandArguments;
 public enum CommandType
 {
     ShowAll,
-    AddPack,
+    CreatePack,
     DeletePack,
     AddSticker,
     DeleteSticker,

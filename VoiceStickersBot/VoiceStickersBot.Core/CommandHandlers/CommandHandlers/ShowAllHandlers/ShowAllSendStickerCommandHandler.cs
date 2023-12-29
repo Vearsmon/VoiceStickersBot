@@ -26,7 +26,7 @@ public class ShowAllSendStickerCommandHandler : ICommandHandler
         var stickerPack = await stickerPacksRepository
             .GetStickerPackAsync(commandArguments.StickerPackId, true)
             .ConfigureAwait(false);
-
+        
         var sticker = stickerPack.Stickers!.First(p => p.StickerPackId == commandArguments.StickerId);
         return new ShowAllSendStickerResult(commandArguments.ChatId, sticker);
     }
