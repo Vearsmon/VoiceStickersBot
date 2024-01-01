@@ -2,5 +2,5 @@
 
 public interface IVsbApplication
 {
-    Task RunAsync(CancellationToken cancellationToken);
+    Task RunAsync(Func<CancellationToken> cancellationTokenGetter);
 }

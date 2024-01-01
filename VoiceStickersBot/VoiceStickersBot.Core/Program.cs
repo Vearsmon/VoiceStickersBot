@@ -7,11 +7,11 @@ using VoiceStickersBot.Core.SchemaConfigurators;
 using VoiceStickersBot.Infra.VSBApplication;
 
 var app = new CoreTestApplication();
-await app.RunAsync(new CancellationToken()).ConfigureAwait(false);
+await app.RunAsync(() => new CancellationToken()).ConfigureAwait(false);
 
 internal class CoreTestApplication : VsbApplicationBase
 {
-    public override async Task RunAsync(CancellationToken cancellationToken)
+    protected override async Task RunAsync(CancellationToken cancellationToken)
     {
         var stickersPacksRepository = container.Get<IStickerPacksRepository>();
         var stickersRepository = container.Get<IStickersRepository>();
@@ -31,14 +31,14 @@ internal class CoreTestApplication : VsbApplicationBase
             .GetStickerPackAsync(stickerPackId)
             .ConfigureAwait(false);
         Console.WriteLine(1);
-        foreach (var s in stickers.Stickers ?? new List<Sticker>()) Console.WriteLine(s.Id);
+        foreach (var s in stickers.Stickers ?? new List<Sticker>()) Console.WriteLine(s.StickerFullId.StickerId);
 
         Console.WriteLine(2);
         var stickerPacks = await usersRepository.GetStickerPacksOwned(userId, true).ConfigureAwait(false);
         foreach (var s in stickerPacks)
         {
             Console.WriteLine(s.Id);
-            foreach (var st in s.Stickers ?? new List<Sticker>()) Console.WriteLine(st.Id);
+            foreach (var st in s.Stickers ?? new List<Sticker>()) Console.WriteLine(st.StickerFullId.StickerId);
         }
     }
 }

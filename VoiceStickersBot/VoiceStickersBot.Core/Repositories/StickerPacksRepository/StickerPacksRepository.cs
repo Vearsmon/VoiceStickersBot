@@ -1,4 +1,6 @@
 ﻿using VoiceStickersBot.Core.Contracts;
+using VoiceStickersBot.Core.Repositories.RepositoryExceptions;
+using VoiceStickersBot.Infra;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
 namespace VoiceStickersBot.Core.Repositories.StickerPacksRepository;
@@ -31,15 +33,18 @@ public class StickerPacksRepository : IStickerPacksRepository
         bool includeStickers = false)
     {
         using var table = vsbDatabaseCluster.GetTable<StickerPackEntity>();
-        var stickerPackEntity = (await table
+        var stickerPacks = await table
             .PerformReadonlyRequestAsync(
                 r => r
                     .Where(stickerPack => stickerPackId == stickerPack.Id)
                     .IncludeStickers(includeStickers),
                 new CancellationToken())
-            .ConfigureAwait(false)).Single();
+            .ConfigureAwait(false);
 
-        return Convert(stickerPackEntity);
+        if (stickerPacks.IsEmpty())
+            throw new StickerPackNotFoundException($"Sticker pack with id: {stickerPackId} was not found");
+
+        return Convert(stickerPacks.Single());
     }
 
     private static StickerPack Convert(StickerPackEntity stickerPackEntity)

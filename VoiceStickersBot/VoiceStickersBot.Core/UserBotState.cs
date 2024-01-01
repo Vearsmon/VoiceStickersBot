@@ -1,5 +1,7 @@
 ﻿namespace VoiceStickersBot.Core;
 
+//TODO: удалить в пиздищу
+[Obsolete("to remove")]
 public enum UserBotState
 {
     WaitCommand,

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Infra.DatabaseTable;
@@ -10,19 +10,20 @@ namespace VoiceStickersBot.Core.Repositories.StickersRepository;
 
 [Entity]
 [Table("stickers")]
+[PrimaryKey("Id", "StickerPackId")]
 internal class StickerEntity
 {
-    [Key] [Column("id")] public Guid Id { get; set; }
+    [Column("id")] public Guid Id { get; set; }
+
+    [Column("sticker_pack_id")] public Guid StickerPackId { get; set; }
 
     [Column("Name")] public string? Name { get; set; }
 
-    //TODO: Жду когда илья сделает хранение аудиофайлов
     [Column("location")] public string Location { get; set; }
 
-    [Column("sticker_pack_id")] public Guid StickerPackId { get; set; }
     public StickerPackEntity StickerPack { get; set; }
 
-    public Sticker ToEntity()
+    public Sticker ToSticker()
     {
         return new Sticker(
             Id,

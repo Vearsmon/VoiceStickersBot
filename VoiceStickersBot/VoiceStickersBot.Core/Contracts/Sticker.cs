@@ -2,13 +2,11 @@
 
 public class Sticker
 {
-    public Guid Id { get; }
+    public StickerFullId StickerFullId { get; }
 
     public string? Name { get; }
-    
-    public string Location { get; }
 
-    public Guid StickerPackId { get; }
+    public string Location { get; }
 
     public Sticker(
         Guid id,
@@ -16,9 +14,8 @@ public class Sticker
         string location,
         Guid stickerPackId)
     {
-        Id = id;
         Name = name;
         Location = location;
-        StickerPackId = stickerPackId;
+        StickerFullId = new StickerFullId(id, stickerPackId);
     }
 }

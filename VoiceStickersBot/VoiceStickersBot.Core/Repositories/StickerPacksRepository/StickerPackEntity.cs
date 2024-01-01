@@ -31,6 +31,6 @@ internal class StickerPackEntity
             Id,
             OwnerId,
             Name,
-            Stickers?.Select(sticker => sticker.ToEntity()).ToList());
+            Stickers?.Select(sticker => sticker.ToSticker()).ToList());
     }
 }

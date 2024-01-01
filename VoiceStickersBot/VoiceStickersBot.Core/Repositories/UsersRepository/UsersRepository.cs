@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VoiceStickersBot.Core.Contracts;
+using VoiceStickersBot.Core.Repositories.RepositoryExceptions;
+using VoiceStickersBot.Infra;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
 namespace VoiceStickersBot.Core.Repositories.UsersRepository;
@@ -37,6 +39,9 @@ public class UsersRepository : IUsersRepository
                     .IncludeStickers(includeStickers),
                 new CancellationToken())
             .ConfigureAwait(false);
+
+        if (users.IsEmpty())
+            throw new UserNotFoundException($"User with id: {id} was not found");
 
         return users.Single()
             .StickerPacks?

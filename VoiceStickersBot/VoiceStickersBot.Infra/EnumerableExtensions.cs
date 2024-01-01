@@ -6,4 +6,14 @@ public static class EnumerableExtensions
     {
         yield return tObject;
     }
+
+    public static bool IsEmpty<TObject>(this IEnumerable<TObject> enumerable)
+    {
+        return !enumerable.GetEnumerator().MoveNext();
+    }
+
+    public static IEnumerable<TObject> NotNull<TObject>(this IEnumerable<TObject> enumerable)
+    {
+        return enumerable.Where(o => o is not null);
+    }
 }
