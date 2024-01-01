@@ -13,19 +13,29 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
     private readonly ShowAllSwitchKeyboardPacksCommandArguments commandArguments;
     private readonly UsersRepository usersRepository;
-    
-    public ShowAllSwitchKeyboardPacksCommandHandler(ShowAllSwitchKeyboardPacksCommandArguments commandArguments, UsersRepository usersRepository)
+
+    public ShowAllSwitchKeyboardPacksCommandHandler(ShowAllSwitchKeyboardPacksCommandArguments commandArguments,
+        UsersRepository usersRepository)
     {
         this.commandArguments = commandArguments;
         this.usersRepository = usersRepository;
     }
-    
+
     public async Task<ICommandResult> Handle()
     {
-        var packs = await usersRepository.GetStickerPacksOwned(commandArguments.UserId).ConfigureAwait(false);
-        
+        var (result, packs) = await usersRepository
+            .TryGetStickerPacksOwned(commandArguments.UserId)
+            .ConfigureAwait(false);
+
+        if (!result)
+            //TODO: поцы поправте этот кал, я хз че там должно быть
+            return new ShowAllSwitchKeyboardPacksResult(
+                commandArguments.ChatId,
+                new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
+                commandArguments.BotMessageId);
+
         var pageFrom = commandArguments.PageFrom;
-        
+
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var startIndex = commandArguments.Direction == PageChangeDirection.Increase
             ? (pageTo - 1) * commandArguments.PacksOnPage
@@ -40,7 +50,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
             var buttonCallback = $"ShowAll:SASwitchKeyboardStickers:{packs[i].Id}:0:Increase:10";
             buttons.Add(new InlineKeyboardButtonDto(packs[i].Name!, buttonCallback));
         }
-        
+
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
         {
@@ -55,8 +65,9 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
             var buttonCallback = $"ShowAll:SASwitchKeyboardAPacks:{commandArguments.UserId}:{pageTo}:Increase:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
         }
+
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
-        
+
         return new ShowAllSwitchKeyboardPacksResult(commandArguments.ChatId, keyboard, commandArguments.BotMessageId);
     }
 }

@@ -40,13 +40,16 @@ public abstract class VsbApplicationBase : IVsbApplication
     private void InnerConfigureContainer(StandardKernel containerBuilder)
     {
         BindInterfacesWithOnlyImplementation(containerBuilder);
-
+        BindLogger(containerBuilder);
         ConfigureContainer(containerBuilder);
     }
 
     private static void BindLogger(StandardKernel containerBuilder)
     {
-        containerBuilder.Bind<ILog>().To<ConsoleLog>();
+        var dateTime = DateTime.Now;
+        containerBuilder
+            .Bind<ILog>()
+            .ToConstant(new FileLog(File.CreateText($"log_{dateTime.Hour}_{dateTime.Minute}.txt")));
     }
 
     private static void BindInterfacesWithOnlyImplementation(StandardKernel containerBuilder)
@@ -70,7 +73,7 @@ public abstract class VsbApplicationBase : IVsbApplication
         }
     }
 
-    protected virtual void ConfigureContainer(StandardKernel containerConfigure)
+    protected virtual void ConfigureContainer(StandardKernel containerBuilder)
     {
     }
 }

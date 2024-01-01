@@ -2,5 +2,5 @@
 
 public partial interface ILog
 {
-    public void WriteLine(string record);
+    public void WriteToLog(string record);
 }

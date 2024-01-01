@@ -3,14 +3,21 @@
 public class FileLog : ILog
 {
     private readonly TextWriter writer;
+    private readonly object locker;
 
     public FileLog(TextWriter writer)
     {
         this.writer = writer;
+
+        locker = new object();
     }
 
-    public void WriteLine(string record)
+    public void WriteToLog(string record)
     {
-        writer.WriteLine(record);
+        lock (locker)
+        {
+            writer.WriteLine(record);
+            writer.Flush();
+        }
     }
 }

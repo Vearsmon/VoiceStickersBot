@@ -31,6 +31,26 @@ public class UsersRepository : IUsersRepository
         string id,
         bool includeStickers = false)
     {
+        var users = await GetUser(id, includeStickers).ConfigureAwait(false);
+
+        return users.IsEmpty()
+            ? throw new UserNotFoundException($"User with id: {id} was not found")
+            : ExtractStickerPacks(users);
+    }
+
+    public async Task<(bool, List<StickerPack>?)> TryGetStickerPacksOwned(
+        string id,
+        bool includeStickers = false)
+    {
+        var users = await GetUser(id, includeStickers).ConfigureAwait(false);
+
+        return users.IsEmpty()
+            ? (false, null)
+            : (true, ExtractStickerPacks(users));
+    }
+
+    private async Task<List<UserEntity>> GetUser(string id, bool includeStickers)
+    {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();
         var users = await table.PerformReadonlyRequestAsync(
                 r => r
@@ -39,10 +59,11 @@ public class UsersRepository : IUsersRepository
                     .IncludeStickers(includeStickers),
                 new CancellationToken())
             .ConfigureAwait(false);
+        return users;
+    }
 
-        if (users.IsEmpty())
-            throw new UserNotFoundException($"User with id: {id} was not found");
-
+    private static List<StickerPack> ExtractStickerPacks(IEnumerable<UserEntity> users)
+    {
         return users.Single()
             .StickerPacks?
             .Select(stickerPack => stickerPack.ToStickerPack())

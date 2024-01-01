@@ -46,4 +46,24 @@ public class ChatsRepository : IChatsRepository
             .Select(stickerPack => stickerPack.ToStickerPack())
             .ToList() ?? new List<StickerPack>();
     }
+
+    public async Task<(bool, List<StickerPack>?)> TryGetPacksAvailable(string id, bool includeStickers)
+    {
+        using var table = vsbDatabaseCluster.GetTable<ChatEntity>();
+        var chats = await table.PerformReadonlyRequestAsync(
+                r => r
+                    .Where(chat => chat.Id == id)
+                    .Include(chat => chat.StickerPacks)!
+                    .IncludeStickers(includeStickers),
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        if (chats.IsEmpty())
+            return (false, null);
+
+        return (true, chats.Single()
+            .StickerPacks?
+            .Select(stickerPack => stickerPack.ToStickerPack())
+            .ToList() ?? new List<StickerPack>());
+    }
 }
