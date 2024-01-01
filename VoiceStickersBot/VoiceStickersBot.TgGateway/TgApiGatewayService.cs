@@ -12,7 +12,8 @@ using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 namespace VoiceStickersBot.TgGateway;
 
-public class TgApiGateway
+// ReSharper disable once ClassNeverInstantiated.Global
+public class TgApiGatewayService
 {
     private Dictionary<long, UserBotState> userStates = new();
 
@@ -41,7 +42,7 @@ public class TgApiGateway
 
     private readonly ILog log;
 
-    public TgApiGateway(
+    public TgApiGatewayService(
         Client client,
         TgApiCommandService tgApiCommandService,
         TgApiCommandResultHandlerService tgApiCommandResultHandlerService,

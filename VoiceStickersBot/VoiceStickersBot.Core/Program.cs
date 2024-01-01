@@ -14,12 +14,12 @@ internal class CoreTestApplication : VsbApplicationBase
 {
     protected override async Task RunAsync(CancellationToken cancellationToken)
     {
-        var stickersPacksRepository = container.Get<IStickerPacksRepository>();
-        var stickersRepository = container.Get<IStickersRepository>();
-        var usersRepository = container.Get<IUsersRepository>();
-        var log = container.Get<ILog>();
+        var stickersPacksRepository = Container.Get<IStickerPacksRepository>();
+        var stickersRepository = Container.Get<IStickersRepository>();
+        var usersRepository = Container.Get<IUsersRepository>();
+        var log = Container.Get<ILog>();
 
-        var schemaCreator = container.Get<SchemaConfiguratorCore>();
+        var schemaCreator = Container.Get<SchemaConfiguratorCore>();
         await schemaCreator.ConfigureAsync().ConfigureAwait(false);
 
         var userId = Guid.NewGuid().ToString();

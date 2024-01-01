@@ -1,6 +1,4 @@
-﻿using Amazon.S3.Model;
-
-namespace VoiceStickersBot.Infra.ObjectStorageCluster;
+﻿namespace VoiceStickersBot.Infra.ObjectStorage;
 
 public interface IObjectStorageClient
 {

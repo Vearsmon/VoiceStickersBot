@@ -1,4 +1,4 @@
-﻿namespace VoiceStickersBot.Infra.ObjectStorageCluster;
+﻿namespace VoiceStickersBot.Infra.ObjectStorage;
 
 public class ObjectLocation
 {
@@ -25,6 +25,7 @@ public class ObjectLocation
         {
             throw new ArgumentException(null, nameof(input));
         }
+
         return new ObjectLocation(data[0], data[1], data[2]);
     }
 }

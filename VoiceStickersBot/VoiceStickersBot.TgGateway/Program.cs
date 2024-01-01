@@ -4,6 +4,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.Infra.VSBApplication;
+using VoiceStickersBot.Infra.VSBApplication.Settings;
 using VoiceStickersBot.TgGateway;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
@@ -15,12 +16,12 @@ await host.RunAsync(() => cts.Token);
 Console.ReadLine();
 cts.Cancel();
 
-
+[Settings("TgApiGatewaySettings")]
 public class TgApiGatewayHost : VsbApplicationBase
 {
     protected override async Task RunAsync(CancellationToken cancellationToken)
     {
-        var botClient = new TelegramBotClient("5989359414:AAF5EHNI513b6kNi1In6gjqUBi9HKgsGRrM");
+        var botClient = new TelegramBotClient(ApplicationSettings.Settings["token"]);
 
 // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
         ReceiverOptions receiverOptions = new()
@@ -28,7 +29,7 @@ public class TgApiGatewayHost : VsbApplicationBase
             AllowedUpdates = Array.Empty<UpdateType>()
         };
 
-        var handler = container.Get<TgApiGateway>();
+        var handler = Container.Get<TgApiGatewayService>();
         botClient.StartReceiving(
             handler.HandleUpdateAsync,
             handler.HandlePollingErrorAsync,

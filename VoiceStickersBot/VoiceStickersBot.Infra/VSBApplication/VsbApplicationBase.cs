@@ -1,6 +1,8 @@
-﻿using Ninject;
+﻿using System.Reflection;
+using Ninject;
 using Ninject.Syntax;
 using VoiceStickersBot.Infra.VSBApplication.Log;
+using VoiceStickersBot.Infra.VSBApplication.Settings;
 
 namespace VoiceStickersBot.Infra.VSBApplication;
 
@@ -8,15 +10,17 @@ public abstract class VsbApplicationBase : IVsbApplication
 {
     private const string AssemblyNamePrefix = "VoiceStickersBot";
 
-    protected readonly IResolutionRoot container;
+    protected readonly IResolutionRoot Container;
+    protected readonly VsbApplicationSettings ApplicationSettings;
 
     public VsbApplicationBase()
     {
         var containerBuilder = new StandardKernel();
 
         InnerConfigureContainer(containerBuilder);
+        Container = containerBuilder;
 
-        container = containerBuilder;
+        ApplicationSettings = GetSettings();
     }
 
     public async Task RunAsync(Func<CancellationToken> cancellationTokenGetter)
@@ -27,7 +31,7 @@ public abstract class VsbApplicationBase : IVsbApplication
         }
         catch (Exception e)
         {
-            var log = container.Get<ILog>();
+            var log = Container.Get<ILog>();
             log.Error(
                 e,
                 "Application crushed with unknown exception: {0}",
@@ -36,6 +40,10 @@ public abstract class VsbApplicationBase : IVsbApplication
     }
 
     protected abstract Task RunAsync(CancellationToken cancellationToken);
+
+    protected virtual void ConfigureContainer(StandardKernel containerBuilder)
+    {
+    }
 
     private void InnerConfigureContainer(StandardKernel containerBuilder)
     {
@@ -73,7 +81,17 @@ public abstract class VsbApplicationBase : IVsbApplication
         }
     }
 
-    protected virtual void ConfigureContainer(StandardKernel containerBuilder)
+    private VsbApplicationSettings GetSettings()
     {
+        var settingsName = GetType().GetCustomAttribute<SettingsAttribute>()?.SettingsName;
+        if (settingsName is null)
+            return new VsbApplicationSettings
+            {
+                Settings = new Dictionary<string, string>()
+            };
+
+        var settingsProvider = Container.Get<VsbApplicationSettingsProvider>();
+
+        return settingsProvider.GetAsync(settingsName).GetAwaiter().GetResult();
     }
 }

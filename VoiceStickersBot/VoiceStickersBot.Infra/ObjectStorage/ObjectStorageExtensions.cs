@@ -1,7 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace VoiceStickersBot.Infra.ObjectStorageCluster;
+namespace VoiceStickersBot.Infra.ObjectStorage;
 
 public static class ObjectStorageExtensions
 {
@@ -9,7 +9,7 @@ public static class ObjectStorageExtensions
     {
         return (await client.ListBucketsAsync().ConfigureAwait(false)).Buckets.ToList();
     }
-    
+
     public static async Task<List<S3Object>> GetBucketObjects(AmazonS3Client client, S3Bucket bucket)
     {
         var listRequest = new ListObjectsRequest
