@@ -61,10 +61,11 @@ public class ShowAllResultHandler : ICommandResultHandler
 
         if (result.BotMessageId is null)
         {
-            await bot.SendTextMessageAsync(
+            var msg = await bot.SendTextMessageAsync(
                 result.ChatId,
                 "Вот все стикеры из выбранного набора:",
                 replyMarkup: markup);
+            
         }
         else
         {

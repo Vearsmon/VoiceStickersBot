@@ -15,8 +15,6 @@ namespace VoiceStickersBot.TgGateway;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class TgApiGatewayService
 {
-    private Dictionary<long, UserBotState> userStates = new();
-
     private ReplyKeyboardMarkup commandsKeyboard = new ReplyKeyboardMarkup(new[]
     {
         new[] // first row
@@ -73,8 +71,11 @@ public class TgApiGatewayService
             var message = update.Message;
             var chatId = message!.Chat.Id;
 
-            var args = new[] { $"{chatId}", "1", "Increase", "10" };
-            var context = new QueryContext("Показать все", "SwitchKeyboardPacks", args, chatId);
+            /*var args = new[] { $"{chatId}", "0", "Increase", "10" };
+            var context = new QueryContext("SA", "SwKbdPc", args, chatId);*/
+
+            var args = new[] { $"{chatId}" };
+            var context = new QueryContext("CP", "SendInstructions", args, chatId);
 
             var command = tgApiCommandService.CreateCommandArguments(context);
             var commandResult = await client.Handle(command);
@@ -91,14 +92,14 @@ public class TgApiGatewayService
         var commandType = callbackData[0];
         var commandStep = callbackData[1];
         var callbackArguments = callbackData.Skip(2).ToArray();
-        var botMessageId = callbackMsg.MessageId;
+        var botMessageId = update.CallbackQuery.InlineMessageId!;
 
         return new QueryContext(
             commandType,
             commandStep,
             callbackArguments,
             chatId,
-            botMessageId.ToString());
+            botMessageId);
     }
 
     public Task HandlePollingErrorAsync(

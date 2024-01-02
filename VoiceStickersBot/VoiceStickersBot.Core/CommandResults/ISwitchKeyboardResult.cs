@@ -1,4 +1,4 @@
-﻿using VoiceStickersBot.Core.Commands.SwitchKeyboard;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
 namespace VoiceStickersBot.Core.CommandResults;
 

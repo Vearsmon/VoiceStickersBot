@@ -2,8 +2,8 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public enum ShowAllStepName
 {
-    SwitchKeyboardPacks,
+    SwKbdPc,
     Cancel,
-    SwitchKeyboardStickers,
+    SwKbdSt,
     SendSticker
 }

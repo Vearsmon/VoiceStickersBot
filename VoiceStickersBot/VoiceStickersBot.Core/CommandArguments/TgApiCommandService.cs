@@ -1,7 +1,6 @@
-﻿using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
-namespace VoiceStickersBot.Core.CommandResults;
+namespace VoiceStickersBot.Core.CommandArguments;
 
 public class TgApiCommandService
 {

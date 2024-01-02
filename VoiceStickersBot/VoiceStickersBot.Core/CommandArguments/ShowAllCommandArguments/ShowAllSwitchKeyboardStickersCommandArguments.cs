@@ -6,7 +6,7 @@ public class ShowAllSwitchKeyboardStickersCommandArguments : IShowAllCommandArgu
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardStickers;
+    public ShowAllStepName StepName => ShowAllStepName.SwKbdSt;
 
     public readonly Guid StickerPackId;
     public int PageFrom { get; }

@@ -6,7 +6,7 @@ public class ShowAllSwitchKeyboardPacksCommandArguments : IShowAllCommandArgumen
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    public ShowAllStepName StepName => ShowAllStepName.SwitchKeyboardPacks;
+    public ShowAllStepName StepName => ShowAllStepName.SwKbdPc;
     
     public string UserId { get; }
     public int PageFrom { get; }

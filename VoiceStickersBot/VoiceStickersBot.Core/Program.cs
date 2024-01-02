@@ -22,7 +22,7 @@ internal class CoreTestApplication : VsbApplicationBase
         var schemaCreator = Container.Get<SchemaConfiguratorCore>();
         await schemaCreator.ConfigureAsync().ConfigureAwait(false);
 
-        var userId = Guid.NewGuid().ToString();
+        var userId = "794999620";
         var stickerPackId = Guid.NewGuid();
         await usersRepository.Create(userId).ConfigureAwait(false);
         await stickersPacksRepository.CreateStickerPackAsync(stickerPackId, "pack", userId).ConfigureAwait(false);

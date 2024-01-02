@@ -2,7 +2,6 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
-using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
@@ -47,14 +46,14 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < packs.Count && i < endIndex; i++)
         {
-            var buttonCallback = $"ShowAll:SASwitchKeyboardStickers:{packs[i].Id}:0:Increase:10";
+            var buttonCallback = $"SA:SwKbdSt:{packs[i].Id}:0:Increase:10";
             buttons.Add(new InlineKeyboardButtonDto(packs[i].Name!, buttonCallback));
         }
 
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
         {
-            var buttonCallback = $"ShowAll:SASwitchKeyboardPacks:{commandArguments.UserId}:{pageTo}:Decrease:10";
+            var buttonCallback = $"SA:SwKbdPc:{commandArguments.UserId}:{pageTo}:Decrease:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", buttonCallback));
         }
 
@@ -62,7 +61,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
         if (pageTo <= packs.Count / commandArguments.PacksOnPage)
         {
-            var buttonCallback = $"ShowAll:SASwitchKeyboardAPacks:{commandArguments.UserId}:{pageTo}:Increase:10";
+            var buttonCallback = $"SA:SwKbdPc:{commandArguments.UserId}:{pageTo}:Increase:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
         }
 

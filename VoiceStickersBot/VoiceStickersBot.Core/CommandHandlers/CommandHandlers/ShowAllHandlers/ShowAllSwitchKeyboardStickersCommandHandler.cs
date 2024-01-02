@@ -2,7 +2,6 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
-using VoiceStickersBot.Core.Commands.SwitchKeyboard;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
@@ -42,15 +41,14 @@ public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
         var buttons = new List<InlineKeyboardButtonDto>();
         for (var i = startIndex; i < stickers.Count && i < endIndex; i++)
         {
-            var buttonCallback = $"ShowAll:SASendSticker:{stickers[i].StickerFullId.StickerId}";
+            var buttonCallback = $"SA:SendSticker:{stickers[i].StickerFullId.StickerId}";
             buttons.Add(new InlineKeyboardButtonDto(stickers[i].Name!, buttonCallback));
         }
 
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
         {
-            var buttonCallback =
-                $"ShowAll:SASwitchKeyboardStickers:{commandArguments.StickerPackId}:{pageTo}:Decrease:10";
+            var buttonCallback = $"SA:SwKbdSt:{commandArguments.StickerPackId}:{pageTo}:Decrease:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", buttonCallback));
         }
 
@@ -58,11 +56,9 @@ public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
 
         if (pageTo <= stickers.Count / commandArguments.PacksOnPage)
         {
-            var buttonCallback =
-                $"ShowAll:SASwitchKeyboardAStickers:{commandArguments.StickerPackId}:{pageTo}:Increase:10";
+            var buttonCallback = $"SA:SwKbdSt:{commandArguments.StickerPackId}:{pageTo}:Increase:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
         }
-
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
         return new ShowAllSwitchKeyboardStickersResult(commandArguments.ChatId, keyboard,

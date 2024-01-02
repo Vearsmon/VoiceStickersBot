@@ -4,7 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
 {
-    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Создать пак", "/create_pack" };
+    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Создать пак", "/create_pack", "CP" };
     private readonly Dictionary<CreatePackStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
 
     public CreatePackCommandArgumentsFactory()

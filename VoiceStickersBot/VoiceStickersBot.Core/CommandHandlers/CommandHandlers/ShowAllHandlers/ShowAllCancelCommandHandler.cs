@@ -1,7 +1,6 @@
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.Commands;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 

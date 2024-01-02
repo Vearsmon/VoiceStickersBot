@@ -4,16 +4,16 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
 {
-    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Показать все", "/show_all" };
+    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Показать все", "/show_all", "SA" };
     private readonly Dictionary<ShowAllStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
 
     public ShowAllCommandArgumentsFactory()
     {
         stepCommandBuilders = new Dictionary<ShowAllStepName, Func<QueryContext, ICommandArguments>>
         {
-            { ShowAllStepName.SwitchKeyboardPacks, BuildShowAllSwitchKeyboardPacksCommandArguments },
+            { ShowAllStepName.SwKbdPc, BuildShowAllSwitchKeyboardPacksCommandArguments },
             { ShowAllStepName.Cancel, r => new ShowAllCancelCommandArguments() },
-            { ShowAllStepName.SwitchKeyboardStickers, BuildShowAllSwitchKeyboardStickersCommandArguments },
+            { ShowAllStepName.SwKbdSt, BuildShowAllSwitchKeyboardStickersCommandArguments },
             { ShowAllStepName.SendSticker, BuildShowAllSendStickerCommandArguments }
         };
     }

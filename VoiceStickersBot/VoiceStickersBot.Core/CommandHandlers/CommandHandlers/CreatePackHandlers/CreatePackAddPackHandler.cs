@@ -25,7 +25,7 @@ public class CreatePackAddPackHandler : ICommandHandler
     {
         await stickerPacksRepository
             .CreateStickerPackAsync(
-                new Guid(), 
+                Guid.NewGuid(),
                 commandArguments.PackName,
                 commandArguments.ChatId.ToString())
             .ConfigureAwait(false);
