@@ -3,10 +3,8 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.Client;
 using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Infra.VSBApplication.Log;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
