@@ -1,4 +1,5 @@
-﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
+﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
+using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
 namespace VoiceStickersBot.Core.CommandResults.ShowAllResults;
 

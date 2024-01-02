@@ -1,12 +1,11 @@
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
-namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
+namespace VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 
-public class ShowAllSwitchKeyboardPacksCommandArguments : IShowAllCommandArguments
+public class AddStickerSwitchKeyboardPacksArguments : IAddStickerCommandArguments
 {
-    public CommandType CommandType => CommandType.ShowAll;
-
-    public ShowAllStepName StepName => ShowAllStepName.SwKbdPc;
+    public CommandType CommandType => CommandType.AddSticker;
+    public AddStickerStepName StepName => AddStickerStepName.SwKbdPc;
     
     public int PageFrom { get; }
     public PageChangeDirection  Direction { get; }
@@ -14,7 +13,7 @@ public class ShowAllSwitchKeyboardPacksCommandArguments : IShowAllCommandArgumen
     public long ChatId { get; }
     public string BotMessageId { get; }
     
-    public ShowAllSwitchKeyboardPacksCommandArguments(
+    public AddStickerSwitchKeyboardPacksArguments(
         int pageFrom, 
         PageChangeDirection direction, 
         int packsOnPage,

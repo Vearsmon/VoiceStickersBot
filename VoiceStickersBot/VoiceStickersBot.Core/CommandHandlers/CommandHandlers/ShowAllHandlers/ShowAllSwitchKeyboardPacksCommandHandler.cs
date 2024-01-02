@@ -22,14 +22,17 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
+        //chatId==userId
+        var chatId = commandArguments.ChatId;
+        
         var (result, packs) = await usersRepository
-            .TryGetStickerPacksOwned(commandArguments.UserId)
+            .TryGetStickerPacksOwned(chatId.ToString())
             .ConfigureAwait(false);
 
         if (!result)
             //TODO: поцы поправте этот кал, я хз че там должно быть
             return new ShowAllSwitchKeyboardPacksResult(
-                commandArguments.ChatId,
+                chatId,
                 new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
 
@@ -53,7 +56,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         if (pageTo > 1)
         {
-            var buttonCallback = $"SA:SwKbdPc:{commandArguments.UserId}:{pageTo}:Decrease:10";
+            var buttonCallback = $"SA:SwKbdPc:{chatId}:{pageTo}:Decrease:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", buttonCallback));
         }
 
@@ -61,12 +64,12 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
         if (pageTo <= packs.Count / commandArguments.PacksOnPage)
         {
-            var buttonCallback = $"SA:SwKbdPc:{commandArguments.UserId}:{pageTo}:Increase:10";
+            var buttonCallback = $"SA:SwKbdPc:{chatId}:{pageTo}:Increase:10";
             lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
         }
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new ShowAllSwitchKeyboardPacksResult(commandArguments.ChatId, keyboard, commandArguments.BotMessageId);
+        return new ShowAllSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
     }
 }

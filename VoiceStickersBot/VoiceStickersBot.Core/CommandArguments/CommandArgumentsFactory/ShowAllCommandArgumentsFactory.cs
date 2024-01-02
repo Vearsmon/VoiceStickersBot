@@ -46,16 +46,20 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be PageChangeDirection.");
         
-        if (!int.TryParse(queryContext.CommandArguments[3], out var stickersOnPage)|| stickersOnPage < 0)
+        if (!int.TryParse(queryContext.CommandArguments[3], out var stickersOnPage) || stickersOnPage < 0)
             throw new ArgumentException(
                 "Invalid argument at index 3. Should be positive int.");
+        
+        if (!long.TryParse(queryContext.CommandArguments[4], out var chatId))
+            throw new ArgumentException(
+                "Invalid argument at index 4. Should be long.");
 
         return new ShowAllSwitchKeyboardStickersCommandArguments(
             stickerPackId, 
             pageFrom,
             direction, 
             stickersOnPage, 
-            queryContext.ChatId,
+            chatId,
             queryContext.BotMessageId);
     }
     
@@ -65,29 +69,28 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
-
-        if (!long.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
-            throw new ArgumentException(
-                "Invalid argument at index 0. Should be long.");
         
-        if (!int.TryParse(queryContext.CommandArguments[1], out var pageFrom) || pageFrom < 0)
+        if (!int.TryParse(queryContext.CommandArguments[0], out var pageFrom) || pageFrom < 0)
             throw new ArgumentException(
-                "Invalid argument at index 1. Should be positive int.");
+                "Invalid argument at index 0. Should be positive int.");
 
-        if (!Enum.TryParse(queryContext.CommandArguments[2], out PageChangeDirection direction))
+        if (!Enum.TryParse(queryContext.CommandArguments[1], out PageChangeDirection direction))
             throw new ArgumentException(
-                "Invalid argument at index 2. Should be PageChangeDirection.");
+                "Invalid argument at index 1. Should be PageChangeDirection.");
         
-        if (!int.TryParse(queryContext.CommandArguments[3], out var stickersOnPage)|| stickersOnPage < 0)
+        if (!int.TryParse(queryContext.CommandArguments[2], out var stickersOnPage)|| stickersOnPage < 0)
             throw new ArgumentException(
-                "Invalid argument at index 3. Should be positive int.");
+                "Invalid argument at index 2. Should be positive int.");
+        
+        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
+            throw new ArgumentException(
+                "Invalid argument at index 3. Should be long.");
 
         return new ShowAllSwitchKeyboardPacksCommandArguments(
-            stickerPackId.ToString(), 
             pageFrom, 
             direction, 
             stickersOnPage, 
-            queryContext.ChatId,
+            chatId,
             queryContext.BotMessageId);
     }
     
