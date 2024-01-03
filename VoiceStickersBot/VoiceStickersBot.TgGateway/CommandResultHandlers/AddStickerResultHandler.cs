@@ -1,6 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
 using VoiceStickersBot.Infra.ObjectStorage;
 
@@ -8,15 +9,51 @@ namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 public class AddStickerResultHandler : ICommandResultHandler
 {
+    public CommandType CommandType => CommandType.AddSticker;
+
     private readonly ObjectStorageClient objectStorage = new();
 
-    public async Task Handle(ITelegramBotClient bot, AddStickerAddStickerResult result)
+    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> resultHandlers;
+
+    public AddStickerResultHandler()
+    {
+        resultHandlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
+        {
+            {
+                typeof(AddStickerAddStickerResult),
+                async (bot, res) => await Handle(bot, (AddStickerAddStickerResult)res)
+            },
+            {
+                typeof(AddStickerSendStickerResult),
+                (bot, res) => Handle(bot, (AddStickerSendStickerResult)res)
+            },
+            {
+                typeof(AddStickerSwitchKeyboardPacksResult),
+                (bot, res) => Handle(bot, (AddStickerSwitchKeyboardPacksResult)res)
+            },
+            {
+                typeof(AddStickerSwitchKeyboardStickersResult),
+                (bot, res) => Handle(bot, (AddStickerSwitchKeyboardStickersResult)res)
+            },
+            {
+                typeof(AddStickerSendInstructionsResult),
+                (bot, res) => Handle(bot, (AddStickerSendInstructionsResult)res)
+            }
+        };
+    }
+
+    public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
+    {
+        return resultHandlers[result.GetType()](bot, result);
+    }
+
+    private async Task Handle(ITelegramBotClient bot, AddStickerAddStickerResult result)
     {
         using var stream = new MemoryStream();
         await bot.GetInfoAndDownloadFileAsync(
             result.FileId,
             stream);
-        
+
         await objectStorage.PutObjectInStorage("location",
             Guid.NewGuid(),
             "Audio/mpeg",
@@ -27,8 +64,8 @@ public class AddStickerResultHandler : ICommandResultHandler
             result.ChatId,
             "Стикер успешно доавблен");
     }
-    
-    public async Task Handle(ITelegramBotClient bot, AddStickerSendStickerResult result)
+
+    private async Task Handle(ITelegramBotClient bot, AddStickerSendStickerResult result)
     {
         var voiceBytes = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var memoryStream = new MemoryStream(voiceBytes);
@@ -37,16 +74,16 @@ public class AddStickerResultHandler : ICommandResultHandler
             result.ChatId,
             voiceFile);
     }
-    
-    public async Task Handle(ITelegramBotClient bot, AddStickerSendInstructionsResult result)
+
+    private async Task Handle(ITelegramBotClient bot, AddStickerSendInstructionsResult result)
     {
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Выберите стикерпак, в который хотите добавить стикер, " +
             "а затем отправьте голосовое сообщение или аудиофайл с подписью - имя будущего стикера.");
     }
-    
-    public async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardPacksResult result)
+
+    private async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardPacksResult result)
     {
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
@@ -64,8 +101,8 @@ public class AddStickerResultHandler : ICommandResultHandler
                 replyMarkup: markup);
         }
     }
-    
-    public async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardStickersResult result)
+
+    private async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardStickersResult result)
     {
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 

@@ -1,8 +1,8 @@
 ﻿namespace VoiceStickersBot.Core.CommandResults.AddStickerResults;
 
-public class AddStickerAddStickerResult : ICommandResult
+public class AddStickerAddStickerResult : AddStickerCommandResultBase
 {
-    public long ChatId { get; }
+    public override long ChatId { get; }
     public string StickerName { get; }
     public string FileId { get; }
 

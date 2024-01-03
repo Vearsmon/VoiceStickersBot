@@ -1,11 +1,36 @@
 ﻿using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.CreatePackResults;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 public class CreatePackResultHandler : ICommandResultHandler
 {
+    public CommandType CommandType => CommandType.CreatePack;
+
+    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> handlers;
+
+    public CreatePackResultHandler()
+    {
+        handlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
+        {
+            {
+                typeof(CreatePackAddPackResult),
+                (bot, res) => Handle(bot, (CreatePackAddPackResult)res)
+            },
+            {
+                typeof(CreatePackSendInstructionsResult),
+                (bot, res) => Handle(bot, (CreatePackSendInstructionsResult)res)
+            }
+        };
+    }
+
+    public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
+    {
+        return handlers[result.GetType()](bot, result);
+    }
+
     public async Task Handle(ITelegramBotClient bot, CreatePackAddPackResult result)
     {
         //надо проверку на ошибки или отмену
