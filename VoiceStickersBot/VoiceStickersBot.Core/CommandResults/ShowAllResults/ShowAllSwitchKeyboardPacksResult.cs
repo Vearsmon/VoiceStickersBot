@@ -6,8 +6,8 @@ namespace VoiceStickersBot.Core.CommandResults.ShowAllResults;
 public class ShowAllSwitchKeyboardPacksResult : ISwitchKeyboardResult
 {
     public long ChatId { get; }
-    public string BotMessageId { get; }
     public InlineKeyboardDto KeyboardDto { get; }
+    public string BotMessageId { get; }
 
     
     public ShowAllSwitchKeyboardPacksResult(long chatId, InlineKeyboardDto keyboardDto, string botMessageId)

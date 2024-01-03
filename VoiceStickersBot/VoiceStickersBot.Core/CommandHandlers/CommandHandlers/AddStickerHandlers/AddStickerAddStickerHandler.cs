@@ -1,7 +1,9 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
+using VoiceStickersBot.Core.CommandResults.AddStickerResults;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
 
@@ -10,17 +12,27 @@ public class AddStickerAddStickerHandler : ICommandHandler
     public CommandType CommandType => CommandType.AddSticker;
 
     private AddStickerAddStickerArguments commandArguments;
-    private StickerPacksRepository stickerPacksRepository;
+    private StickersRepository stickersRepository;
 
     public AddStickerAddStickerHandler(AddStickerAddStickerArguments commandArguments, 
-        StickerPacksRepository stickerPacksRepository)
+        StickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
-        this.stickerPacksRepository = stickerPacksRepository;
+        this.stickersRepository = stickersRepository;
     }
 
-    public Task<ICommandResult> Handle()
+    public async Task<ICommandResult> Handle()
     {
-        throw new NotImplementedException();
+        await stickersRepository.CreateAsync(
+                Guid.NewGuid(),
+                commandArguments.StickerName,
+                "location", // еще хз че в локэйшн указывать
+                commandArguments.StickerPackId)
+            .ConfigureAwait(false);
+
+        return new AddStickerAddStickerResult(
+            commandArguments.ChatId,
+            commandArguments.StickerName,
+            commandArguments.FileId);
     }
 }

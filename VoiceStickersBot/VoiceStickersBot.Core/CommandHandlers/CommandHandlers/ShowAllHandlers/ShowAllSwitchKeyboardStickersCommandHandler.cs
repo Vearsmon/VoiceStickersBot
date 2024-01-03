@@ -24,41 +24,29 @@ public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        var stickerPack = await stickerPacksRepository.GetStickerPackAsync(commandArguments.StickerPackId, true)
+        var stickerPack = await stickerPacksRepository
+            .GetStickerPackAsync(commandArguments.StickerPackId, true)
             .ConfigureAwait(false);
         var stickers = stickerPack.Stickers ?? new List<Sticker>();
 
         var pageFrom = commandArguments.PageFrom;
-
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
-        var startIndex = commandArguments.Direction == PageChangeDirection.Increase
-            ? (pageTo - 1) * commandArguments.PacksOnPage
-            : (pageFrom - 2) * commandArguments.PacksOnPage;
-        var endIndex = commandArguments.Direction == PageChangeDirection.Increase
-            ? commandArguments.PacksOnPage * (pageFrom + 1)
-            : pageTo * commandArguments.PacksOnPage;
+        var countOnPage = commandArguments.StickersOnPage;
 
-        var buttons = new List<InlineKeyboardButtonDto>();
-        for (var i = startIndex; i < stickers.Count && i < endIndex; i++)
-        {
-            var buttonCallback = $"SA:SendSticker:{stickers[i].StickerFullId.StickerId}";
-            buttons.Add(new InlineKeyboardButtonDto(stickers[i].Name!, buttonCallback));
-        }
+        var buttons = SwitchKeyboardExtensions.BuildMainKeyboardStickers(
+            "SA:SendSticker",
+            stickers,
+            pageFrom,
+            pageTo,
+            countOnPage);
 
-        var lastLineButtons = new List<InlineKeyboardButtonDto>();
-        if (pageTo > 1)
-        {
-            var buttonCallback = $"SA:SwKbdSt:{commandArguments.StickerPackId}:{pageTo}:Decrease:10";
-            lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", buttonCallback));
-        }
-
-        lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", $"page:{pageTo}"));
-
-        if (pageTo <= stickers.Count / commandArguments.PacksOnPage)
-        {
-            var buttonCallback = $"SA:SwKbdSt:{commandArguments.StickerPackId}:{pageTo}:Increase:10";
-            lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
-        }
+        var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
+            "SA:SwKbdSt",
+            commandArguments.StickerPackId.ToString(),
+            pageTo,
+            countOnPage,
+            stickers.Count);
+        
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
         return new ShowAllSwitchKeyboardStickersResult(commandArguments.ChatId, keyboard,

@@ -64,7 +64,29 @@ public class TgApiGatewayService
 
             await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
         }
-        else if (update.Type == UpdateType.Message && update.Message.Text is not null)
+        else if (update.Type == UpdateType.Message && 
+                 (update.Message!.Voice is not null || update.Message!.Audio is not null))
+        {
+            //if userState == waitFile
+            //else "Wrong command Try again..."
+            
+            var message = update.Message;
+            var chatId = message!.Chat.Id;
+            var stickerPackId = ""; // TODO: слооварик с состояниями в формате userId: "WaitFile:stickerPackId"
+            var stickerName = message.Caption!; //if text == null bot.send("Братан по русски
+                                                //же написал с названием отправляй"), Надо узнать как капшн к голосовым
+                                                // делать либо если нет подписи, то просто name==id
+            var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
+            
+            var args = new[] { stickerPackId, stickerName, fileId, $"{chatId}" };
+            var context = new QueryContext("AS", "AddSticker", args, chatId);
+
+            var command = tgApiCommandService.CreateCommandArguments(context);
+            var commandResult = await client.Handle(command);
+
+            await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+        }
+        else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
         {
             var message = update.Message;
             var chatId = message!.Chat.Id;

@@ -4,6 +4,8 @@ using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickersRepository;
+using VoiceStickersBot.Core.Repositories.UsersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
@@ -14,14 +16,18 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
     private readonly Dictionary<AddStickerStepName, Func<IAddStickerCommandArguments, ICommandHandler>>
         stepHandlerBuilders;
 
-    public AddStickerCommandHandlerFactory(StickerPacksRepository stickerPacksRepository)
+    public AddStickerCommandHandlerFactory(
+        UsersRepository usersRepository,
+        StickerPacksRepository stickerPacksRepository, 
+        StickersRepository stickersRepository)
     {
         stepHandlerBuilders = new Dictionary<AddStickerStepName, Func<IAddStickerCommandArguments, ICommandHandler>>()
         {
             {
                 AddStickerStepName.SwKbdPc, ca => 
                     new AddStickerSwitchKeyboardPacksHandler(
-                        (AddStickerSwitchKeyboardPacksArguments)ca) },
+                        (AddStickerSwitchKeyboardPacksArguments)ca,
+                        usersRepository) },
             { 
                 AddStickerStepName.Cancel, ca => 
                     new AddStickerCancelHandler(
@@ -29,12 +35,13 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
             { 
                 AddStickerStepName.SwKbdSt, ca => 
                     new AddStickerSwitchKeyboardStickersHandler(
-                        (AddStickerSwitchKeyboardStickersArguments)ca) },
+                        (AddStickerSwitchKeyboardStickersArguments)ca,
+                        stickerPacksRepository) },
             {
                 AddStickerStepName.SendSticker, ca =>
                     new AddStickerSendStickerHandler(
                         (AddStickerSendStickerArguments)ca, 
-                        stickerPacksRepository)
+                        stickersRepository)
             },
             {
                 AddStickerStepName.SendInstructions, ca =>
@@ -45,7 +52,7 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
                 AddStickerStepName.AddSticker, ca =>
                     new AddStickerAddStickerHandler(
                         (AddStickerAddStickerArguments)ca,
-                        stickerPacksRepository)
+                        stickersRepository)
             }
         };
     }

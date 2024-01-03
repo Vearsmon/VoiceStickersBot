@@ -2,7 +2,7 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
-using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
@@ -11,23 +11,22 @@ public class ShowAllSendStickerCommandHandler : ICommandHandler
     public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ShowAllSendStickerCommandArguments commandArguments;
-    private readonly StickerPacksRepository stickerPacksRepository;
+    private readonly StickersRepository stickersRepository;
 
     public ShowAllSendStickerCommandHandler(
         ShowAllSendStickerCommandArguments commandArguments,
-        StickerPacksRepository stickerPacksRepository)
+        StickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
-        this.stickerPacksRepository = stickerPacksRepository; //TODO: дима замути гет стикер 
+        this.stickersRepository = stickersRepository;
     }
 
     public async Task<ICommandResult> Handle()
     {
-        var stickerPack = await stickerPacksRepository
-            .GetStickerPackAsync(commandArguments.StickerPackId, true)
+        var sticker = await stickersRepository
+            .GetAsync(commandArguments.StickerPackId, commandArguments.StickerId)
             .ConfigureAwait(false);
 
-        var sticker = stickerPack.Stickers!.First(p => p.StickerFullId.StickerPackId == commandArguments.StickerId);
         return new ShowAllSendStickerResult(commandArguments.ChatId, sticker);
     }
 }

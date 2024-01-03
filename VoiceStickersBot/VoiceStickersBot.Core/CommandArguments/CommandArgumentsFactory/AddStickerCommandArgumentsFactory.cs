@@ -156,13 +156,18 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be non empty string.");
         
-        if (!long.TryParse(queryContext.CommandArguments[2], out var chatId))
+        if (queryContext.CommandArguments[2].Length == 0)
             throw new ArgumentException(
-                "Invalid argument at index 2. Should be long.");
+                "Invalid argument at index 2. Should be non empty string.");
+        
+        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
+            throw new ArgumentException(
+                "Invalid argument at index 3. Should be long.");
         
         return new AddStickerAddStickerArguments(
             stickerPackId,
             queryContext.CommandArguments[1],
+            queryContext.CommandArguments[2],
             chatId);
     }
 }

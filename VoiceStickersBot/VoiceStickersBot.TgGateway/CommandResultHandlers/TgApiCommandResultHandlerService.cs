@@ -2,6 +2,7 @@
 using Telegram.Bot.Types;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.CommandResults;
+using VoiceStickersBot.Core.CommandResults.AddStickerResults;
 using VoiceStickersBot.Core.CommandResults.CreatePackResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
 
@@ -12,6 +13,7 @@ public class TgApiCommandResultHandlerService
     private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> commandResultHandlers;
     private readonly ShowAllResultHandler showAllResultHandler = new();
     private readonly CreatePackResultHandler createPackResultHandler = new();
+    private readonly AddStickerResultHandler addStickerResultHandler = new();
     
     public TgApiCommandResultHandlerService(List<ICommandResultHandler> commandResultHandlers)
     {
@@ -36,7 +38,27 @@ public class TgApiCommandResultHandlerService
             {
                 typeof(CreatePackSendInstructionsResult), 
                 async (bot, res) => await createPackResultHandler.Handle(bot, (CreatePackSendInstructionsResult)res) 
-            }, 
+            },
+            {
+                typeof(AddStickerAddStickerResult),
+                async (bot, res) => await addStickerResultHandler.Handle(bot, (AddStickerAddStickerResult)res)
+            },
+            {
+                typeof(AddStickerSendStickerResult),
+                async (bot, res) => await addStickerResultHandler.Handle(bot, (AddStickerSendStickerResult)res)
+            },
+            {
+                typeof(AddStickerSwitchKeyboardPacksResult),
+                async (bot, res) => await addStickerResultHandler.Handle(bot, (AddStickerSwitchKeyboardPacksResult)res)
+            },
+            {
+                typeof(AddStickerSwitchKeyboardStickersResult),
+                async (bot, res) => await addStickerResultHandler.Handle(bot, (AddStickerSwitchKeyboardStickersResult)res)
+            },
+            {
+                typeof(AddStickerSendInstructionsResult),
+                async (bot, res) => await addStickerResultHandler.Handle(bot, (AddStickerSendInstructionsResult)res)
+            }
         };
     }
 

@@ -30,43 +30,29 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
             .ConfigureAwait(false);
 
         if (!result)
-            //TODO: поцы поправте этот кал, я хз че там должно быть
+            //TODO: поцы поправте этот кал, я хз че там должно быть (случай когда у юзера нет паков)
             return new ShowAllSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;
-
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
-        var startIndex = commandArguments.Direction == PageChangeDirection.Increase
-            ? (pageTo - 1) * commandArguments.PacksOnPage
-            : (pageFrom - 2) * commandArguments.PacksOnPage;
-        var endIndex = commandArguments.Direction == PageChangeDirection.Increase
-            ? commandArguments.PacksOnPage * (pageFrom + 1)
-            : pageTo * commandArguments.PacksOnPage;
+        var countOnPage = commandArguments.PacksOnPage;
 
-        var buttons = new List<InlineKeyboardButtonDto>();
-        for (var i = startIndex; i < packs.Count && i < endIndex; i++)
-        {
-            var buttonCallback = $"SA:SwKbdSt:{packs[i].Id}:0:Increase:10";
-            buttons.Add(new InlineKeyboardButtonDto(packs[i].Name!, buttonCallback));
-        }
+        var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
+            "SA:SwKbdSt",
+            packs!,
+            pageFrom,
+            pageTo,
+            countOnPage);
 
-        var lastLineButtons = new List<InlineKeyboardButtonDto>();
-        if (pageTo > 1)
-        {
-            var buttonCallback = $"SA:SwKbdPc:{chatId}:{pageTo}:Decrease:10";
-            lastLineButtons.Add(new InlineKeyboardButtonDto("\u25c0\ufe0f", buttonCallback));
-        }
-
-        lastLineButtons.Add(new InlineKeyboardButtonDto($"{pageTo}", $"page:{pageTo}"));
-
-        if (pageTo <= packs.Count / commandArguments.PacksOnPage)
-        {
-            var buttonCallback = $"SA:SwKbdPc:{chatId}:{pageTo}:Increase:10";
-            lastLineButtons.Add(new InlineKeyboardButtonDto("\u25b6\ufe0f", buttonCallback));
-        }
+        var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
+            "SA:SwKbdPc",
+            chatId.ToString(),
+            pageTo,
+            countOnPage,
+            packs!.Count);
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 

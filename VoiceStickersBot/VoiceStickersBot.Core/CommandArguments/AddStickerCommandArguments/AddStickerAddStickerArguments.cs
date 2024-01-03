@@ -9,12 +9,14 @@ public class AddStickerAddStickerArguments : IAddStickerCommandArguments
     
     public Guid StickerPackId { get; }
     public string StickerName { get; }
+    public string FileId { get; }
     public long ChatId { get; }
     
-    public AddStickerAddStickerArguments(Guid stickerPackId, string stickerName, long chatId)
+    public AddStickerAddStickerArguments(Guid stickerPackId, string stickerName, string fileId, long chatId)
     {
         StickerPackId = stickerPackId;
         StickerName = stickerName;
+        FileId = fileId;
         ChatId = chatId;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
 using VoiceStickersBot.Infra.ObjectStorage;
 
@@ -22,15 +21,7 @@ public class ShowAllResultHandler : ICommandResultHandler
 
     public async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardPacksResult result)
     {
-        var currentPageKeyboard = new List<InlineKeyboardButton[]>();
-        foreach (var button in result.KeyboardDto.Buttons)
-            currentPageKeyboard.Add(new[]
-                { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
-        var lastRow = new List<InlineKeyboardButton>();
-        foreach (var lastButton in result.KeyboardDto.LastButtons)
-            lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
-        currentPageKeyboard.Add(lastRow.ToArray());
-        var markup = new InlineKeyboardMarkup(currentPageKeyboard.ToArray());
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)
         {
@@ -49,15 +40,7 @@ public class ShowAllResultHandler : ICommandResultHandler
 
     public async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardStickersResult result)
     {
-        var currentPageKeyboard = new List<InlineKeyboardButton[]>();
-        foreach (var button in result.KeyboardDto.Buttons)
-            currentPageKeyboard.Add(new[]
-                { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
-        var lastRow = new List<InlineKeyboardButton>();
-        foreach (var lastButton in result.KeyboardDto.LastButtons)
-            lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
-        currentPageKeyboard.Add(lastRow.ToArray());
-        var markup = new InlineKeyboardMarkup(currentPageKeyboard.ToArray());
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)
         {
