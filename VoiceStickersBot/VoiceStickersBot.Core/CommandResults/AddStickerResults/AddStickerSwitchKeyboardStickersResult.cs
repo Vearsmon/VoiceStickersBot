@@ -2,14 +2,15 @@
 
 namespace VoiceStickersBot.Core.CommandResults.AddStickerResults;
 
-public class AddStickerSwitchKeyboardStickersResult : ICommandResult
+public class AddStickerSwitchKeyboardStickersResult : AddStickerCommandResultBase
 {
-    public long ChatId { get; }
+    public override long ChatId { get; }
     public InlineKeyboardDto KeyboardDto { get; }
     public string BotMessageId { get; }
+
     public AddStickerSwitchKeyboardStickersResult(
-        long chatId, 
-        InlineKeyboardDto keyboardDto, 
+        long chatId,
+        InlineKeyboardDto keyboardDto,
         string botMessageId)
     {
         ChatId = chatId;

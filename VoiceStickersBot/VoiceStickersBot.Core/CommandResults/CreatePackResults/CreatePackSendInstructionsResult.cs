@@ -1,8 +1,9 @@
 ﻿namespace VoiceStickersBot.Core.CommandResults.CreatePackResults;
 
-public class CreatePackSendInstructionsResult : ICommandResult
+public class CreatePackSendInstructionsResult : CreatePackCommandResultBase
 {
-    public long ChatId { get; }
+    public override long ChatId { get; }
+
     public CreatePackSendInstructionsResult(long chatId)
     {
         ChatId = chatId;

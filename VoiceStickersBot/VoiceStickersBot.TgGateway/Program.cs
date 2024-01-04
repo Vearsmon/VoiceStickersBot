@@ -2,12 +2,9 @@
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 using VoiceStickersBot.Infra.VSBApplication;
 using VoiceStickersBot.Infra.VSBApplication.Settings;
 using VoiceStickersBot.TgGateway;
-using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 using CancellationTokenSource cts = new();
 var host = new TgApiGatewayHost();
@@ -44,15 +41,10 @@ public class TgApiGatewayHost : VsbApplicationBase
 
     protected override void ConfigureContainer(StandardKernel containerBuilder)
     {
-        containerBuilder.Bind<ICommandArgumentsFactory>().To<ShowAllCommandArgumentsFactory>().InSingletonScope();
-        containerBuilder.Bind<ICommandArgumentsFactory>().To<CreatePackCommandArgumentsFactory>().InSingletonScope();
-        
-        
-        containerBuilder.Bind<ICommandHandlerFactory>().To<ShowAllCommandHandlerFactory>().InSingletonScope();
-        containerBuilder.Bind<ICommandHandlerFactory>().To<CreatePackCommandHandlerFactory>().InSingletonScope();
-        
-        containerBuilder.Bind<ICommandResultHandler>().To<ShowAllResultHandler>().InSingletonScope();
-        containerBuilder.Bind<ICommandResultHandler>().To<CreatePackResultHandler>().InSingletonScope();
+        containerBuilder
+            .BindCommandArgumentsFactories()
+            .BindCommandHandlerFactories()
+            .BindCommandResultHandlers();
 
         base.ConfigureContainer(containerBuilder);
     }
