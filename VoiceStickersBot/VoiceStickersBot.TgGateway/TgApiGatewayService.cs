@@ -55,6 +55,9 @@ public class TgApiGatewayService
         Update update,
         CancellationToken cancellationToken)
     {
+        //TODO: команды через слеш убираем (кроме /cancel возможно, которая полностью отменяет текущую команду),
+        //TODO: оставляем только кнопки с текстом. Надо завести словарь который каждому такому тексту сопоставит
+        //TODO: какойто дефолтный квери контекс для этой команды (см ниже)
         if (update.Type == UpdateType.CallbackQuery)
         {
             var context = BuildQueryContext(update);
@@ -72,7 +75,7 @@ public class TgApiGatewayService
             
             var message = update.Message;
             var chatId = message!.Chat.Id;
-            var stickerPackId = ""; // TODO: слооварик с состояниями в формате userId: "WaitFile:stickerPackId"
+            var stickerPackId = ""; // TODO: словарик с состояниями в формате userId: "WaitFile:stickerPackId"
             var stickerName = message.Caption!; //if text == null bot.send("Братан по русски
                                                 //же написал с названием отправляй"), Надо узнать как капшн к голосовым
                                                 // делать либо если нет подписи, то просто name==id
@@ -91,6 +94,7 @@ public class TgApiGatewayService
             var message = update.Message;
             var chatId = message!.Chat.Id;
 
+            //TODO: вот здесь получать из словарика контекст
             /*var args = new[] { $"{chatId}", "0", "Increase", "10" };
             var context = new QueryContext("SA", "SwKbdPc", args, chatId);*/
 

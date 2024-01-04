@@ -14,6 +14,7 @@ public class AddStickerAddStickerHandler : ICommandHandler
     private AddStickerAddStickerArguments commandArguments;
     private StickersRepository stickersRepository;
 
+    //TODO: может переименовать эту и подобные команды на CommandTypeUploadSticker...
     public AddStickerAddStickerHandler(AddStickerAddStickerArguments commandArguments, 
         StickersRepository stickersRepository)
     {

@@ -31,7 +31,7 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
             .ConfigureAwait(false);
 
         if (!result)
-            //TODO: поцы поправте этот кал, я хз че там должно быть
+            //TODO: поцы поправте этот кал, я хз че там должно быть (случай когда у юзера нет паков)
             return new AddStickerSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
