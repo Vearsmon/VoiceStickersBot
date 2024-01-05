@@ -8,5 +8,5 @@ public interface IStickersRepository
 
     Task<Sticker> GetAsync(Guid stickerPackId, Guid id);
 
-    Task DeleteAsync(Guid id);
+    Task DeleteAsync(Guid stickerPackId, Guid id);
 }

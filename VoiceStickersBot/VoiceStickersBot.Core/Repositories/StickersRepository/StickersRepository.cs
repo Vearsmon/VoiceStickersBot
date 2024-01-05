@@ -43,11 +43,11 @@ public class StickersRepository : IStickersRepository
         return entities.Single().ToSticker();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid stickerPackId, Guid id)
     {
         using var table = vsbDatabaseCluster.GetTable<StickerEntity>();
         await table.PerformDeletionRequestAsync(
-            r => r.Where(sticker => sticker.Id == id),
+            r => r.Where(sticker => sticker.StickerPackId == stickerPackId && sticker.Id == id),
             new CancellationToken()).ConfigureAwait(false);
     }
 }
