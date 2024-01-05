@@ -17,9 +17,9 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
         stepHandlerBuilders;
 
     public AddStickerCommandHandlerFactory(
-        UsersRepository usersRepository,
-        StickerPacksRepository stickerPacksRepository, 
-        StickersRepository stickersRepository)
+        IUsersRepository usersRepository,
+        IStickerPacksRepository stickerPacksRepository, 
+        IStickersRepository stickersRepository)
     {
         stepHandlerBuilders = new Dictionary<AddStickerStepName, Func<IAddStickerCommandArguments, ICommandHandler>>()
         {

@@ -11,11 +11,11 @@ public class ShowAllSendStickerCommandHandler : ICommandHandler
     public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ShowAllSendStickerCommandArguments commandArguments;
-    private readonly StickersRepository stickersRepository;
+    private readonly IStickersRepository stickersRepository;
 
     public ShowAllSendStickerCommandHandler(
         ShowAllSendStickerCommandArguments commandArguments,
-        StickersRepository stickersRepository)
+        IStickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
         this.stickersRepository = stickersRepository;

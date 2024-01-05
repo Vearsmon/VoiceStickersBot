@@ -12,11 +12,12 @@ public class AddStickerAddStickerHandler : ICommandHandler
     public CommandType CommandType => CommandType.AddSticker;
 
     private AddStickerAddStickerArguments commandArguments;
-    private StickersRepository stickersRepository;
+    private IStickersRepository stickersRepository;
 
     //TODO: может переименовать эту и подобные команды на CommandTypeUploadSticker...
-    public AddStickerAddStickerHandler(AddStickerAddStickerArguments commandArguments, 
-        StickersRepository stickersRepository)
+    public AddStickerAddStickerHandler(
+        AddStickerAddStickerArguments commandArguments, 
+        IStickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
         this.stickersRepository = stickersRepository;

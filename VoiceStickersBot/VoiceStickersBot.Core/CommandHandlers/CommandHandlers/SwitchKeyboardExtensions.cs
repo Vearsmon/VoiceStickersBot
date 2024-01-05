@@ -29,6 +29,7 @@ public class SwitchKeyboardExtensions
     
     public static List<InlineKeyboardButtonDto> BuildMainKeyboardPacks(
         string callbackPrefix,
+        string callbackPostfix,
         List<StickerPack> packs,
         int pageFrom,
         int pageTo,
@@ -47,7 +48,7 @@ public class SwitchKeyboardExtensions
         for (var i = startIndex; i < packs!.Count && i < endIndex; i++)
             buttons.Add(new InlineKeyboardButtonDto(
                 packs[i].Name!,
-                callbackPrefix + $":{packs[i].Id}:0:Increase:10"));
+                callbackPrefix + $":{packs[i].Id}" + callbackPostfix));
 
         return buttons;
     }

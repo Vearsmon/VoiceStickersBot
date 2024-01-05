@@ -11,10 +11,11 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
     public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ShowAllSwitchKeyboardPacksCommandArguments commandArguments;
-    private readonly UsersRepository usersRepository;
+    private readonly IUsersRepository usersRepository;
 
-    public ShowAllSwitchKeyboardPacksCommandHandler(ShowAllSwitchKeyboardPacksCommandArguments commandArguments,
-        UsersRepository usersRepository)
+    public ShowAllSwitchKeyboardPacksCommandHandler(
+        ShowAllSwitchKeyboardPacksCommandArguments commandArguments,
+        IUsersRepository usersRepository)
     {
         this.commandArguments = commandArguments;
         this.usersRepository = usersRepository;
@@ -26,7 +27,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
         var chatId = commandArguments.ChatId;
         
         var (result, packs) = await usersRepository
-            .TryGetStickerPacksOwned(chatId.ToString())
+            .TryGetStickerPacksOwned(chatId.ToString(), false)
             .ConfigureAwait(false);
 
         if (!result)
@@ -42,6 +43,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
             "SA:SwKbdSt",
+            ":0:Increase:10",
             packs!,
             pageFrom,
             pageTo,

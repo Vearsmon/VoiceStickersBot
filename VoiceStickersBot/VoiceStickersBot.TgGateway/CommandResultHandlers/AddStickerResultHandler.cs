@@ -13,11 +13,11 @@ public class AddStickerResultHandler : ICommandResultHandler
 
     private readonly ObjectStorageClient objectStorage = new();
 
-    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> resultHandlers;
+    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> handlers;
 
     public AddStickerResultHandler()
     {
-        resultHandlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
+        handlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
         {
             {
                 typeof(AddStickerAddStickerResult),
@@ -44,7 +44,7 @@ public class AddStickerResultHandler : ICommandResultHandler
 
     public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
     {
-        return resultHandlers[result.GetType()](bot, result);
+        return handlers[result.GetType()](bot, result);
     }
 
     private async Task Handle(ITelegramBotClient bot, AddStickerAddStickerResult result)

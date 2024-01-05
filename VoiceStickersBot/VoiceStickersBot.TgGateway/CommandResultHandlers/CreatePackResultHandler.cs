@@ -31,13 +31,13 @@ public class CreatePackResultHandler : ICommandResultHandler
         return handlers[result.GetType()](bot, result);
     }
 
-    public async Task Handle(ITelegramBotClient bot, CreatePackAddPackResult result)
+    private async Task Handle(ITelegramBotClient bot, CreatePackAddPackResult result)
     {
         //надо проверку на ошибки или отмену
         await bot.SendTextMessageAsync(result.ChatId, "Стикерпак успешно создан");
     }
 
-    public async Task Handle(ITelegramBotClient bot, CreatePackSendInstructionsResult result)
+    private async Task Handle(ITelegramBotClient bot, CreatePackSendInstructionsResult result)
     {
         await bot.SendTextMessageAsync(result.ChatId, "Отправьте мне название стикерпака");
     }

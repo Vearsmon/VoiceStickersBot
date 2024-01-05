@@ -12,11 +12,11 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
     public CommandType CommandType => CommandType.AddSticker;
 
     private readonly AddStickerSwitchKeyboardStickersArguments commandArguments;
-    private readonly StickerPacksRepository stickerPacksRepository;
+    private readonly IStickerPacksRepository stickerPacksRepository;
     
     public AddStickerSwitchKeyboardStickersHandler(
         AddStickerSwitchKeyboardStickersArguments commandArguments,
-        StickerPacksRepository stickerPacksRepository)
+        IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;
         this.stickerPacksRepository = stickerPacksRepository;

@@ -10,6 +10,7 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandResultHandler>().To<ShowAllResultHandler>().InSingletonScope();
         containerBuilder.Bind<ICommandResultHandler>().To<CreatePackResultHandler>().InSingletonScope();
         containerBuilder.Bind<ICommandResultHandler>().To<AddStickerResultHandler>().InSingletonScope();
+        containerBuilder.Bind<ICommandResultHandler>().To<DeletePackResultHandler>().InSingletonScope();
         return containerBuilder;
     }
 }

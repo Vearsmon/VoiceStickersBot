@@ -11,6 +11,7 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandArgumentsFactory>().To<ShowAllCommandArgumentsFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandArgumentsFactory>().To<CreatePackCommandArgumentsFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandArgumentsFactory>().To<AddStickerCommandArgumentsFactory>().InSingletonScope();
+        containerBuilder.Bind<ICommandArgumentsFactory>().To<DeletePackCommandArgumentsFactory>().InSingletonScope();
         return containerBuilder;
     }
 
@@ -19,6 +20,7 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandHandlerFactory>().To<ShowAllCommandHandlerFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandHandlerFactory>().To<CreatePackCommandHandlerFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandHandlerFactory>().To<AddStickerCommandHandlerFactory>().InSingletonScope();
+        containerBuilder.Bind<ICommandHandlerFactory>().To<DeletePackCommandHandlerFactory>().InSingletonScope();
         return containerBuilder;
     }
 }

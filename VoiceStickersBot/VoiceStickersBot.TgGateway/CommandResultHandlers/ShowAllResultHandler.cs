@@ -9,7 +9,7 @@ namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 public class ShowAllResultHandler : ICommandResultHandler
 {
-    public CommandType CommandType { get; }
+    public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ObjectStorageClient objectStorage = new();
 
@@ -39,7 +39,7 @@ public class ShowAllResultHandler : ICommandResultHandler
         return handlers[result.GetType()](bot, result);
     }
 
-    public async Task Handle(ITelegramBotClient bot, ShowAllSendStickerResult result)
+    private async Task Handle(ITelegramBotClient bot, ShowAllSendStickerResult result)
     {
         var voiceBytes = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var memoryStream = new MemoryStream(voiceBytes);
@@ -49,7 +49,7 @@ public class ShowAllResultHandler : ICommandResultHandler
             voiceFile);
     }
 
-    public async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardPacksResult result)
+    private async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardPacksResult result)
     {
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
@@ -68,7 +68,7 @@ public class ShowAllResultHandler : ICommandResultHandler
         }
     }
 
-    public async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardStickersResult result)
+    private async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardStickersResult result)
     {
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 

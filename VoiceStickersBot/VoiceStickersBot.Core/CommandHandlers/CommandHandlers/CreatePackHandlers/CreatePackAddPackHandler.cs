@@ -11,11 +11,11 @@ public class CreatePackAddPackHandler : ICommandHandler
     public CommandType CommandType => CommandType.CreatePack;
     
     private readonly CreatePackAddPackArguments commandArguments;
-    private readonly StickerPacksRepository stickerPacksRepository;
+    private readonly IStickerPacksRepository stickerPacksRepository;
 
     public CreatePackAddPackHandler(
         CreatePackAddPackArguments commandArguments, 
-        StickerPacksRepository stickerPacksRepository)
+        IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;
         this.stickerPacksRepository = stickerPacksRepository;

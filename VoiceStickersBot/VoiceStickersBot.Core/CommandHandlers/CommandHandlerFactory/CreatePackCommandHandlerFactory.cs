@@ -14,21 +14,24 @@ public class CreatePackCommandHandlerFactory : CommandHandlerFactoryBase<ICreate
     private readonly Dictionary<CreatePackStepName, Func<ICreatePackCommandArguments, ICommandHandler>>
         stepHandlerBuilders;
 
-    public CreatePackCommandHandlerFactory(StickerPacksRepository stickerPacksRepository)
+    public CreatePackCommandHandlerFactory(IStickerPacksRepository stickerPacksRepository)
     {
         stepHandlerBuilders = new Dictionary<CreatePackStepName, Func<ICreatePackCommandArguments, ICommandHandler>>()
         {
-            { CreatePackStepName.Cancel, ca =>  
-                new CreatePackCancelHandler(
-                    (CreatePackCancelArguments)ca) 
+            { 
+                CreatePackStepName.Cancel, ca =>  
+                    new CreatePackCancelHandler(
+                        (CreatePackCancelArguments)ca) 
             },
-            { CreatePackStepName.AddPack, ca => 
-                new CreatePackAddPackHandler(
-                    (CreatePackAddPackArguments)ca, stickerPacksRepository) 
+            { 
+                CreatePackStepName.AddPack, ca => 
+                    new CreatePackAddPackHandler(
+                        (CreatePackAddPackArguments)ca, stickerPacksRepository) 
             },
-            { CreatePackStepName.SendInstructions,  ca => 
-                new CreatePackSendInstructionsHandler(
-                    (CreatePackSendInstructionsArguments)ca)
+            { 
+                CreatePackStepName.SendInstructions,  ca => 
+                    new CreatePackSendInstructionsHandler(
+                        (CreatePackSendInstructionsArguments)ca)
             }
         };
     }

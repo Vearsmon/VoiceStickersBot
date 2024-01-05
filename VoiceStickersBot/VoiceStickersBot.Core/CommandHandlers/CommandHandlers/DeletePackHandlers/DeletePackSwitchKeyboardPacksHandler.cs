@@ -1,20 +1,20 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
+using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.AddStickerResults;
+using VoiceStickersBot.Core.CommandResults.DeletePackResults;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;
 
-public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
+public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
 {
-    public CommandType CommandType => CommandType.AddSticker;
+    public CommandType CommandType => CommandType.DeletePack;
 
-    private readonly AddStickerSwitchKeyboardPacksArguments commandArguments;
-    private readonly IUsersRepository usersRepository;
+    private DeletePackSwitchKeyboardPacksArguments commandArguments;
+    private IUsersRepository usersRepository;
 
-    public AddStickerSwitchKeyboardPacksHandler(
-        AddStickerSwitchKeyboardPacksArguments commandArguments,
+    public DeletePackSwitchKeyboardPacksHandler(
+        DeletePackSwitchKeyboardPacksArguments commandArguments,
         IUsersRepository usersRepository)
     {
         this.commandArguments = commandArguments;
@@ -23,7 +23,6 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        //chatId==userId
         var chatId = commandArguments.ChatId;
         
         var (result, packs) = await usersRepository
@@ -32,25 +31,27 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
 
         if (!result)
             //TODO: поцы поправте этот кал, я хз че там должно быть (случай когда у юзера нет паков)
-            return new AddStickerSwitchKeyboardPacksResult(
+            return new DeletePackSwitchKeyboardPacksResult(
                 chatId,
-                new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
+                new InlineKeyboardDto(
+                    new List<InlineKeyboardButtonDto>(),
+                    new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
-
+        
         var pageFrom = commandArguments.PageFrom;
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.PacksOnPage;
-        
+
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
-            "AS:SwKbdSt",
-            ":0:Increase:10",
+            "DP:Confirm",
+            "",
             packs!,
             pageFrom,
             pageTo,
             countOnPage);
-        
+
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
-            "AS:SwKbdPc",
+            "DP:SwKbdPc",
             chatId.ToString(),
             pageTo,
             countOnPage,
@@ -58,6 +59,6 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new AddStickerSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new DeletePackSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
     }
 }

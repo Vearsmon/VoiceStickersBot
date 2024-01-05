@@ -12,10 +12,11 @@ public class AddStickerSendStickerHandler : ICommandHandler
     public CommandType CommandType => CommandType.AddSticker;
 
     private readonly AddStickerSendStickerArguments commandArguments;
-    private readonly StickersRepository stickersRepository;
+    private readonly IStickersRepository stickersRepository;
 
-    public AddStickerSendStickerHandler(AddStickerSendStickerArguments commandArguments, 
-        StickersRepository stickersRepository)
+    public AddStickerSendStickerHandler(
+        AddStickerSendStickerArguments commandArguments, 
+        IStickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
         this.stickersRepository = stickersRepository;

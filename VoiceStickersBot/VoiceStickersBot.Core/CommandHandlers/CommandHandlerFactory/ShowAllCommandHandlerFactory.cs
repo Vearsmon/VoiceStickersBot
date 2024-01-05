@@ -16,9 +16,9 @@ public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<IShowAllCo
     private readonly Dictionary<ShowAllStepName, Func<IShowAllCommandArguments, ICommandHandler>> stepHandlerBuilders;
 
     public ShowAllCommandHandlerFactory(
-        UsersRepository usersRepository, 
-        StickerPacksRepository stickerPacksRepository,
-        StickersRepository stickersRepository)
+        IUsersRepository usersRepository, 
+        IStickerPacksRepository stickerPacksRepository,
+        IStickersRepository stickersRepository)
     {
         stepHandlerBuilders = new Dictionary<ShowAllStepName, Func<IShowAllCommandArguments, ICommandHandler>>()
         {

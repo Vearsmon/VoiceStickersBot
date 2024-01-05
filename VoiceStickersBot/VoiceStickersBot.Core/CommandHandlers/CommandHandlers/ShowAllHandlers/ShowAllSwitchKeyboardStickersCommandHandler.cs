@@ -12,11 +12,11 @@ public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
     public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ShowAllSwitchKeyboardStickersCommandArguments commandArguments;
-    private readonly StickerPacksRepository stickerPacksRepository;
+    private readonly IStickerPacksRepository stickerPacksRepository;
 
     public ShowAllSwitchKeyboardStickersCommandHandler(
         ShowAllSwitchKeyboardStickersCommandArguments commandArguments,
-        StickerPacksRepository stickerPacksRepository)
+        IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;
         this.stickerPacksRepository = stickerPacksRepository;
