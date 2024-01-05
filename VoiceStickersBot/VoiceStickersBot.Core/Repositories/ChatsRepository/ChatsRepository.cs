@@ -66,4 +66,21 @@ public class ChatsRepository : IChatsRepository
             .Select(stickerPack => stickerPack.ToStickerPack())
             .ToList() ?? new List<StickerPack>());
     }
+
+    public async Task RemoveStickerPack(string chatId, Guid stickerPackId)
+    {
+        using var table = vsbDatabaseCluster.GetTable<ChatEntity>();
+
+        var chats = await table.PerformReadonlyRequestAsync(
+                r => r.Where(u => u.Id == chatId),
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        if (chats.IsEmpty())
+            throw new ChatNotFoundException($"Chat with id: {chatId} was not found");
+
+        var chat = chats.Single();
+        chat.StickerPacks?.Remove(chat.StickerPacks.Single(p => p.Id == stickerPackId));
+        await table.PerformUpdateRequestAsync(chat, new CancellationToken()).ConfigureAwait(false);
+    }
 }
