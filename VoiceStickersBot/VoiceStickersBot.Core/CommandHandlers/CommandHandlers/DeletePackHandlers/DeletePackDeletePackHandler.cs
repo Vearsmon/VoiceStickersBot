@@ -1,6 +1,7 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
+using VoiceStickersBot.Core.CommandResults.DeletePackResults;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 
@@ -26,7 +27,10 @@ public class DeletePackDeletePackHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        //TODO: в StickerPacksRepository и UsersRepository надо метод DeletePack
-        throw new NotImplementedException();
+        await usersRepository
+            .RemoveStickerPack(commandArguments.ChatId.ToString(), commandArguments.StickerPackId)
+            .ConfigureAwait(false);
+
+        return new DeletePackDeletePackResult(commandArguments.ChatId);
     }
 }
