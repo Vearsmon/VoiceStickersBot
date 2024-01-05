@@ -9,4 +9,6 @@ public interface IChatsRepository
     Task<List<StickerPack>> GetStickerPacksAvailable(string id, bool includeStickers);
 
     Task<(bool, List<StickerPack>?)> TryGetPacksAvailable(string id, bool includeStickers);
+
+    Task RemoveStickerPack(string chatId, Guid stickerPackId);
 }

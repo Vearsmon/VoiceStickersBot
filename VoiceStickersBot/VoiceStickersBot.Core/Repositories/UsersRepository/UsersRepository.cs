@@ -49,6 +49,23 @@ public class UsersRepository : IUsersRepository
             : (true, ExtractStickerPacks(users));
     }
 
+    public async Task RemoveStickerPack(string userId, Guid stickerPackId)
+    {
+        using var table = vsbDatabaseCluster.GetTable<UserEntity>();
+
+        var users = await table.PerformReadonlyRequestAsync(
+                r => r.Where(u => u.Id == userId),
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        if (users.IsEmpty())
+            throw new UserNotFoundException($"User with id: {userId} was not found");
+
+        var user = users.Single();
+        user.StickerPacks?.Remove(user.StickerPacks.Single(p => p.Id == stickerPackId));
+        await table.PerformUpdateRequestAsync(user, new CancellationToken()).ConfigureAwait(false);
+    }
+
     private async Task<List<UserEntity>> GetUser(string id, bool includeStickers)
     {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();
