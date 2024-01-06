@@ -27,7 +27,7 @@ public class UsersRepository : IUsersRepository
             .ConfigureAwait(false);
     }
 
-    public async Task<List<StickerPack>> GetStickerPacksOwned(
+    public async Task<List<StickerPack>> GetStickerPacks(
         string id,
         bool includeStickers = false)
     {
@@ -38,7 +38,7 @@ public class UsersRepository : IUsersRepository
             : ExtractStickerPacks(users);
     }
 
-    public async Task<(bool, List<StickerPack>?)> TryGetStickerPacksOwned(
+    public async Task<(bool, List<StickerPack>?)> TryGetStickerPacks(
         string id,
         bool includeStickers = false)
     {

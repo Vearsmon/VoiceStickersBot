@@ -157,7 +157,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be non empty string.");
         
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         bot.GetInfoAndDownloadFileAsync(fileId, stream)
             .GetAwaiter()
             .GetResult();

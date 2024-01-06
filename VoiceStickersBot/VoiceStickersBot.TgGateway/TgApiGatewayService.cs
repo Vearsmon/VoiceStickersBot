@@ -149,7 +149,9 @@ public class TgApiGatewayService
                         UserInfoByChatId[chatId] = new UserInfo(
                             UserState.WaitStickerName, 
                             stickerPackId: context.CommandArguments[0]);
-
+                    else
+                        UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                    
                     var command = tgApiCommandService.CreateCommandArguments(context);
                     var commandResult = await client.Handle(command);
 

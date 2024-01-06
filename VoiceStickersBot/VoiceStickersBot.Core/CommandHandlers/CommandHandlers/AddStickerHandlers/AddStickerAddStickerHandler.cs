@@ -39,6 +39,8 @@ public class AddStickerAddStickerHandler : ICommandHandler
                 commandArguments.Audio.ToArray())
             .ConfigureAwait(false);
         
+        await commandArguments.Audio.DisposeAsync().ConfigureAwait(false);
+        
         await stickersRepository.CreateAsync(
                 stickerId,
                 commandArguments.StickerName,

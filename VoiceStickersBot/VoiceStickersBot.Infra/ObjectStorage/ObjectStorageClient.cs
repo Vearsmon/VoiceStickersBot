@@ -13,15 +13,17 @@ public class ObjectStorageClient : IObjectStorageClient
         var objectResponse = await objectStorageClient
             .GetObjectAsync(location.Path, location.FileName)
             .ConfigureAwait(false);
-        using var bytes = objectResponse.ResponseStream;
+        await using var bytes = objectResponse.ResponseStream;
         var byteBuffer = new byte[16 * 1024];
-        using var memoryStream = new MemoryStream();
+        var memoryStream = new MemoryStream();
         var bytesRead = 0;
         while ((bytesRead = await bytes.ReadAsync(byteBuffer).ConfigureAwait(false)) > 0)
         {
             await memoryStream.WriteAsync(byteBuffer, 0, bytesRead).ConfigureAwait(false);
         }
 
+        memoryStream.Seek(0, SeekOrigin.Begin);
+        
         return memoryStream;
     }
 

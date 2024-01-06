@@ -36,7 +36,7 @@ internal class CoreTestApplication : VsbApplicationBase
         foreach (var s in stickers.Stickers ?? new List<Sticker>()) Console.WriteLine(s.StickerFullId.StickerId);
 
         log.Info("2");
-        var stickerPacks = await usersRepository.GetStickerPacksOwned(userId, true).ConfigureAwait(false);
+        var stickerPacks = await usersRepository.GetStickerPacks(userId, true).ConfigureAwait(false);
         foreach (var s in stickerPacks)
         {
             log.Info(s.Id.ToString());

@@ -6,9 +6,9 @@ public interface IUsersRepository
 {
     Task Create(string id);
 
-    Task<List<StickerPack>> GetStickerPacksOwned(string id, bool includeStickers);
+    Task<List<StickerPack>> GetStickerPacks(string id, bool includeStickers);
 
-    Task<(bool, List<StickerPack>?)> TryGetStickerPacksOwned(string id, bool includeStickers);
+    Task<(bool, List<StickerPack>?)> TryGetStickerPacks(string id, bool includeStickers);
     Task<bool> CreateIfNotExists(string id);
 
     Task RemoveStickerPack(string userId, Guid stickerPackId);
