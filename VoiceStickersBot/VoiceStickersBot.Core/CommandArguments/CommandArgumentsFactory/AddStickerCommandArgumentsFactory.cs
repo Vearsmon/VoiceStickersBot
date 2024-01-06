@@ -4,7 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
 {
-    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Добавить стикер", "/add_sticker", "AS" };
+    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Добавить стикер", "AS" };
     
     private readonly Dictionary<AddStickerStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
 

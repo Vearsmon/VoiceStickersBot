@@ -4,7 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
 {
-    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Показать все", "/show_all", "SA" };
+    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Показать все", "SA" };
     private readonly Dictionary<ShowAllStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
 
     public ShowAllCommandArgumentsFactory()

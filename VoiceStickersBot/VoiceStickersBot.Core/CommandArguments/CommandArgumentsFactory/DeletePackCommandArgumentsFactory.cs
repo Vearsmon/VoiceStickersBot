@@ -4,7 +4,7 @@ namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
 {
-    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Удалить пак", "/delete_pack", "DP" };
+    public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Удалить пак", "DP" };
 
     private readonly Dictionary<DeletePackStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
 

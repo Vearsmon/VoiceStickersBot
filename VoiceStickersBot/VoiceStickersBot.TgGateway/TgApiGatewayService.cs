@@ -55,9 +55,6 @@ public class TgApiGatewayService
         Update update,
         CancellationToken cancellationToken)
     {
-        //TODO: команды через слеш убираем (кроме /cancel возможно, которая полностью отменяет текущую команду),
-        //TODO: оставляем только кнопки с текстом. Надо завести словарь который каждому такому тексту сопоставит
-        //TODO: какойто дефолтный квери контекс для этой команды (см ниже)
         if (update.Type == UpdateType.CallbackQuery)
         {
             var context = BuildQueryContext(update);
@@ -70,6 +67,7 @@ public class TgApiGatewayService
         else if (update.Type == UpdateType.Message && 
                  (update.Message!.Voice is not null || update.Message!.Audio is not null))
         {
+            // обсудить чем лучше ебнуть - строкой, енумом или бля че
             //if userState == waitFile
             //else "Wrong command Try again..."
             
@@ -79,6 +77,7 @@ public class TgApiGatewayService
             var stickerName = message.Caption!; //if text == null bot.send("Братан по русски
                                                 //же написал с названием отправляй"), Надо узнать как капшн к голосовым
                                                 // делать либо если нет подписи, то просто name==id
+                                                // вот это вообще тугой момент намекающий на болото ифов, пахнет залупами
             var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
             
             var args = new[] { stickerPackId, stickerName, fileId, $"{chatId}" };
@@ -94,12 +93,7 @@ public class TgApiGatewayService
             var message = update.Message;
             var chatId = message!.Chat.Id;
 
-            //TODO: вот здесь получать из словарика контекст
-            /*var args = new[] { $"{chatId}", "0", "Increase", "10" };
-            var context = new QueryContext("SA", "SwKbdPc", args, chatId);*/
-
-            var args = new[] { $"{chatId}" };
-            var context = new QueryContext("CP", "SendInstructions", args, chatId);
+            var context = QueryContextByCommand[message.Text](chatId);
 
             var command = tgApiCommandService.CreateCommandArguments(context);
             var commandResult = await client.Handle(command);
@@ -125,6 +119,25 @@ public class TgApiGatewayService
             chatId,
             botMessageId);
     }
+
+    private static Dictionary<string, Func<long, QueryContext>> QueryContextByCommand = new()
+    {
+        {"Показать все", chatId => new QueryContext(
+            "SA", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
+            )},
+        {"Добавить стикер", chatId => new QueryContext(
+            "AS", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
+            )},
+        {"Создать пак", chatId => new QueryContext(
+            "CP", "SendInstructions", new[] { $"{chatId}" }, chatId
+            )},
+        {"Удалить стикер", chatId => new QueryContext(
+            "DS", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
+            )},
+        {"Удалить пак", chatId => new QueryContext(
+            "DP", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
+            )}
+    };
 
     public Task HandlePollingErrorAsync(
         ITelegramBotClient botClient,
