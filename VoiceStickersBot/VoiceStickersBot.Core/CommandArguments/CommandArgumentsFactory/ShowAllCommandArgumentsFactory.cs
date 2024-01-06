@@ -90,15 +90,16 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
     private ICommandArguments BuildShowAllSendStickerCommandArguments(QueryContext queryContext)
     {
         const int argumentsCount = 2;
+        
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
-
-        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
+        
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerId))
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
         
-        if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerId))
+        if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be Guid.");
 

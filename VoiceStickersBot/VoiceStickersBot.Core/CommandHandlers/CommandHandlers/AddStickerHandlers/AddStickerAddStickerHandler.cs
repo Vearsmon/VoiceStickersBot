@@ -26,8 +26,10 @@ public class AddStickerAddStickerHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
+        var stickerId = TimeGuid.NewGuid(Timestamp.Now).ToGuid();
+        
         await stickersRepository.CreateAsync(
-                TimeGuid.NewGuid(Timestamp.Now).ToGuid(),
+                stickerId,
                 commandArguments.StickerName,
                 "objstorbucket",
                 commandArguments.StickerPackId)
@@ -36,6 +38,7 @@ public class AddStickerAddStickerHandler : ICommandHandler
         return new AddStickerAddStickerResult(
             commandArguments.ChatId,
             commandArguments.StickerName,
+            stickerId,
             commandArguments.FileId);
     }
 }

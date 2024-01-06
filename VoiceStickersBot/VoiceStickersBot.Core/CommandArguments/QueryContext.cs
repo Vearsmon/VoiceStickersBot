@@ -6,7 +6,7 @@ public class QueryContext
 
     public string CommandStep { get; }
 
-    public IReadOnlyList<string> CommandArguments { get; }
+    public List<string> CommandArguments { get; }
 
     public long ChatId { get; }
     public string BotMessageId { get; }
@@ -15,7 +15,7 @@ public class QueryContext
     public QueryContext(
         string commandType,
         string commandStep,
-        IReadOnlyList<string> commandArguments,
+        List<string> commandArguments,
         long chatId,
         string botMessageId = null,
         int? menuPage = null)

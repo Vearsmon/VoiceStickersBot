@@ -1,12 +1,10 @@
-﻿using Amazon.S3;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core.Client;
 using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 using VoiceStickersBot.Infra.VSBApplication.Log;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
@@ -77,6 +75,18 @@ public class TgApiGatewayService
                         UserState.WaitStickerName, 
                         stickerPackId: context.CommandArguments[0]);
 
+                if (context.CommandType == "SA" && context.CommandStep == "SwKbdSt")
+                    UserInfoByChatId[chatId] = new UserInfo(
+                        UserState.WaitStickerChoice,
+                        stickerPackId: context.CommandArguments[0]);
+
+                if (UserInfoByChatId.TryGetValue(chatId, out var stickerPackId) && context.CommandType == "SA" &&
+                    context.CommandStep == "SendSticker")
+                {
+                    context.CommandArguments.Add(UserInfoByChatId[chatId].StickerPackId);
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                }
+                
                 var commandArguments = tgApiCommandService.CreateCommandArguments(context);
 
                 var commandResult = await client.Handle(commandArguments);
@@ -98,7 +108,7 @@ public class TgApiGatewayService
                 var stickerName = userInfo.StickerName;
                 var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
 
-                var args = new[] { stickerPackId, stickerName, fileId };
+                var args = new List<string> { stickerPackId, stickerName, fileId };
                 var context = new QueryContext("AS", "AddSticker", args, chatId);
 
                 var command = tgApiCommandService.CreateCommandArguments(context);
@@ -121,7 +131,7 @@ public class TgApiGatewayService
                 {
                     UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
 
-                    var args = new[] { message.Text };
+                    var args = new List<string> { message.Text };
                     var context = new QueryContext("CP", "AddPack", args, chatId);
 
                     var command = tgApiCommandService.CreateCommandArguments(context);
@@ -167,7 +177,7 @@ public class TgApiGatewayService
         var chatId = callbackMsg.Chat.Id;
         var commandType = callbackData[0];
         var commandStep = callbackData[1];
-        var callbackArguments = callbackData.Skip(2).ToArray();
+        var callbackArguments = callbackData.Skip(2).ToList();
         var botMessageId = update.CallbackQuery.InlineMessageId!;
 
         return new QueryContext(
@@ -182,23 +192,23 @@ public class TgApiGatewayService
     {
         {
             "Показать все", chatId => new QueryContext(
-                "SA", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+                "SA", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Добавить стикер", chatId => new QueryContext(
-                "AS", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+                "AS", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Создать пак", chatId => new QueryContext(
-                "CP", "SendInstructions", Array.Empty<string>(), chatId)
+                "CP", "SendInstructions", new(), chatId)
         },
         {
             "Удалить стикер", chatId => new QueryContext(
-                "DS", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+                "DS", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Удалить пак", chatId => new QueryContext(
-                "DP", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+                "DP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         }
     };
 

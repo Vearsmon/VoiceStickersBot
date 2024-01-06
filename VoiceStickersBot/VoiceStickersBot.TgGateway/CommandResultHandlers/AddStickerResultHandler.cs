@@ -56,10 +56,9 @@ public class AddStickerResultHandler : ICommandResultHandler
 
         await objectStorage.PutObjectInStorage(
             "objstorbucket",
-            Guid.NewGuid(),
+            result.StickerId,
             MimeTypes.Mpeg,
-            stream.ToArray()
-        );
+            stream.ToArray());
 
         await bot.SendTextMessageAsync(
             result.ChatId,
