@@ -13,7 +13,7 @@ internal static class IncludeExtensions
         bool includeStickers)
     {
         return includeStickers
-            ? query.ThenInclude(stickerPack => stickerPack.Stickers)
+            ? query.ThenInclude(stickerPack => stickerPack.Stickers).AsSplitQuery()
             : query;
     }
 

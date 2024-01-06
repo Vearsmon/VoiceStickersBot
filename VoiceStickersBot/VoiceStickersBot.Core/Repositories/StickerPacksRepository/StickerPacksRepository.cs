@@ -1,5 +1,6 @@
 ﻿using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.RepositoryExceptions;
+using VoiceStickersBot.Core.Repositories.UsersRepository;
 using VoiceStickersBot.Infra;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
@@ -16,16 +17,31 @@ public class StickerPacksRepository : IStickerPacksRepository
 
     public async Task CreateStickerPackAsync(Guid stickerPackId, string name, string ownerId)
     {
+        var stickerPack = new StickerPackEntity
+        {
+            Id = stickerPackId,
+            Name = name,
+            OwnerId = ownerId
+        };
+
         using var table = vsbDatabaseCluster.GetTable<StickerPackEntity>();
         await table.PerformCreateRequestAsync(
-            new StickerPackEntity
-            {
-                Id = stickerPackId,
-                Name = name,
-                OwnerId = ownerId
-            },
+            stickerPack,
             new CancellationToken()
         ).ConfigureAwait(false);
+        table.Dispose();
+
+        using var usersTable = vsbDatabaseCluster.GetTable<UserEntity>();
+        var users = await usersTable.PerformReadonlyRequestAsync(
+                r => r.Where(u => u.Id == ownerId),
+                new CancellationToken())
+            .ConfigureAwait(false);
+        var user = users.Single();
+        user.StickerPacks ??= new List<StickerPackEntity>();
+        user.StickerPacks.Add(stickerPack);
+        await usersTable.PerformUpdateRequestAsync(
+            user,
+            new CancellationToken()).ConfigureAwait(false);
     }
 
     public async Task<StickerPack> GetStickerPackAsync(

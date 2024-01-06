@@ -17,13 +17,16 @@ internal class StickerPackEntity
     [Key] [Column("id")] public Guid Id { get; set; }
 
     [Column("owner_id")] public string OwnerId { get; set; }
-    public UserEntity Owner { get; set; }
 
     [Column("name")] public string? Name { get; set; }
 
     public List<StickerEntity>? Stickers { get; set; }
 
+    //For table connection
     public List<ChatEntity>? Chats { get; set; }
+
+    //For table connection
+    public List<UserEntity> Users { get; set; }
 
     public StickerPack ToStickerPack()
     {
