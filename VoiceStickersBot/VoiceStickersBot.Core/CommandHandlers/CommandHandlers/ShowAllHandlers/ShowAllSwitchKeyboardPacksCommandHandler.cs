@@ -51,7 +51,7 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
 
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "SA:SwKbdPc",
-            chatId.ToString(),
+            "",
             pageTo,
             countOnPage,
             packs!.Count);

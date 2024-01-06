@@ -17,11 +17,11 @@ public class DeletePackResultHandler : ICommandResultHandler
         {
             {
                 typeof(DeletePackSwitchKeyboardPacksResult),
-                async (bot, res) => await Handle(bot, (DeletePackDeletePackResult)res)
+                async (bot, res) => await Handle(bot, (DeletePackSwitchKeyboardPacksResult)res)
             },
             {
                 typeof(DeletePackDeletePackResult),
-                async (bot, res) => await Handle(bot, (DeletePackSwitchKeyboardPacksResult)res)
+                async (bot, res) => await Handle(bot, (DeletePackDeletePackResult)res)
             },
             {
                 typeof(DeletePackConfirmResult),

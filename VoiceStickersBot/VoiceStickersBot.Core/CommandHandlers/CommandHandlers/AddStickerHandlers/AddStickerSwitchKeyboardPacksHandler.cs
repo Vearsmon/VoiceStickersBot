@@ -51,7 +51,7 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
         
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "AS:SwKbdPc",
-            chatId.ToString(),
+            "",
             pageTo,
             countOnPage,
             packs!.Count);

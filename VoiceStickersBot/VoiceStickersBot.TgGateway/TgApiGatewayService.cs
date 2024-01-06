@@ -7,6 +7,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core.Client;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.Repositories.UsersRepository;
 using VoiceStickersBot.Infra.VSBApplication.Log;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
@@ -40,16 +41,19 @@ public class TgApiGatewayService
 
     private readonly ILog log;
 
+    private readonly IUsersRepository userRepository;
     public TgApiGatewayService(
         Client client,
         TgApiCommandService tgApiCommandService,
         TgApiCommandResultHandlerService tgApiCommandResultHandlerService,
-        ILog log)
+        ILog log,
+        IUsersRepository userRepository)
     {
         this.client = client;
         this.tgApiCommandService = tgApiCommandService;
         this.tgApiCommandResultHandlerService = tgApiCommandResultHandlerService;
         this.log = log;
+        this.userRepository = userRepository;
     }
 
     public async Task HandleUpdateAsync(
@@ -57,78 +61,97 @@ public class TgApiGatewayService
         Update update,
         CancellationToken cancellationToken)
     {
-        if (update.Type == UpdateType.CallbackQuery)
+        try
         {
-            var context = BuildQueryContext(update);
-            if (context.CommandType == "AS" && context.CommandStep == "SendInstructions")
-                UserInfoByChatId[context.ChatId] = new UserInfo(UserState.WaitStickerName);
-
-            var commandArguments = tgApiCommandService.CreateCommandArguments(context);
+            var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
+            await EnsureAuthenthicated(chatId);
             
-            var commandResult = await client.Handle(commandArguments);
-
-            await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
-        }
-        else if (update.Type == UpdateType.Message && 
-                 (update.Message!.Voice is not null || update.Message!.Audio is not null))
-        {
-            var message = update.Message;
-            var chatId = message!.Chat.Id;
-
-            if (!(UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitFile))
+            if (update.Type == UpdateType.CallbackQuery)
             {
-                await botClient.SendTextMessageAsync(chatId, "Бот не ожидает от вас файла...");
-                return;
-            }
-   
-            var stickerPackId = userInfo.StickerPackId;
-            var stickerName = userInfo.StickerName;
-            var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
-            
-            var args = new[] { stickerPackId, stickerName, fileId, $"{chatId}" };
-            var context = new QueryContext("AS", "AddSticker", args, chatId);
-
-            var command = tgApiCommandService.CreateCommandArguments(context);
-            var commandResult = await client.Handle(command);
-
-            await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
-        }
-        else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
-        {
-            var message = update.Message;
-            var chatId = message!.Chat.Id;
-            if (message.Text == "/start" || message.Text == "/cancel")
-            {
-                await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:", replyMarkup: commandsKeyboard);
-            }
-            else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitStickerName)
-                UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
-            else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
-            {
-                UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                var context = BuildQueryContext(update);
+                if (context.CommandType == "page") 
+                    return;
                 
-                var args = new[] {message.Text, $"{chatId}" };
-                var context = new QueryContext("CP", "AddPack", args, chatId);
+                if (context.CommandType == "AS" && context.CommandStep == "SendInstructions")
+                    UserInfoByChatId[context.ChatId] = new UserInfo(
+                        UserState.WaitStickerName, 
+                        stickerPackId: context.CommandArguments[0]);
+
+                var commandArguments = tgApiCommandService.CreateCommandArguments(context);
+
+                var commandResult = await client.Handle(commandArguments);
+
+                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+            }
+            else if (update.Type == UpdateType.Message &&
+                     (update.Message!.Voice is not null || update.Message!.Audio is not null))
+            {
+                var message = update.Message;
+
+                if (!(UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitFile))
+                {
+                    await botClient.SendTextMessageAsync(chatId, "Бот не ожидает от вас файла...");
+                    return;
+                }
+
+                var stickerPackId = userInfo.StickerPackId;
+                var stickerName = userInfo.StickerName;
+                var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
+
+                var args = new[] { stickerPackId, stickerName, fileId };
+                var context = new QueryContext("AS", "AddSticker", args, chatId);
 
                 var command = tgApiCommandService.CreateCommandArguments(context);
                 var commandResult = await client.Handle(command);
 
                 await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
             }
-            else
+            else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
             {
-                var context = QueryContextByCommand[message.Text](chatId);
+                var message = update.Message;
+                if (message.Text == "/start" || message.Text == "/cancel")
+                {
+                    await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
+                        replyMarkup: commandsKeyboard);
+                }
+                else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
+                         && userInfo.State == UserState.WaitStickerName)
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
+                else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
+                {
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
 
-                if (message.Text == "Создать пак")
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitPackName);
-                else if (message.Text == "Добавить стикер")
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitStickerName);
+                    var args = new[] { message.Text };
+                    var context = new QueryContext("CP", "AddPack", args, chatId);
 
-                var command = tgApiCommandService.CreateCommandArguments(context);
-                var commandResult = await client.Handle(command);
+                    var command = tgApiCommandService.CreateCommandArguments(context);
+                    var commandResult = await client.Handle(command);
 
-                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
-            }   
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                }
+                else
+                {
+                    var context = QueryContextByCommand[message.Text](chatId);
+
+                    if (message.Text == "Создать пак")
+                        UserInfoByChatId[chatId] = new UserInfo(UserState.WaitPackName);
+                    else if (message.Text == "Добавить стикер")
+                        UserInfoByChatId[chatId] = new UserInfo(
+                            UserState.WaitStickerName, 
+                            stickerPackId: context.CommandArguments[0]);
+
+                    var command = tgApiCommandService.CreateCommandArguments(context);
+                    var commandResult = await client.Handle(command);
+
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            log.Error(e, "Appppp crashed");
+            var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
+            UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
         }
     }
 
@@ -136,7 +159,10 @@ public class TgApiGatewayService
 
     private static QueryContext BuildQueryContext(Update update)
     {
-        var callbackData = update.CallbackQuery!.Data!.Split(':');
+        var callbackData = update.CallbackQuery!.Data!.Split(
+            ':', 
+            StringSplitOptions.RemoveEmptyEntries);
+        
         var callbackMsg = update.CallbackQuery!.Message!;
         var chatId = callbackMsg.Chat.Id;
         var commandType = callbackData[0];
@@ -154,21 +180,26 @@ public class TgApiGatewayService
 
     private static Dictionary<string, Func<long, QueryContext>> QueryContextByCommand = new()
     {
-        {"Показать все", chatId => new QueryContext(
-            "SA", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
-            )},
-        {"Добавить стикер", chatId => new QueryContext(
-            "AS", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
-            )},
-        {"Создать пак", chatId => new QueryContext(
-            "CP", "SendInstructions", new[] { $"{chatId}" }, chatId
-            )},
-        {"Удалить стикер", chatId => new QueryContext(
-            "DS", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
-            )},
-        {"Удалить пак", chatId => new QueryContext(
-            "DP", "SwKbdPc", new[] { $"{chatId}", "0", "Increase", "10" }, chatId
-            )}
+        {
+            "Показать все", chatId => new QueryContext(
+                "SA", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+        },
+        {
+            "Добавить стикер", chatId => new QueryContext(
+                "AS", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+        },
+        {
+            "Создать пак", chatId => new QueryContext(
+                "CP", "SendInstructions", Array.Empty<string>(), chatId)
+        },
+        {
+            "Удалить стикер", chatId => new QueryContext(
+                "DS", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+        },
+        {
+            "Удалить пак", chatId => new QueryContext(
+                "DP", "SwKbdPc", new[] { "0", "Increase", "10" }, chatId)
+        }
     };
 
     public Task HandlePollingErrorAsync(
@@ -185,5 +216,10 @@ public class TgApiGatewayService
 
         Console.WriteLine(errorMessage);
         return Task.CompletedTask;
+    }
+
+    private async Task EnsureAuthenthicated(long chatId)
+    {
+        await userRepository.CreateIfNotExists(chatId.ToString());
     }
 }

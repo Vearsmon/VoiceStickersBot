@@ -32,7 +32,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
 
     private ICommandArguments BuildAddStickerSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 4;
+        const int argumentsCount = 3;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -49,22 +49,18 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         if (!int.TryParse(queryContext.CommandArguments[2], out var packsOnPage) || packsOnPage < 0)
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be positive int.");
-        
-        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 3. Should be long.");
 
         return new AddStickerSwitchKeyboardPacksArguments(
             pageFrom,
             direction,
             packsOnPage,
-            chatId,
+            queryContext.ChatId,
             queryContext.BotMessageId);
     }
     
     private ICommandArguments BuildAddStickerSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 5;
+        const int argumentsCount = 4;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -86,22 +82,18 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 3. Should be positive int.");
         
-        if (!long.TryParse(queryContext.CommandArguments[4], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 4. Should be long.");
-
         return new AddStickerSwitchKeyboardStickersArguments(
             stickerPackId,
             pageFrom,
             direction,
             stickersOnPage,
-            chatId,
+            queryContext.ChatId,
             queryContext.BotMessageId);
     }
 
     private ICommandArguments BuildAddStickerSendStickerCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 3;
+        const int argumentsCount = 2;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -115,14 +107,10 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be Guid.");
         
-        if (!long.TryParse(queryContext.CommandArguments[2], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 2. Should be long.");
-        
         return new AddStickerSendStickerArguments(
             stickerPackId,
             stickerId,
-            chatId);
+            queryContext.ChatId);
     }
     
     private ICommandArguments BuildAddStickerSendInstructionsCommandArguments(QueryContext queryContext)
@@ -132,12 +120,12 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
-
-        if (!long.TryParse(queryContext.CommandArguments[0], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 0. Should be long.");
         
-        return new AddStickerSendInstructionsArguments(chatId);
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
+            throw new ArgumentException(
+                "Invalid argument at index 0. Should be Guid.");
+        
+        return new AddStickerSendInstructionsArguments(stickerPackId, queryContext.ChatId);
     }
     
     private ICommandArguments BuildAddStickerAddStickerCommandArguments(QueryContext queryContext)
@@ -160,14 +148,10 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be non empty string.");
         
-        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 3. Should be long.");
-        
         return new AddStickerAddStickerArguments(
             stickerPackId,
             queryContext.CommandArguments[1],
             queryContext.CommandArguments[2],
-            chatId);
+            queryContext.ChatId);
     }
 }

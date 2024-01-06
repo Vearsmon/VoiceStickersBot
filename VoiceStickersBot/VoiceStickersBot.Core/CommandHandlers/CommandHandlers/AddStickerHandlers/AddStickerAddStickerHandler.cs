@@ -1,4 +1,5 @@
-﻿using VoiceStickersBot.Core.CommandArguments;
+﻿using SkbKontur.Cassandra.TimeBasedUuid;
+using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
@@ -26,9 +27,9 @@ public class AddStickerAddStickerHandler : ICommandHandler
     public async Task<ICommandResult> Handle()
     {
         await stickersRepository.CreateAsync(
-                Guid.NewGuid(),
+                TimeGuid.NewGuid(Timestamp.Now).ToGuid(),
                 commandArguments.StickerName,
-                "location", // еще хз че в локэйшн указывать
+                "objstorbucket",
                 commandArguments.StickerPackId)
             .ConfigureAwait(false);
 

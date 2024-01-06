@@ -19,17 +19,17 @@ public class TgApiCommandHandlerService
     {
         ICommandResult result = null;
         Exception error = null;
-        try
-        {
+        /*try
+        {*/
             var commandHandler = commandHandlersFactories[commandArguments.CommandType]
                 .CreateCommandHandler(commandArguments);
             result = await commandHandler.Handle().ConfigureAwait(false);
-        }
-        catch (Exception ex)
+        //}
+        /*catch (Exception ex)
         {
             error = ex;
             Console.WriteLine("oh boy :(");
-        }
+        }*/
 
         return new HandleCommandResult(result, error);
     }

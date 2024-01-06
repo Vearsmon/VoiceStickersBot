@@ -49,6 +49,27 @@ public class UsersRepository : IUsersRepository
             : (true, ExtractStickerPacks(users));
     }
 
+    public async Task<bool> CreateIfNotExists(string id)
+    {
+        using var table = vsbDatabaseCluster.GetTable<UserEntity>();
+
+        var users = await table.PerformReadonlyRequestAsync(
+                r => r.Where(u => u.Id == id), 
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        if (!users.IsEmpty()) 
+            return false;
+        
+        await table.PerformCreateRequestAsync(
+                new UserEntity { Id = id },
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        return true;
+
+    }
+
     public async Task RemoveStickerPack(string userId, Guid stickerPackId)
     {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();

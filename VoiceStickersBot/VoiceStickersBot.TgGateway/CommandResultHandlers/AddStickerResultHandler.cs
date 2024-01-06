@@ -54,9 +54,10 @@ public class AddStickerResultHandler : ICommandResultHandler
             result.FileId,
             stream);
 
-        await objectStorage.PutObjectInStorage("location",
+        await objectStorage.PutObjectInStorage(
+            "objstorbucket",
             Guid.NewGuid(),
-            "Audio/mpeg",
+            MimeTypes.Mpeg,
             stream.ToArray()
         );
 

@@ -30,7 +30,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
 
     private ICommandArguments BuildDeletePackSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 4;
+        const int argumentsCount = 3;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -47,22 +47,18 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         if (!int.TryParse(queryContext.CommandArguments[2], out var packsOnPage) || packsOnPage < 0)
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be positive int.");
-        
-        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 3. Should be long.");
 
         return new DeletePackSwitchKeyboardPacksArguments(
             pageFrom,
             direction,
             packsOnPage,
-            chatId,
+            queryContext.ChatId,
             queryContext.BotMessageId);
     }
 
     private ICommandArguments BuildDeletePackDeletePackCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 2;
+        const int argumentsCount = 1;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -71,17 +67,13 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");        
-        
-        if (!long.TryParse(queryContext.CommandArguments[1], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 1. Should be long.");
 
-        return new DeletePackDeletePackArguments(stickerPackId, chatId);
+        return new DeletePackDeletePackArguments(stickerPackId, queryContext.ChatId);
     }
 
     private ICommandArguments BuildDeletePackConfirmCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 2;
+        const int argumentsCount = 1;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -90,12 +82,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
-        
-        if (!long.TryParse(queryContext.CommandArguments[1], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 1. Should be long.");
-        
 
-        return new DeletePackConfirmArguments(stickerPackId, chatId);
+        return new DeletePackConfirmArguments(stickerPackId, queryContext.ChatId);
     }
 }

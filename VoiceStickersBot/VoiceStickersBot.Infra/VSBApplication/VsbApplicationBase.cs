@@ -57,7 +57,8 @@ public abstract class VsbApplicationBase : IVsbApplication
         var dateTime = DateTime.Now;
         containerBuilder
             .Bind<ILog>()
-            .ToConstant(new FileLog(File.CreateText($"log_{dateTime.Hour}_{dateTime.Minute}.txt")));
+            .ToConstant(new ConsoleLog());
+        //.ToConstant(new FileLog(File.CreateText($"log_{dateTime.Hour}_{dateTime.Minute}.txt")));
     }
 
     private static void BindInterfacesWithOnlyImplementation(StandardKernel containerBuilder)

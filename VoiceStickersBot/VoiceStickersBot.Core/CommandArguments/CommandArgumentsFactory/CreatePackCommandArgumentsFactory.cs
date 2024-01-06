@@ -29,17 +29,13 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
 
     private ICommandArguments BuildCreatePackSendInstructionsCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 1;
+        const int argumentsCount = 0;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
 
-        if (!long.TryParse(queryContext.CommandArguments[0], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 0. Should be long.");
-
-        return new CreatePackSendInstructionsArguments(chatId);
+        return new CreatePackSendInstructionsArguments(queryContext.ChatId);
     }
     
     private ICommandArguments BuildCreatePackAddPackCommandArguments(QueryContext queryContext)
@@ -50,14 +46,10 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
 
-        if (!long.TryParse(queryContext.CommandArguments[0], out var chatId))
+        if (queryContext.CommandArguments[0].Length == 0)
             throw new ArgumentException(
-                "Invalid argument at index 0. Should be long.");
-        
-        if (queryContext.CommandArguments[1].Length == 0)
-            throw new ArgumentException(
-                "Invalid argument at index 1. Should be non empty string.");
+                "Invalid argument at index 0. Should be non empty string.");
 
-        return new CreatePackAddPackArguments(chatId, queryContext.CommandArguments[1]);
+        return new CreatePackAddPackArguments(queryContext.ChatId, queryContext.CommandArguments[0]);
     }
 }

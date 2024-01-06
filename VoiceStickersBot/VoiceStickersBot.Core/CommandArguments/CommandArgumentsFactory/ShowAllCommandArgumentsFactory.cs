@@ -30,6 +30,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
     private ICommandArguments BuildShowAllSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
     {
         const int argumentsCount = 4;
+        
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
@@ -49,23 +50,19 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         if (!int.TryParse(queryContext.CommandArguments[3], out var stickersOnPage) || stickersOnPage < 0)
             throw new ArgumentException(
                 "Invalid argument at index 3. Should be positive int.");
-        
-        if (!long.TryParse(queryContext.CommandArguments[4], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 4. Should be long.");
 
         return new ShowAllSwitchKeyboardStickersCommandArguments(
             stickerPackId, 
             pageFrom,
             direction, 
             stickersOnPage, 
-            chatId,
+            queryContext.ChatId,
             queryContext.BotMessageId);
     }
     
     private ICommandArguments BuildShowAllSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 4;
+        const int argumentsCount = 3;
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
@@ -81,16 +78,12 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         if (!int.TryParse(queryContext.CommandArguments[2], out var stickersOnPage)|| stickersOnPage < 0)
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be positive int.");
-        
-        if (!long.TryParse(queryContext.CommandArguments[3], out var chatId))
-            throw new ArgumentException(
-                "Invalid argument at index 3. Should be long.");
 
         return new ShowAllSwitchKeyboardPacksCommandArguments(
             pageFrom, 
             direction, 
             stickersOnPage, 
-            chatId,
+            queryContext.ChatId,
             queryContext.BotMessageId);
     }
     
