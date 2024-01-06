@@ -40,7 +40,7 @@ public class PostgresVsbDatabaseCluster : IVsbDatabaseCluster
         var options = optionsBuilder
             .UseNpgsql(vsbOptions.ConnectionString)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-            .LogTo(log.WriteToLog, LogLevel.Warning)
+            .LogTo(log.WriteToLog, LogLevel.Information)
             .Options;
 
         return new DatabaseTable<TEntity>(options);

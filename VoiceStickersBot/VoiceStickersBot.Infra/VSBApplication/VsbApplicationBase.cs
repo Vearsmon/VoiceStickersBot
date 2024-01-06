@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Ninject;
 using Ninject.Syntax;
+using VoiceStickersBot.Infra.ObjectStorage;
 using VoiceStickersBot.Infra.VSBApplication.Log;
 using VoiceStickersBot.Infra.VSBApplication.Settings;
 
@@ -13,14 +14,14 @@ public abstract class VsbApplicationBase : IVsbApplication
     protected readonly IResolutionRoot Container;
     protected readonly VsbApplicationSettings ApplicationSettings;
 
-    public VsbApplicationBase()
+    protected VsbApplicationBase()
     {
+        ApplicationSettings = GetSettings();
+
         var containerBuilder = new StandardKernel();
 
         InnerConfigureContainer(containerBuilder);
         Container = containerBuilder;
-
-        ApplicationSettings = GetSettings();
     }
 
     public async Task RunAsync(Func<CancellationToken> cancellationTokenGetter)
@@ -91,7 +92,7 @@ public abstract class VsbApplicationBase : IVsbApplication
                 Settings = new Dictionary<string, string>()
             };
 
-        var settingsProvider = Container.Get<VsbApplicationSettingsProvider>();
+        var settingsProvider = new VsbApplicationSettingsProvider(new ObjectStorageClient());
 
         return settingsProvider.GetAsync(settingsName).GetAwaiter().GetResult();
     }
