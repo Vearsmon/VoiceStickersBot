@@ -1,10 +1,12 @@
-﻿using Telegram.Bot;
+﻿using Amazon.S3;
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core.Client;
 using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.Infra.VSBApplication.Log;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
@@ -58,8 +60,11 @@ public class TgApiGatewayService
         if (update.Type == UpdateType.CallbackQuery)
         {
             var context = BuildQueryContext(update);
+            if (context.CommandType == "AS" && context.CommandStep == "SendInstructions")
+                UserInfoByChatId[context.ChatId] = new UserInfo(UserState.WaitStickerName);
 
             var commandArguments = tgApiCommandService.CreateCommandArguments(context);
+            
             var commandResult = await client.Handle(commandArguments);
 
             await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
@@ -67,17 +72,17 @@ public class TgApiGatewayService
         else if (update.Type == UpdateType.Message && 
                  (update.Message!.Voice is not null || update.Message!.Audio is not null))
         {
-            // обсудить чем лучше ебнуть - строкой, енумом или бля че
-            //if userState == waitFile
-            //else "Wrong command Try again..."
-            
             var message = update.Message;
             var chatId = message!.Chat.Id;
-            var stickerPackId = ""; // TODO: словарик с состояниями в формате userId: "WaitFile:stickerPackId"
-            var stickerName = message.Caption!; //if text == null bot.send("Братан по русски
-                                                //же написал с названием отправляй"), Надо узнать как капшн к голосовым
-                                                // делать либо если нет подписи, то просто name==id
-                                                // вот это вообще тугой момент намекающий на болото ифов, пахнет залупами
+
+            if (!(UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitFile))
+            {
+                await botClient.SendTextMessageAsync(chatId, "Бот не ожидает от вас файла...");
+                return;
+            }
+   
+            var stickerPackId = userInfo.StickerPackId;
+            var stickerName = userInfo.StickerName;
             var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
             
             var args = new[] { stickerPackId, stickerName, fileId, $"{chatId}" };
@@ -92,15 +97,42 @@ public class TgApiGatewayService
         {
             var message = update.Message;
             var chatId = message!.Chat.Id;
+            if (message.Text == "/start" || message.Text == "/cancel")
+            {
+                await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:", replyMarkup: commandsKeyboard);
+            }
+            else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitStickerName)
+                UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
+            else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
+            {
+                UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                
+                var args = new[] {message.Text, $"{chatId}" };
+                var context = new QueryContext("CP", "AddPack", args, chatId);
 
-            var context = QueryContextByCommand[message.Text](chatId);
+                var command = tgApiCommandService.CreateCommandArguments(context);
+                var commandResult = await client.Handle(command);
 
-            var command = tgApiCommandService.CreateCommandArguments(context);
-            var commandResult = await client.Handle(command);
+                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+            }
+            else
+            {
+                var context = QueryContextByCommand[message.Text](chatId);
 
-            await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                if (message.Text == "Создать пак")
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitPackName);
+                else if (message.Text == "Добавить стикер")
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitStickerName);
+
+                var command = tgApiCommandService.CreateCommandArguments(context);
+                var commandResult = await client.Handle(command);
+
+                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+            }   
         }
     }
+
+    private readonly Dictionary<long, UserInfo> UserInfoByChatId = new();
 
     private static QueryContext BuildQueryContext(Update update)
     {

@@ -17,6 +17,7 @@ public class TgApiCommandResultHandlerService
 
     public Task HandleResult(ITelegramBotClient bot, ICommandResult commandResult)
     {
+        // пусть принимает ссылку на словарь стейтов и передает в хендлрезалт
         var handler = commandResultHandlers[commandResult.CommandType];
         return handler.HandleResult(bot, commandResult);
     }
