@@ -69,29 +69,19 @@ public class TgApiGatewayService
                 var context = BuildQueryContext(update);
                 if (context.CommandType == "page") 
                     return;
-                
-                if (context.CommandType == "AS" && context.CommandStep == "SendInstructions")
-                    UserInfoByChatId[context.ChatId] = new UserInfo(
-                        UserState.WaitStickerName, 
-                        stickerPackId: context.CommandArguments[0]);
 
-                if (context.CommandType == "SA" && context.CommandStep == "SwKbdSt")
-                    UserInfoByChatId[chatId] = new UserInfo(
-                        UserState.WaitStickerChoice,
-                        stickerPackId: context.CommandArguments[0]);
-
-                if (UserInfoByChatId.TryGetValue(chatId, out var stickerPackId) && context.CommandType == "SA" &&
-                    context.CommandStep == "SendSticker")
+                if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
+                    && context.CommandType == "SA"
+                    && context.CommandStep == "SendSticker")
                 {
-                    context.CommandArguments.Add(UserInfoByChatId[chatId].StickerPackId);
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                    context.CommandArguments.Add(userInfo.StickerPackId);
                 }
                 
                 var commandArguments = tgApiCommandService.CreateCommandArguments(context);
 
                 var commandResult = await client.Handle(commandArguments);
 
-                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
             }
             else if (update.Type == UpdateType.Message &&
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
@@ -114,11 +104,12 @@ public class TgApiGatewayService
                 var command = tgApiCommandService.CreateCommandArguments(context);
                 var commandResult = await client.Handle(command);
 
-                await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
             }
             else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
             {
                 var message = update.Message;
+                
                 if (message.Text == "/start" || message.Text == "/cancel")
                 {
                     await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
@@ -126,10 +117,20 @@ public class TgApiGatewayService
                 }
                 else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
                          && userInfo.State == UserState.WaitStickerName)
+                {
+                    var stickerPackId = userInfo.StickerPackId;
                     UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
+                    var args = new List<string> { stickerPackId, message.Text };
+                    var context = new QueryContext("AS", "SendFileInstr", args, chatId);
+
+                    var command = tgApiCommandService.CreateCommandArguments(context);
+                    var commandResult = await client.Handle(command);
+
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                }
                 else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
                 {
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
+                    //UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
 
                     var args = new List<string> { message.Text };
                     var context = new QueryContext("CP", "AddPack", args, chatId);
@@ -137,25 +138,16 @@ public class TgApiGatewayService
                     var command = tgApiCommandService.CreateCommandArguments(context);
                     var commandResult = await client.Handle(command);
 
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
                 }
                 else
                 {
                     var context = QueryContextByCommand[message.Text](chatId);
-
-                    if (message.Text == "Создать пак")
-                        UserInfoByChatId[chatId] = new UserInfo(UserState.WaitPackName);
-                    else if (message.Text == "Добавить стикер")
-                        UserInfoByChatId[chatId] = new UserInfo(
-                            UserState.WaitStickerName, 
-                            stickerPackId: context.CommandArguments[0]);
-                    else
-                        UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
                     
                     var command = tgApiCommandService.CreateCommandArguments(context);
                     var commandResult = await client.Handle(command);
 
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, commandResult);
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
                 }
             }
         }

@@ -6,6 +6,7 @@ public enum AddStickerStepName
     Cancel,
     SwKbdSt,
     SendSticker,
-    SendInstructions,
+    SendInstr,
+    SendFileInstr,
     AddSticker
 }

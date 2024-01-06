@@ -13,34 +13,39 @@ public class ShowAllResultHandler : ICommandResultHandler
 
     private readonly ObjectStorageClient objectStorage = new();
 
-    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> handlers;
+    private readonly Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>> handlers;
 
     public ShowAllResultHandler()
     {
-        handlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
+        handlers = new Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>>
         {
             {
                 typeof(ShowAllSendStickerResult),
-                (bot, res) => Handle(bot, (ShowAllSendStickerResult)res)
+                (bot, infos, res) => Handle(bot, infos, (ShowAllSendStickerResult)res)
             },
             {
                 typeof(ShowAllSwitchKeyboardStickersResult),
-                (bot, res) => Handle(bot, (ShowAllSwitchKeyboardStickersResult)res)
+                (bot, infos, res) => Handle(bot, infos, (ShowAllSwitchKeyboardStickersResult)res)
             },
             {
                 typeof(ShowAllSwitchKeyboardPacksResult),
-                (bot, res) => Handle(bot, (ShowAllSwitchKeyboardPacksResult)res)
+                (bot, infos, res) => Handle(bot, infos, (ShowAllSwitchKeyboardPacksResult)res)
             }
         };
     }
 
-    public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
+    public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
     {
-        return handlers[result.GetType()](bot, result);
+        return handlers[result.GetType()](bot, userInfos, result);
     }
 
-    private async Task Handle(ITelegramBotClient bot, ShowAllSendStickerResult result)
+    private async Task Handle(
+        ITelegramBotClient bot, 
+        Dictionary<long, UserInfo> userInfos, 
+        ShowAllSendStickerResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
         var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var voiceFile = InputFile.FromStream(memoryStream);
         await bot.SendVoiceAsync(
@@ -48,8 +53,13 @@ public class ShowAllResultHandler : ICommandResultHandler
             voiceFile);
     }
 
-    private async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardPacksResult result)
+    private async Task Handle(
+        ITelegramBotClient bot, 
+        Dictionary<long, UserInfo> userInfos, 
+        ShowAllSwitchKeyboardPacksResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)
@@ -67,8 +77,15 @@ public class ShowAllResultHandler : ICommandResultHandler
         }
     }
 
-    private async Task Handle(ITelegramBotClient bot, ShowAllSwitchKeyboardStickersResult result)
+    private async Task Handle(
+        ITelegramBotClient bot, 
+        Dictionary<long, UserInfo> userInfos,
+        ShowAllSwitchKeyboardStickersResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerChoice,
+            stickerPackId: result.StickerPackId.ToString());
+        
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)

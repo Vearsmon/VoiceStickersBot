@@ -15,10 +15,13 @@ public class TgApiCommandResultHandlerService
             h => h);
     }
 
-    public Task HandleResult(ITelegramBotClient bot, ICommandResult commandResult)
+    public Task HandleResult(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        ICommandResult commandResult)
     {
         //TODO: пусть принимает ссылку на словарь стейтов и передает в хендлрезалт
         var handler = commandResultHandlers[commandResult.CommandType];
-        return handler.HandleResult(bot, commandResult);
+        return handler.HandleResult(bot, userInfos, commandResult);
     }
 }

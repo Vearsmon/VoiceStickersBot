@@ -8,5 +8,5 @@ public interface ICommandResultHandler
 {
     CommandType CommandType { get; }
 
-    Task HandleResult(ITelegramBotClient bot, ICommandResult result);
+    Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result);
 }

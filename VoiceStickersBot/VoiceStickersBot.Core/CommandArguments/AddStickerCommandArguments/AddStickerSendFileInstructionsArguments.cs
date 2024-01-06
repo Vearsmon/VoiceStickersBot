@@ -2,17 +2,19 @@
 
 namespace VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 
-public class AddStickerSendInstructionsArguments : IAddStickerCommandArguments
+public class AddStickerSendFileInstructionsArguments : IAddStickerCommandArguments
 {
     public CommandType CommandType => CommandType.AddSticker;
-    public AddStickerStepName StepName => AddStickerStepName.SendInstr;
+    public AddStickerStepName StepName => AddStickerStepName.SendFileInstr;
     
     public Guid StickerPackId { get; }
+    public string StickerName { get; }
     public long ChatId { get; }
-
-    public AddStickerSendInstructionsArguments(Guid stickerPackId, long chatId)
+    
+    public AddStickerSendFileInstructionsArguments(Guid stickerPackId,string stickerName, long chatId)
     {
         StickerPackId = stickerPackId;
+        StickerName = stickerName;
         ChatId = chatId;
     }
 }

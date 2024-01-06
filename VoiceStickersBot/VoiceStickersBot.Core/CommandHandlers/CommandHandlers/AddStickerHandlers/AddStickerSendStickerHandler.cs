@@ -29,6 +29,9 @@ public class AddStickerSendStickerHandler : ICommandHandler
                 commandArguments.StickerId)
             .ConfigureAwait(false);
         
-        return new AddStickerSendStickerResult(commandArguments.ChatId, sticker);
+        return new AddStickerSendStickerResult(
+            commandArguments.ChatId,
+            sticker,
+            commandArguments.StickerPackId);
     }
 }

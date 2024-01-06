@@ -24,7 +24,8 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             { AddStickerStepName.Cancel, q => new AddStickerCancelArguments()},
             { AddStickerStepName.SwKbdSt, BuildAddStickerSwitchKeyboardStickersCommandArguments},
             { AddStickerStepName.SendSticker, BuildAddStickerSendStickerCommandArguments},
-            { AddStickerStepName.SendInstructions, BuildAddStickerSendInstructionsCommandArguments },
+            { AddStickerStepName.SendInstr, BuildAddStickerSendInstructionsCommandArguments },
+            { AddStickerStepName.SendFileInstr, BuildAddStickerSendFileInstructionsCommandArguments},
             { AddStickerStepName.AddSticker, BuildAddStickerAddStickerCommandArguments}
         };
     }
@@ -107,11 +108,11 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
 
-        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerId))
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
         
-        if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerId))
+        if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be Guid.");
         
@@ -134,6 +135,26 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
                 "Invalid argument at index 0. Should be Guid.");
         
         return new AddStickerSendInstructionsArguments(stickerPackId, queryContext.ChatId);
+    }
+    
+    private ICommandArguments BuildAddStickerSendFileInstructionsCommandArguments(QueryContext queryContext)
+    {
+        const int argumentsCount = 2;
+        
+        if (queryContext.CommandArguments.Count != argumentsCount)
+            throw new ArgumentException(
+                $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
+        
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
+            throw new ArgumentException(
+                "Invalid argument at index 0. Should be Guid.");
+
+        var stickerName = queryContext.CommandArguments[1];
+        if (stickerName.Length == 0)
+            throw new ArgumentException(
+                "Invalid argument at index 1. Should be Guid.");
+        
+        return new AddStickerSendFileInstructionsArguments(stickerPackId, stickerName, queryContext.ChatId);
     }
     
     private ICommandArguments BuildAddStickerAddStickerCommandArguments(QueryContext queryContext)

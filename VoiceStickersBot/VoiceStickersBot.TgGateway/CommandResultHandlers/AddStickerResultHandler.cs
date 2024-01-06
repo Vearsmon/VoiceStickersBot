@@ -13,49 +13,65 @@ public class AddStickerResultHandler : ICommandResultHandler
 
     private readonly ObjectStorageClient objectStorage = new();
 
-    private readonly Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>> handlers;
+    private readonly Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>> handlers;
 
     public AddStickerResultHandler()
     {
-        handlers = new Dictionary<Type, Func<ITelegramBotClient, ICommandResult, Task>>
+        handlers = new Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>>
         {
             {
                 typeof(AddStickerAddStickerResult),
-                async (bot, res) => await Handle(bot, (AddStickerAddStickerResult)res)
+                async (bot, infos, res) => await Handle(bot, infos, (AddStickerAddStickerResult)res)
             },
             {
                 typeof(AddStickerSendStickerResult),
-                (bot, res) => Handle(bot, (AddStickerSendStickerResult)res)
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSendStickerResult)res)
             },
             {
                 typeof(AddStickerSwitchKeyboardPacksResult),
-                (bot, res) => Handle(bot, (AddStickerSwitchKeyboardPacksResult)res)
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSwitchKeyboardPacksResult)res)
             },
             {
                 typeof(AddStickerSwitchKeyboardStickersResult),
-                (bot, res) => Handle(bot, (AddStickerSwitchKeyboardStickersResult)res)
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSwitchKeyboardStickersResult)res)
             },
             {
                 typeof(AddStickerSendInstructionsResult),
-                (bot, res) => Handle(bot, (AddStickerSendInstructionsResult)res)
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSendInstructionsResult)res)
+            },
+            {
+                typeof(AddStickerSendFileInstructionsResult),
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSendFileInstructionsResult)res)
             }
         };
     }
 
-    public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
+    public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
     {
-        return handlers[result.GetType()](bot, result);
+        return handlers[result.GetType()](bot, userInfos, result);
     }
 
-    private async Task Handle(ITelegramBotClient bot, AddStickerAddStickerResult result)
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerAddStickerResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Стикер успешно доавблен");
     }
 
-    private async Task Handle(ITelegramBotClient bot, AddStickerSendStickerResult result)
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerSendStickerResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerName,
+            stickerPackId: result.StickerPackId.ToString());
+        
         var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var voiceFile = InputFile.FromStream(memoryStream);
         await bot.SendVoiceAsync(
@@ -63,23 +79,49 @@ public class AddStickerResultHandler : ICommandResultHandler
             voiceFile);
     }
 
-    private async Task Handle(ITelegramBotClient bot, AddStickerSendInstructionsResult result)
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerSendInstructionsResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerName,
+            stickerPackId: result.StickerPackId.ToString());
+        
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Выберите стикерпак, в который хотите добавить стикер, " +
-            "а затем отправьте голосовое сообщение или аудиофайл с подписью - имя будущего стикера.");
+            "Отправьте мне название будущего стикера");
+    }
+    
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerSendFileInstructionsResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitFile,
+            stickerPackId: result.StickerPackId.ToString(),
+            stickerName: result.StickerName);
+        
+        await bot.SendTextMessageAsync(
+            result.ChatId,
+            "Теперь отправьте свою ебучку в чат");
     }
 
-    private async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardPacksResult result)
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerSwitchKeyboardPacksResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)
         {
             await bot.SendTextMessageAsync(
                 result.ChatId,
-                "Выберите набор в который хотите добавить стикер:",
+                "Выберите стикерпак, в который хотите добавить стикер:",
                 replyMarkup: markup);
         }
         else
@@ -90,8 +132,15 @@ public class AddStickerResultHandler : ICommandResultHandler
         }
     }
 
-    private async Task Handle(ITelegramBotClient bot, AddStickerSwitchKeyboardStickersResult result)
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        AddStickerSwitchKeyboardStickersResult result)
     {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerChoice,
+            stickerPackId: result.StickerPackId.ToString());
+        
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
         if (result.BotMessageId is null)

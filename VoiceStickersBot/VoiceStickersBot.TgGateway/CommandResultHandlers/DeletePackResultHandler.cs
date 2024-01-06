@@ -30,7 +30,7 @@ public class DeletePackResultHandler : ICommandResultHandler
         };
     }
 
-    public Task HandleResult(ITelegramBotClient bot, ICommandResult result)
+    public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
     {
         return handlers[result.GetType()](bot, result);
     }

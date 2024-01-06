@@ -18,14 +18,14 @@ public class TgApiCommandService
     public ICommandArguments CreateCommandArguments(QueryContext queryContext)
     {
         ICommandArguments commandArguments = null;
-        try
-        {
+        /*try
+        {*/
             commandArguments = commandArgumentsFactories[queryContext.CommandType].CreateCommand(queryContext);
-        }
+        /*}
         catch(Exception ex)
         {
             Console.WriteLine("Неизвестная команда бро");
-        }
+        }*/
         return commandArguments;
     }
     
