@@ -41,8 +41,7 @@ public class ShowAllResultHandler : ICommandResultHandler
 
     private async Task Handle(ITelegramBotClient bot, ShowAllSendStickerResult result)
     {
-        var voiceBytes = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
-        var memoryStream = new MemoryStream(voiceBytes);
+        var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var voiceFile = InputFile.FromStream(memoryStream);
         await bot.SendVoiceAsync(
             result.ChatId,

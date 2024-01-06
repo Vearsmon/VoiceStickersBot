@@ -8,7 +8,7 @@ public class ObjectStorageClient : IObjectStorageClient
     private static readonly AmazonS3Config objectStorageConfig = new() { ServiceURL = "https://s3.yandexcloud.net" };
     private readonly AmazonS3Client objectStorageClient = new(objectStorageConfig);
 
-    public async Task<byte[]> GetObjectFromStorage(ObjectLocation location)
+    public async Task<MemoryStream> GetObjectFromStorage(ObjectLocation location)
     {
         var objectResponse = await objectStorageClient
             .GetObjectAsync(location.Path, location.FileName)
@@ -22,7 +22,7 @@ public class ObjectStorageClient : IObjectStorageClient
             await memoryStream.WriteAsync(byteBuffer, 0, bytesRead).ConfigureAwait(false);
         }
 
-        return memoryStream.ToArray();
+        return memoryStream;
     }
 
     public async Task<ObjectLocation> PutObjectInStorage(string path, Guid objectId, string contentType,

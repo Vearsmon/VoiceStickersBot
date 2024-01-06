@@ -16,7 +16,7 @@ public class VsbApplicationSettingsProvider : IVsbApplicationSettingsProvider
     public async Task<VsbApplicationSettings> GetAsync(string name)
     {
         var settingsLocation = new ObjectLocation("application-settings", name, "application/json");
-        var settingsBytes = await objectStorageClient.GetObjectFromStorage(settingsLocation).ConfigureAwait(false);
+        var settingsBytes = (await objectStorageClient.GetObjectFromStorage(settingsLocation).ConfigureAwait(false)).ToArray();
         var settingsString = Encoding.Default.GetString(settingsBytes);
         var settings = JsonSerializer.Deserialize<Dictionary<string, string>>(settingsString);
 
