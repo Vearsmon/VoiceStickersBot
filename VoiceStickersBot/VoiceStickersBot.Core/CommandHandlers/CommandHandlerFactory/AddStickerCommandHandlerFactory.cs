@@ -6,6 +6,7 @@ using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
+using VoiceStickersBot.Infra.ObjectStorage;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
 
@@ -17,6 +18,7 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
         stepHandlerBuilders;
 
     public AddStickerCommandHandlerFactory(
+        IObjectStorageClient objectStorageClient,
         IUsersRepository usersRepository,
         IStickerPacksRepository stickerPacksRepository, 
         IStickersRepository stickersRepository)
@@ -52,6 +54,7 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
                 AddStickerStepName.AddSticker, ca =>
                     new AddStickerAddStickerHandler(
                         (AddStickerAddStickerArguments)ca,
+                        objectStorageClient,
                         stickersRepository)
             }
         };

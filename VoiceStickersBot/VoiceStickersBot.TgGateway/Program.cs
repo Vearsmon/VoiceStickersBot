@@ -19,8 +19,8 @@ public class TgApiGatewayHost : VsbApplicationBase
 {
     protected override async Task RunAsync(CancellationToken cancellationToken)
     {
-        var botClient = new TelegramBotClient(ApplicationSettings.Settings["token"]);
-
+        var botClient = Container.Get<ITelegramBotClient>();
+        
         // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
         ReceiverOptions receiverOptions = new()
         {
@@ -41,11 +41,15 @@ public class TgApiGatewayHost : VsbApplicationBase
 
     protected override void ConfigureContainer(StandardKernel containerBuilder)
     {
+        var botClient = new TelegramBotClient(ApplicationSettings.Settings["token"]);
+
         containerBuilder
             .BindCommandArgumentsFactories()
             .BindCommandHandlerFactories()
             .BindCommandResultHandlers();
 
+        containerBuilder.Bind<ITelegramBotClient>().ToConstant(botClient);
+        
         base.ConfigureContainer(containerBuilder);
     }
 }

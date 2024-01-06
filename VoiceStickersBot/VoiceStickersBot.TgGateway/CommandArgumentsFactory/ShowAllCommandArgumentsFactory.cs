@@ -1,6 +1,9 @@
+using VoiceStickersBot.Core;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
-namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
 {

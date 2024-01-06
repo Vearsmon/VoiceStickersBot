@@ -1,6 +1,8 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CreatePackCommandArguments;
+﻿using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.CommandArguments.CreatePackCommandArguments;
 
-namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
 {

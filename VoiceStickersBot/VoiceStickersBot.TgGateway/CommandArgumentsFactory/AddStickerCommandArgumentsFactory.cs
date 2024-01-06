@@ -1,15 +1,23 @@
-﻿using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
+﻿using Telegram.Bot;
+using VoiceStickersBot.Core;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
-namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
 {
     public IReadOnlyList<string> CommandPrefixes { get; } = new[] { "Добавить стикер", "AS" };
     
     private readonly Dictionary<AddStickerStepName, Func<QueryContext, ICommandArguments>> stepCommandBuilders;
+    private readonly ITelegramBotClient bot;
 
-    public AddStickerCommandArgumentsFactory()
+    public AddStickerCommandArgumentsFactory(ITelegramBotClient bot)
     {
+        this.bot = bot;
+        
         stepCommandBuilders = new Dictionary<AddStickerStepName, Func<QueryContext, ICommandArguments>>()
         {
             { AddStickerStepName.SwKbdPc, BuildAddStickerSwitchKeyboardPacksCommandArguments},
@@ -143,15 +151,21 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         if (queryContext.CommandArguments[1].Length == 0)
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be non empty string.");
-        
-        if (queryContext.CommandArguments[2].Length == 0)
+
+        var fileId = queryContext.CommandArguments[2];
+        if (fileId.Length == 0)
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be non empty string.");
+        
+        using var stream = new MemoryStream();
+        bot.GetInfoAndDownloadFileAsync(fileId, stream)
+            .GetAwaiter()
+            .GetResult();
         
         return new AddStickerAddStickerArguments(
             stickerPackId,
             queryContext.CommandArguments[1],
-            queryContext.CommandArguments[2],
+            stream,
             queryContext.ChatId);
     }
 }

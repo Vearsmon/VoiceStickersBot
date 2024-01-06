@@ -1,4 +1,6 @@
-namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.CommandArguments;
+
+namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 public interface ICommandArgumentsFactory
 {

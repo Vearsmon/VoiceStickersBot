@@ -1,6 +1,9 @@
-﻿using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
+﻿using VoiceStickersBot.Core;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 
-namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
 {

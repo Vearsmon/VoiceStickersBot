@@ -5,6 +5,7 @@ using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
+using VoiceStickersBot.Infra.ObjectStorage;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
 
@@ -13,14 +14,17 @@ public class AddStickerAddStickerHandler : ICommandHandler
     public CommandType CommandType => CommandType.AddSticker;
 
     private AddStickerAddStickerArguments commandArguments;
+    private IObjectStorageClient objectStorageClient;
     private IStickersRepository stickersRepository;
 
     //TODO: может переименовать эту и подобные команды на CommandTypeUploadSticker...
     public AddStickerAddStickerHandler(
-        AddStickerAddStickerArguments commandArguments, 
+        AddStickerAddStickerArguments commandArguments,
+        IObjectStorageClient objectStorageClient, 
         IStickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;
+        this.objectStorageClient = objectStorageClient;
         this.stickersRepository = stickersRepository;
     }
 
@@ -28,17 +32,23 @@ public class AddStickerAddStickerHandler : ICommandHandler
     {
         var stickerId = TimeGuid.NewGuid(Timestamp.Now).ToGuid();
         
+        var location = await objectStorageClient.PutObjectInStorage(
+                "objstorbucket",
+                stickerId,
+                MimeTypes.Mpeg,
+                commandArguments.Audio.ToArray())
+            .ConfigureAwait(false);
+        
         await stickersRepository.CreateAsync(
                 stickerId,
                 commandArguments.StickerName,
-                "objstorbucket",
+                location.ToString(),
                 commandArguments.StickerPackId)
             .ConfigureAwait(false);
 
         return new AddStickerAddStickerResult(
             commandArguments.ChatId,
             commandArguments.StickerName,
-            stickerId,
-            commandArguments.FileId);
+            stickerId);
     }
 }

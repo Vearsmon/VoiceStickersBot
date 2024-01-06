@@ -49,17 +49,6 @@ public class AddStickerResultHandler : ICommandResultHandler
 
     private async Task Handle(ITelegramBotClient bot, AddStickerAddStickerResult result)
     {
-        using var stream = new MemoryStream();
-        await bot.GetInfoAndDownloadFileAsync(
-            result.FileId,
-            stream);
-
-        await objectStorage.PutObjectInStorage(
-            "objstorbucket",
-            result.StickerId,
-            MimeTypes.Mpeg,
-            stream.ToArray());
-
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Стикер успешно доавблен");

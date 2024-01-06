@@ -1,4 +1,4 @@
-﻿namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
+﻿namespace VoiceStickersBot.Infra.ObjectStorage;
 
 public static class MimeTypes
 {
