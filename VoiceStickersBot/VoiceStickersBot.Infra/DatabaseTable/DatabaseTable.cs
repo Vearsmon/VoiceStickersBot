@@ -44,6 +44,19 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchema
     }
 
     public async Task PerformUpdateRequestAsync(
+        Func<IQueryable<TEntity>, TEntity> getter,
+        Action<TEntity> updater,
+        CancellationToken cancellationToken)
+    {
+        var entity = getter(Entities);
+        var entry = Entities.Attach(entity);
+        updater(entity);
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        entry.State = EntityState.Detached;
+    }
+
+    public async Task PerformUpdateRequestAsync(
         TEntity entity,
         CancellationToken cancellationToken)
     {

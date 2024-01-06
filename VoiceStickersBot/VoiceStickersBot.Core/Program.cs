@@ -43,5 +43,9 @@ internal class CoreTestApplication : VsbApplicationBase
             foreach (var st in s.Stickers ?? new List<Sticker>())
                 log.Info(st.StickerFullId.StickerId.ToString());
         }
+
+        await usersRepository.RemoveStickerPack(userId, stickerPackId).ConfigureAwait(false);
+        Console.WriteLine(userId);
+        Console.WriteLine(stickerPackId);
     }
 }

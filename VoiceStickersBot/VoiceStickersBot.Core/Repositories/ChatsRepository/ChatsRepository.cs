@@ -80,7 +80,12 @@ public class ChatsRepository : IChatsRepository
             throw new ChatNotFoundException($"Chat with id: {chatId} was not found");
 
         var chat = chats.Single();
-        chat.StickerPacks?.Remove(chat.StickerPacks.Single(p => p.Id == stickerPackId));
-        await table.PerformUpdateRequestAsync(chat, new CancellationToken()).ConfigureAwait(false);
+        var stickerPackToRemove = chat.StickerPacks?.Single(p => p.Id == stickerPackId);
+        if (stickerPackToRemove is not null)
+            await table.PerformUpdateRequestAsync(
+                    r => r.Single(c => c.Id == chatId),
+                    r => r.StickerPacks?.Remove(stickerPackToRemove),
+                    new CancellationToken())
+                .ConfigureAwait(false);
     }
 }

@@ -1,4 +1,5 @@
-﻿using VoiceStickersBot.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.RepositoryExceptions;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 using VoiceStickersBot.Infra;
@@ -32,15 +33,15 @@ public class StickerPacksRepository : IStickerPacksRepository
         table.Dispose();
 
         using var usersTable = vsbDatabaseCluster.GetTable<UserEntity>();
-        var users = await usersTable.PerformReadonlyRequestAsync(
-                r => r.Where(u => u.Id == ownerId),
-                new CancellationToken())
-            .ConfigureAwait(false);
-        var user = users.Single();
-        user.StickerPacks ??= new List<StickerPackEntity>();
-        user.StickerPacks.Add(stickerPack);
         await usersTable.PerformUpdateRequestAsync(
-            user,
+            r => r
+                .Include(u => u.StickerPacks)
+                .Single(u => u.Id == ownerId),
+            r =>
+            {
+                r.StickerPacks ??= new List<StickerPackEntity>();
+                r.StickerPacks.Add(stickerPack);
+            },
             new CancellationToken()).ConfigureAwait(false);
     }
 

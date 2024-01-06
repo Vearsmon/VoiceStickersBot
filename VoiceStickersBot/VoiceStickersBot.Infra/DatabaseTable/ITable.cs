@@ -8,7 +8,8 @@ public interface ITable<TEntity> : IDisposable
         CancellationToken cancellationToken);
 
     Task PerformUpdateRequestAsync(
-        TEntity entity,
+        Func<IQueryable<TEntity>, TEntity> getter,
+        Action<TEntity> updater,
         CancellationToken cancellationToken);
 
     Task<List<TEntity>> PerformReadonlyRequestAsync(
