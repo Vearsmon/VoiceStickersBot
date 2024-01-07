@@ -28,6 +28,26 @@ public class UsersRepository : IUsersRepository
             .ConfigureAwait(false);
     }
 
+    public async Task<bool> CreateIfNotExists(string id)
+    {
+        using var table = vsbDatabaseCluster.GetTable<UserEntity>();
+
+        var users = await table.PerformReadonlyRequestAsync(
+                r => r.Where(u => u.Id == id),
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        if (!users.IsEmpty())
+            return false;
+
+        await table.PerformCreateRequestAsync(
+                new UserEntity { Id = id },
+                new CancellationToken())
+            .ConfigureAwait(false);
+
+        return true;
+    }
+
     public async Task<List<StickerPack>> GetStickerPacks(
         string id,
         bool includeStickers = false)
@@ -50,24 +70,27 @@ public class UsersRepository : IUsersRepository
             : (true, ExtractStickerPacks(users));
     }
 
-    public async Task<bool> CreateIfNotExists(string id)
+    public async Task AddStickerPackToUser(string userId, Guid stickerPackId)
     {
-        using var table = vsbDatabaseCluster.GetTable<UserEntity>();
-
-        var users = await table.PerformReadonlyRequestAsync(
-                r => r.Where(u => u.Id == id),
+        var stickerPackTable = vsbDatabaseCluster.GetTable<StickerPackEntity>();
+        var stickerPacks = await stickerPackTable.PerformReadonlyRequestAsync(
+                r => r.Where(p => p.Id == stickerPackId),
                 new CancellationToken())
             .ConfigureAwait(false);
+        if (stickerPacks.IsEmpty())
+            throw new StickerPackNotFoundException($"Sticker pack with id: {stickerPackId} was not found");
 
-        if (!users.IsEmpty())
-            return false;
+        var stickerPack = stickerPacks.Single();
+        stickerPackTable.Dispose();
 
-        await table.PerformCreateRequestAsync(
-                new UserEntity { Id = id },
+        using var usersTable = vsbDatabaseCluster.GetTable<UserEntity>();
+        await usersTable.PerformUpdateRequestAsync(
+                r => r
+                    .Include(u => u.StickerPacks)
+                    .Single(u => u.Id == userId),
+                e => (e.StickerPacks ??= new List<StickerPackEntity>()).Add(stickerPack),
                 new CancellationToken())
             .ConfigureAwait(false);
-
-        return true;
     }
 
     public async Task RemoveStickerPack(string userId, Guid stickerPackId)
