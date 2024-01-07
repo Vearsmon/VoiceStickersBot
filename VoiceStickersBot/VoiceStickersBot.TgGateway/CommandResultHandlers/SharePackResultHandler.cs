@@ -128,12 +128,16 @@ public class SharePackResultHandler : ICommandResultHandler
         SharePackImportPackResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
-        
-        await bot.SendTextMessageAsync(
-            result.ChatId,
-            "Пак успешно импортирован",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
-        // обработка ошибок
+        if (result.IsSucceeded)
+            await bot.SendTextMessageAsync(
+                result.ChatId,
+                "Пак успешно импортирован",
+                replyMarkup: DefaultKeyboard.CommandsKeyboard);
+        else
+            await bot.SendTextMessageAsync(
+                result.ChatId,
+                "Ошибка при импорте пака, попробуйте ещё раз",
+                replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
 
     private async Task Handle(

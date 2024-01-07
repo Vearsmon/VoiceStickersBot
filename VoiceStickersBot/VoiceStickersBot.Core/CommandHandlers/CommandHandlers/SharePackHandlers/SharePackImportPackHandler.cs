@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
@@ -23,11 +24,11 @@ public class SharePackImportPackHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        await usersRepository.
-            AddStickerPackToUser(
+        var isSucceeded = await usersRepository.
+            TryAddStickerPackToUser(
                 commandArguments.ChatId.ToString(),
                 commandArguments.StickerPackId)
             .ConfigureAwait(false);
-        return new SharePackImportPackResult(commandArguments.ChatId);
+        return new SharePackImportPackResult(commandArguments.ChatId, isSucceeded);
     }
 }

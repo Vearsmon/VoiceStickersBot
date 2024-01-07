@@ -41,9 +41,9 @@ public class TgApiGatewayService
         Update update,
         CancellationToken cancellationToken)
     {
+        var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
         try
         {
-            var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
             await EnsureAuthenthicated(chatId);
             QueryContext context;
             if (update.Type == UpdateType.CallbackQuery)
@@ -131,7 +131,7 @@ public class TgApiGatewayService
         catch (Exception e)
         {
             log.Error(e, "Appppp crashed");
-            var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
+            await botClient.SendTextMessageAsync(chatId, "Что-то пошло не так...");
             UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
         }
     }

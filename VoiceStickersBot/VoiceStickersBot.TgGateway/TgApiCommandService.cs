@@ -7,15 +7,13 @@ namespace VoiceStickersBot.Core.CommandArguments;
 public class TgApiCommandService
 {
     private readonly Dictionary<string, ICommandArgumentsFactory> commandArgumentsFactories;
-    private readonly ILog log;
 
-    public TgApiCommandService(List<ICommandArgumentsFactory> factories, ILog log)
+    public TgApiCommandService(List<ICommandArgumentsFactory> factories)
     {
         commandArgumentsFactories = factories
             .SelectMany(f => f.CommandPrefixes
                 .Select(p => (p, f)))
             .ToDictionary(t => t.p, t => t.f);
-        this.log = log;
     }
     
     public ICommandArguments CreateCommandArguments(QueryContext queryContext)
