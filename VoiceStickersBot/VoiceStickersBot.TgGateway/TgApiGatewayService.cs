@@ -69,12 +69,12 @@ public class TgApiGatewayService
                     return;
                 }
                 
-                if (message.Audio is not null && message.Audio?.MimeType != "audio/x-opus+ogg")
+                /*if (message.Audio is not null && message.Audio?.MimeType != "audio/x-opus+ogg")
                 {
                     await botClient.SendTextMessageAsync(chatId, "Расширение файла должно быть .opus",
                         replyMarkup: DefaultKeyboard.CommandsKeyboard);
                     return;
-                }
+                }*/
 
                 var stickerPackId = userInfo.StickerPackId;
                 var stickerName = userInfo.StickerName;

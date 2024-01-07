@@ -198,18 +198,19 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.ChatId);
     }
 
+    //TODO: вынести кудато
     private async Task<MemoryStream> ConvertAudioToOpus(MemoryStream audio)
     {
-        var byteBuffer = new byte[16 * 1024];
+        /*var byteBuffer = new byte[16 * 1024];
         var memoryStream = new MemoryStream();
         var bytesRead = 0;
         while ((bytesRead = await audio.ReadAsync(byteBuffer).ConfigureAwait(false)) > 0)
         {
             await memoryStream.WriteAsync(byteBuffer, 0, bytesRead).ConfigureAwait(false);
         }
-        memoryStream.Seek(0, SeekOrigin.Begin);
-
-        using (var source = memoryStream)
+        memoryStream.Seek(0, SeekOrigin.Begin);*/
+        audio.Seek(0, SeekOrigin.Begin);
+        using (var source = audio)
         using (var mp3Reader = new Mp3FileReader(source))
         using (var memo = new MemoryStream())
         {
