@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.RepositoryExceptions;
+using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Infra;
 using VoiceStickersBot.Infra.VsbDatabaseCluster;
 
@@ -71,21 +72,18 @@ public class ChatsRepository : IChatsRepository
     {
         using var table = vsbDatabaseCluster.GetTable<ChatEntity>();
 
-        var chats = await table.PerformReadonlyRequestAsync(
-                r => r.Where(u => u.Id == chatId),
+        await table.PerformUpdateRequestAsync(
+                r => r
+                    .Include(c => c.StickerPacks)
+                    .Single(c => c.Id == chatId),
+                r =>
+                {
+                    r.StickerPacks ??= new List<StickerPackEntity>();
+                    var stickerPackToRemove = r.StickerPacks.FirstOrDefault(p => p.Id == stickerPackId);
+                    if (stickerPackToRemove is not null)
+                        r.StickerPacks.Remove(stickerPackToRemove);
+                },
                 new CancellationToken())
             .ConfigureAwait(false);
-
-        if (chats.IsEmpty())
-            throw new ChatNotFoundException($"Chat with id: {chatId} was not found");
-
-        var chat = chats.Single();
-        var stickerPackToRemove = chat.StickerPacks?.Single(p => p.Id == stickerPackId);
-        if (stickerPackToRemove is not null)
-            await table.PerformUpdateRequestAsync(
-                    r => r.Single(c => c.Id == chatId),
-                    r => r.StickerPacks?.Remove(stickerPackToRemove),
-                    new CancellationToken())
-                .ConfigureAwait(false);
     }
 }
