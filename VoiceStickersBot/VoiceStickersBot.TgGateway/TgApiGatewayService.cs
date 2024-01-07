@@ -111,9 +111,15 @@ public class TgApiGatewayService
                     var args = new List<string> { message.Text };
                     context = new QueryContext("SP", "ImportPack", args, chatId);
                 }
-                else
+                else if (QueryContextByCommand.ContainsKey(message.Text))
                 {
                     context = QueryContextByCommand[message.Text](chatId);
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(chatId, "Неизвестная команда, попробуйте выбрать команду из меню",
+                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                    return;
                 }
             }
             else
