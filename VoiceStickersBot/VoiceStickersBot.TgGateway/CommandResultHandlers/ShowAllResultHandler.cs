@@ -50,7 +50,8 @@ public class ShowAllResultHandler : ICommandResultHandler
         var voiceFile = InputFile.FromStream(memoryStream);
         await bot.SendVoiceAsync(
             result.ChatId,
-            voiceFile);
+            voiceFile,
+            replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
 
     private async Task Handle(

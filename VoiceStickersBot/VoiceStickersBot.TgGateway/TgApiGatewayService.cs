@@ -14,24 +14,6 @@ namespace VoiceStickersBot.TgGateway;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class TgApiGatewayService
 {
-    private ReplyKeyboardMarkup commandsKeyboard = new ReplyKeyboardMarkup(new[]
-    {
-        new[] // first row
-        {
-            new KeyboardButton("Показать все")
-        },
-        new[] // second row
-        {
-            new KeyboardButton("Добавить стикер"),
-            new KeyboardButton("Создать пак")
-        },
-        new[] // third row
-        {
-            new KeyboardButton("Удалить стикер"),
-            new KeyboardButton("Удалить пак")
-        }
-    }) { ResizeKeyboard = true };
-
     private readonly Client client;
 
     private readonly TgApiCommandService tgApiCommandService;
@@ -71,7 +53,7 @@ public class TgApiGatewayService
                     return;
 
                 if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
-                    && context.CommandType == "SA"
+                    && (context.CommandType == "SA" || context.CommandType == "AS")
                     && context.CommandStep == "SendSticker")
                 {
                     context.CommandArguments.Add(userInfo.StickerPackId);
@@ -87,10 +69,18 @@ public class TgApiGatewayService
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
             {
                 var message = update.Message;
-
+                
                 if (!(UserInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitFile))
                 {
-                    await botClient.SendTextMessageAsync(chatId, "Бот не ожидает от вас файла...");
+                    await botClient.SendTextMessageAsync(chatId, "Бот не ожидает от вас файла...",
+                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                    return;
+                }
+                
+                if (message.Audio is not null && message.Audio?.MimeType != "audio/x-opus+ogg")
+                {
+                    await botClient.SendTextMessageAsync(chatId, "Расширение файла должно быть .opus",
+                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
                     return;
                 }
 
@@ -113,7 +103,7 @@ public class TgApiGatewayService
                 if (message.Text == "/start" || message.Text == "/cancel")
                 {
                     await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
-                        replyMarkup: commandsKeyboard);
+                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
                 }
                 else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
                          && userInfo.State == UserState.WaitStickerName)
@@ -130,8 +120,6 @@ public class TgApiGatewayService
                 }
                 else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
                 {
-                    //UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
-
                     var args = new List<string> { message.Text };
                     var context = new QueryContext("CP", "AddPack", args, chatId);
 

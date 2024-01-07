@@ -39,7 +39,8 @@ public class DeletePackResultHandler : ICommandResultHandler
     {
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Стикерпак успешно удален.");
+            "Стикерпак успешно удален.",
+            replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
     
     private async Task Handle(ITelegramBotClient bot, DeletePackSwitchKeyboardPacksResult result)

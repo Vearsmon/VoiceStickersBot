@@ -60,7 +60,8 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Стикер успешно доавблен");
+            "Стикер успешно доавблен",
+            replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
 
     private async Task Handle(
@@ -105,7 +106,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Теперь отправьте свою ебучку в чат");
+            "Теперь отправьте аудиофайл или голосовое сообщение");
     }
 
     private async Task Handle(

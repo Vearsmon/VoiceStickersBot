@@ -39,7 +39,8 @@ public class CreatePackResultHandler : ICommandResultHandler
         //надо проверку на ошибки или отмену
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
         
-        await bot.SendTextMessageAsync(result.ChatId, "Стикерпак успешно создан");
+        await bot.SendTextMessageAsync(result.ChatId, "Стикерпак успешно создан",
+            replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
 
     private async Task Handle(
