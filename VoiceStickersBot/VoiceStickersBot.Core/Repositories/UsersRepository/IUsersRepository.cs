@@ -14,5 +14,7 @@ public interface IUsersRepository
 
     Task AddStickerPackToUser(string userId, Guid stickerPackId);
 
+    Task<bool> TryAddStickerPackToUser(string userId, Guid stickerPackId);
+
     Task RemoveStickerPack(string userId, Guid stickerPackId);
 }
