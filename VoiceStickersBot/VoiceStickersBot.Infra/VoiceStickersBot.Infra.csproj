@@ -8,8 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Concentus.OggFile" Version="1.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Ninject" Version="3.3.6" />
         <PackageReference Include="ninject.extensions.conventions" Version="3.3.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />

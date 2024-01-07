@@ -80,7 +80,7 @@ public class TgApiGatewayService
                 var stickerName = userInfo.StickerName;
                 var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
 
-                var args = new List<string> { stickerPackId, stickerName, fileId };
+                var args = new List<string> { stickerPackId, stickerName, fileId, message.Audio?.MimeType! };
                 context = new QueryContext("AS", "AddSticker", args, chatId);
             }
             else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
