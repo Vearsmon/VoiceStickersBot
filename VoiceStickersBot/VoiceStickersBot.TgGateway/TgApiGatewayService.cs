@@ -45,10 +45,10 @@ public class TgApiGatewayService
         {
             var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
             await EnsureAuthenthicated(chatId);
-            
+            QueryContext context;
             if (update.Type == UpdateType.CallbackQuery)
             {
-                var context = BuildQueryContext(update);
+                context = BuildQueryContext(update);
                 if (context.CommandType == "page") 
                     return;
 
@@ -57,12 +57,6 @@ public class TgApiGatewayService
                 {
                     context.CommandArguments.Add(userInfo.StickerPackId);
                 }
-                
-                var commandArguments = tgApiCommandService.CreateCommandArguments(context);
-
-                var commandResult = await client.Handle(commandArguments);
-
-                await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
             }
             else if (update.Type == UpdateType.Message &&
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
@@ -88,12 +82,7 @@ public class TgApiGatewayService
                 var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
 
                 var args = new List<string> { stickerPackId, stickerName, fileId };
-                var context = new QueryContext("AS", "AddSticker", args, chatId);
-
-                var command = tgApiCommandService.CreateCommandArguments(context);
-                var commandResult = await client.Handle(command);
-
-                await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                context = new QueryContext("AS", "AddSticker", args, chatId);
             }
             else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
             {
@@ -104,6 +93,7 @@ public class TgApiGatewayService
                     UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait); // !
                     await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
                         replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                    return;
                 }
                 else if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
                          && userInfo.State == UserState.WaitStickerName)
@@ -111,44 +101,33 @@ public class TgApiGatewayService
                     var stickerPackId = userInfo.StickerPackId;
                     // UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
                     var args = new List<string> { stickerPackId, message.Text };
-                    var context = new QueryContext("AS", "SendFileInstr", args, chatId);
-
-                    var command = tgApiCommandService.CreateCommandArguments(context);
-                    var commandResult = await client.Handle(command);
-
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                    context = new QueryContext("AS", "SendFileInstr", args, chatId);
                 }
                 else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
                 {
                     var args = new List<string> { message.Text };
-                    var context = new QueryContext("CP", "AddPack", args, chatId);
-
-                    var command = tgApiCommandService.CreateCommandArguments(context);
-                    var commandResult = await client.Handle(command);
-
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                    context = new QueryContext("CP", "AddPack", args, chatId);
                 }
-                else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) &&
-                         userInfo.State == UserState.WaitOptionChoice)
+                else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackId)
                 {
                     var args = new List<string> { message.Text };
-                    var context = new QueryContext("SP", "SharePack", args, chatId);
-
-                    var command = tgApiCommandService.CreateCommandArguments(context);
-                    var commandResult = await client.Handle(command);
-
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                    context = new QueryContext("SP", "ImportPack", args, chatId);
                 }
                 else
                 {
-                    var context = QueryContextByCommand[message.Text](chatId);
-                    
-                    var command = tgApiCommandService.CreateCommandArguments(context);
-                    var commandResult = await client.Handle(command);
-
-                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                    context = QueryContextByCommand[message.Text](chatId);
                 }
             }
+            else
+            {
+                await botClient.SendTextMessageAsync(chatId, "Неизвестная команда, попробуйте выбрать команду из меню",
+                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                return;
+            }
+            var command = tgApiCommandService.CreateCommandArguments(context);
+            var commandResult = await client.Handle(command);
+
+            await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
         }
         catch (Exception e)
         {
@@ -204,8 +183,8 @@ public class TgApiGatewayService
                 "DP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         },
         {
-            "Поделиться паком", chatId => new QueryContext(
-                "SP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+            "Импорт/экспорт пака", chatId => new QueryContext(
+                "SP", "SwKbdCh", new() { "0", "Increase", "10" }, chatId)
         }
     };
 

@@ -7,5 +7,5 @@ public enum CommandType
     DeletePack,
     AddSticker,
     DeleteSticker,
-    //ImportPack
+    SharePack
 }

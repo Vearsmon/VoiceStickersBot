@@ -1,11 +1,8 @@
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-using VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
+namespace VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
 
-namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
-
-public class SharePackSwitchKeyboardPacksCommandArguments : ISharePackCommandArguments
+public class SharePackSwitchKeyboardPacksArguments : ISharePackCommandArguments
 {
-    public CommandType CommandType => CommandType.ShowAll;
+    public CommandType CommandType => CommandType.SharePack;
 
     public SharePackStepName StepName => SharePackStepName.SwKbdPc;
     
@@ -15,7 +12,7 @@ public class SharePackSwitchKeyboardPacksCommandArguments : ISharePackCommandArg
     public long ChatId { get; }
     public string BotMessageId { get; }
     
-    public SharePackSwitchKeyboardPacksCommandArguments(
+    public SharePackSwitchKeyboardPacksArguments(
         int pageFrom, 
         PageChangeDirection direction, 
         int packsOnPage,

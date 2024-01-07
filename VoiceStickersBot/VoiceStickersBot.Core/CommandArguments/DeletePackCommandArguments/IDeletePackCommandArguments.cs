@@ -1,4 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory; // как будто лишнее
 
 namespace VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 

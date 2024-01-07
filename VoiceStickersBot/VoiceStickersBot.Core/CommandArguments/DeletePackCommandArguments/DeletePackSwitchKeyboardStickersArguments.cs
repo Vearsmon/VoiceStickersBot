@@ -10,7 +10,7 @@ public class DeletePackSwitchKeyboardStickersArguments : IDeletePackCommandArgum
     public readonly Guid StickerPackId;
     public int PageFrom { get; }
     public PageChangeDirection  Direction { get; }
-    public int PacksOnPage { get; }
+    public int StickersOnPage { get; }
     public long ChatId { get; }
     public string BotMessageId { get; }
     
@@ -18,14 +18,14 @@ public class DeletePackSwitchKeyboardStickersArguments : IDeletePackCommandArgum
         Guid stickerPackId, 
         int pageFrom, 
         PageChangeDirection direction, 
-        int packsOnPage,
+        int stickersOnPage,
         long chatId, 
         string botMessageId)
     {
         StickerPackId = stickerPackId;
         PageFrom = pageFrom;
         Direction = direction;
-        PacksOnPage = packsOnPage;
+        StickersOnPage = stickersOnPage;
         ChatId = chatId;
         BotMessageId = botMessageId;
     }

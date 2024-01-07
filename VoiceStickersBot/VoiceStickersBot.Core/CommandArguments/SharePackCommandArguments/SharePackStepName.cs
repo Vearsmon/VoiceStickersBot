@@ -2,8 +2,12 @@
 
 public enum SharePackStepName
 {
+    Choice,
+    SendImportInstr,
+    ImportPack,
     SwKbdPc,
     SwKbdSt,
-    Cancel,
-    Confirm
+    SendSticker,
+    SendPackId,
+    Cancel
 }

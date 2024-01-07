@@ -1,20 +1,19 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+namespace VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
 
-namespace VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
-
-public class AddStickerSwitchKeyboardStickersArguments : IAddStickerCommandArguments
+public class SharePackSwitchKeyboardStickersArguments : ISharePackCommandArguments
 {
-    public CommandType CommandType => CommandType.AddSticker;
-    public AddStickerStepName StepName => AddStickerStepName.SwKbdSt;
-    
+    public CommandType CommandType => CommandType.SharePack;
+
+    public SharePackStepName StepName => SharePackStepName.SwKbdSt;
+
     public readonly Guid StickerPackId;
     public int PageFrom { get; }
     public PageChangeDirection  Direction { get; }
     public int StickersOnPage { get; }
     public long ChatId { get; }
     public string BotMessageId { get; }
-    
-    public AddStickerSwitchKeyboardStickersArguments(
+
+    public SharePackSwitchKeyboardStickersArguments(
         Guid stickerPackId, 
         int pageFrom, 
         PageChangeDirection direction, 

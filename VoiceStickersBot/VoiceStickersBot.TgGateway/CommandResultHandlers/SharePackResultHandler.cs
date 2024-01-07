@@ -1,0 +1,180 @@
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandResults;
+using VoiceStickersBot.Core.CommandResults.SharePackResults;
+using VoiceStickersBot.Infra.ObjectStorage;
+
+namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
+
+public class SharePackResultHandler : ICommandResultHandler
+{
+    public CommandType CommandType => CommandType.SharePack;
+
+    private readonly ObjectStorageClient objectStorage = new();
+
+    private readonly Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>> handlers;
+
+    public SharePackResultHandler()
+    {
+        handlers = new Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>>
+        {
+            {
+                typeof(SharePackSendStickerResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackSendStickerResult)res)
+            },
+            {
+                typeof(SharePackSwitchKeyboardPacksResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackSwitchKeyboardPacksResult)res)
+            },
+            {
+                typeof(SharePackSwitchKeyboardStickersResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackSwitchKeyboardStickersResult)res)
+            },
+            {
+                typeof(SharePackChoiceResult),
+                async (bot, infos, res) => await Handle(bot, infos, (SharePackChoiceResult)res)
+            },
+            {
+                typeof(SharePackSendImportInstructionsResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackSendImportInstructionsResult)res)
+            },
+            {
+                typeof(SharePackImportPackResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackImportPackResult)res)
+            }
+            ,
+            {
+                typeof(SharePackSendPackIdResult),
+                (bot, infos, res) => Handle(bot, infos, (SharePackSendPackIdResult)res)
+            }
+        };
+    }
+
+    public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
+    {
+        return handlers[result.GetType()](bot, userInfos, result);
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackSwitchKeyboardPacksResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
+
+        if (result.BotMessageId is null)
+        {
+            await bot.SendTextMessageAsync(
+                result.ChatId,
+                "Выберите стикерпак, в который хотите добавить стикер:",
+                replyMarkup: markup);
+        }
+        else
+        {
+            await bot.EditMessageReplyMarkupAsync(
+                inlineMessageId: result.BotMessageId,
+                replyMarkup: markup);
+        }
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackSwitchKeyboardStickersResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerChoice,
+            stickerPackId: result.StickerPackId.ToString());
+        
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
+
+        if (result.BotMessageId is null)
+        {
+            var msg = await bot.SendTextMessageAsync(
+                result.ChatId,
+                "Вот все стикеры из выбранного набора:",
+                replyMarkup: markup);
+        }
+        else
+        {
+            await bot.EditMessageReplyMarkupAsync(
+                inlineMessageId: result.BotMessageId,
+                replyMarkup: markup);
+        }
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackSendStickerResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitStickerChoice,
+            stickerPackId: result.StickerPackId.ToString());
+        
+        var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
+        var voiceFile = InputFile.FromStream(memoryStream);
+        await bot.SendVoiceAsync(
+            result.ChatId,
+            voiceFile);
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackImportPackResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
+        await bot.SendTextMessageAsync(
+            result.ChatId,
+            "Пак успешно импортирован",
+            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+        // обработка ошибок
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackSendImportInstructionsResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.WaitPackId);
+        
+        await bot.SendTextMessageAsync(
+            result.ChatId,
+            "Отправьте ID стикерпака, который вам прислал другой пользователь");
+    }
+    
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackSendPackIdResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.NoWait);
+        
+        await bot.SendTextMessageAsync(
+            result.ChatId,
+            $"{result.StickerPackId}");
+    }
+
+    private async Task Handle(
+        ITelegramBotClient bot,
+        Dictionary<long, UserInfo> userInfos,
+        SharePackChoiceResult result)
+    {
+        userInfos[result.ChatId] = new UserInfo(
+            UserState.NoWait);
+        
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
+
+        await bot.SendTextMessageAsync(
+                result.ChatId,
+                "Выберите опцию ниже:",
+                replyMarkup: markup);
+    }
+}

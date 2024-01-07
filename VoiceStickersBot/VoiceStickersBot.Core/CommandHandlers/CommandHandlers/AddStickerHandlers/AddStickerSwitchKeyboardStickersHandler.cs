@@ -31,7 +31,7 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
 
         var pageFrom = commandArguments.PageFrom;
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
-        var countOnPage = commandArguments.PacksOnPage;
+        var countOnPage = commandArguments.StickersOnPage;
 
         var callbackPrefix = "AS:SendSticker";
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardStickers(

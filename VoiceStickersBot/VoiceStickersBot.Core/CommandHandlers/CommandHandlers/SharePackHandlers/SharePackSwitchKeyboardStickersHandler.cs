@@ -1,21 +1,21 @@
 using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
+using VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.DeletePackResults;
+using VoiceStickersBot.Core.CommandResults.SharePackResults;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.SharePackHandlers;
 
-public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
+public class SharePackSwitchKeyboardStickersHandler : ICommandHandler
 {
-    public CommandType CommandType => CommandType.DeletePack;
+    public CommandType CommandType => CommandType.SharePack;
 
-    private readonly DeletePackSwitchKeyboardStickersArguments commandArguments;
+    private readonly SharePackSwitchKeyboardStickersArguments commandArguments;
     private readonly IStickerPacksRepository stickerPacksRepository;
     
-    public DeletePackSwitchKeyboardStickersHandler(
-        DeletePackSwitchKeyboardStickersArguments commandArguments,
+    public SharePackSwitchKeyboardStickersHandler(
+        SharePackSwitchKeyboardStickersArguments commandArguments,
         IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;
@@ -33,7 +33,7 @@ public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.StickersOnPage;
 
-        var callbackPrefix = "DP:SendSticker";
+        var callbackPrefix = "SP:SendSticker";
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardStickers(
             callbackPrefix,
             stickers,
@@ -41,16 +41,15 @@ public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
             pageTo,
             countOnPage);
 
-
         var actionRow = new List<InlineKeyboardButtonDto>
         {
-            new ("Назад", "DP:SwKbdPc:0:Increase:10"),
-            new ("Удалить пак", $"DP:Confirm:{commandArguments.StickerPackId}")
+            new ("Назад", "SP:SwKbdPc:0:Increase:10"),
+            new ("Экспорт", $"SP:SendPackId:{commandArguments.StickerPackId}"),
         };
         buttons.Add(actionRow);
         
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
-            "DP:SwKbdSt",
+            "SP:SwKbdSt",
             commandArguments.StickerPackId.ToString(),
             pageTo,
             countOnPage,
@@ -58,7 +57,7 @@ public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
         
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new DeletePackSwitchKeyboardStickersResult(
+        return new SharePackSwitchKeyboardStickersResult(
             commandArguments.ChatId,
             keyboard,
             commandArguments.StickerPackId,

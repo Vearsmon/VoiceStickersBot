@@ -6,6 +6,6 @@ public enum UserState
     WaitPackName,
     WaitStickerName,
     WaitStickerChoice,
-    WaitOptionChoice,
+    WaitPackId,
     NoWait
 }
