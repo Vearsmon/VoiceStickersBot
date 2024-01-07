@@ -186,9 +186,10 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             .GetResult();
         if (queryContext.CommandArguments[3] == "audio/mpeg")
         {
-            stream = ConvertAudioToOpus(stream)
+            var convertedByteArray = ConvertAudioToOpus(stream)
                 .GetAwaiter()
                 .GetResult();
+            stream = new MemoryStream(convertedByteArray);
         }
         
         return new AddStickerAddStickerArguments(
@@ -199,7 +200,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
     }
 
     //TODO: вынести кудато
-    private async Task<MemoryStream> ConvertAudioToOpus(MemoryStream audio)
+    private async Task<byte[]> ConvertAudioToOpus(MemoryStream audio)
     {
         /*var byteBuffer = new byte[16 * 1024];
         var memoryStream = new MemoryStream();
@@ -213,15 +214,33 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         using (var source = audio)
         using (var mp3Reader = new Mp3FileReader(source))
         using (var memo = new MemoryStream())
+        using (var stream = new MemoryStream())
         {
-            var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
-            var count = mp3Reader.Read(bufferFloat, 0, bufferFloat.Length);
+            var byteBuffer = new byte[16 * 1024];
             
-            var buffShort = new short[count];
-            var scale = (float)(short.MaxValue);
-            for (int i = 0; i < count; i++)
+            var read = 0;
+            while ((read = await source.ReadAsync(byteBuffer).ConfigureAwait(false)) > 0)
             {
-                buffShort[i] = (short)(bufferFloat[i] * scale);
+                await stream.WriteAsync(byteBuffer, 0, read).ConfigureAwait(false);
+                byteBuffer.Initialize();
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+            /*mp3Reader.Seek(0, SeekOrigin.Begin);
+            var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
+            mp3Reader.Seek(0, SeekOrigin.Begin);
+            var count = mp3Reader.Read(bufferFloat, 0, bufferFloat.Length);
+            mp3Reader.Seek(0, SeekOrigin.Begin);*/
+            
+            var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
+
+            var streamBytes = stream.ToArray();
+            
+            var buffShort = new short[stream.Length];
+            var scale = (float)(short.MaxValue);
+            for (int i = 0; i < stream.Length; i++)
+            {
+                buffShort[i] = (short)(streamBytes[i] * scale);
             }
             
             var encoder = OpusEncoder.Create(48000, 
@@ -241,7 +260,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
 
             var result = memo.ToArray();
 
-            return new MemoryStream(result);
+            return memo.ToArray();
         }
     }
 }
