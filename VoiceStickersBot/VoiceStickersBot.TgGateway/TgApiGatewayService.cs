@@ -128,6 +128,17 @@ public class TgApiGatewayService
 
                     await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
                 }
+                else if (UserInfoByChatId.TryGetValue(chatId, out userInfo) &&
+                         userInfo.State == UserState.WaitOptionChoice)
+                {
+                    var args = new List<string> { message.Text };
+                    var context = new QueryContext("SP", "SharePack", args, chatId);
+
+                    var command = tgApiCommandService.CreateCommandArguments(context);
+                    var commandResult = await client.Handle(command);
+
+                    await tgApiCommandResultHandlerService.HandleResult(botClient, UserInfoByChatId, commandResult);
+                }
                 else
                 {
                     var context = QueryContextByCommand[message.Text](chatId);
@@ -191,6 +202,10 @@ public class TgApiGatewayService
         {
             "Удалить пак", chatId => new QueryContext(
                 "DP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+        },
+        {
+            "Поделиться паком", chatId => new QueryContext(
+                "SP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
         }
     };
 

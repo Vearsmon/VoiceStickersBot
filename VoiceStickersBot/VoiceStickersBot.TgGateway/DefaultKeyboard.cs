@@ -19,6 +19,10 @@ public static class DefaultKeyboard
         {
             new KeyboardButton("Удалить стикер"),
             new KeyboardButton("Удалить пак")
+        },
+        new[] // fourth row
+        {
+            new KeyboardButton("Поделиться паком"),
         }
     }) { ResizeKeyboard = true };
 }
