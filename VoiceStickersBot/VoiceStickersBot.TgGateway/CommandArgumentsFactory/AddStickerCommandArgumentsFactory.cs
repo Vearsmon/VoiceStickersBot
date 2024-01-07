@@ -1,4 +1,8 @@
-﻿using Telegram.Bot;
+﻿using Concentus.Enums;
+using Concentus.Oggfile;
+using Concentus.Structs;
+using NAudio.Wave;
+using Telegram.Bot;
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
@@ -157,7 +161,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
     
     private ICommandArguments BuildAddStickerAddStickerArguments(QueryContext queryContext)
     {
-        const int argumentsCount = 3;
+        const int argumentsCount = 4;
         
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
@@ -180,11 +184,63 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         bot.GetInfoAndDownloadFileAsync(fileId, stream)
             .GetAwaiter()
             .GetResult();
+        if (queryContext.CommandArguments[3] == "audio/mpeg")
+        {
+            stream = ConvertAudioToOpus(stream)
+                .GetAwaiter()
+                .GetResult();
+        }
         
         return new AddStickerAddStickerArguments(
             stickerPackId,
             queryContext.CommandArguments[1],
             stream,
             queryContext.ChatId);
+    }
+
+    private async Task<MemoryStream> ConvertAudioToOpus(MemoryStream audio)
+    {
+        var byteBuffer = new byte[16 * 1024];
+        var memoryStream = new MemoryStream();
+        var bytesRead = 0;
+        while ((bytesRead = await audio.ReadAsync(byteBuffer).ConfigureAwait(false)) > 0)
+        {
+            await memoryStream.WriteAsync(byteBuffer, 0, bytesRead).ConfigureAwait(false);
+        }
+        memoryStream.Seek(0, SeekOrigin.Begin);
+
+        using (var source = memoryStream)
+        using (var mp3Reader = new Mp3FileReader(source))
+        using (var memo = new MemoryStream())
+        {
+            var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
+            var count = mp3Reader.Read(bufferFloat, 0, bufferFloat.Length);
+            
+            var buffShort = new short[count];
+            var scale = (float)(short.MaxValue);
+            for (int i = 0; i < count; i++)
+            {
+                buffShort[i] = (short)(bufferFloat[i] * scale);
+            }
+            
+            var encoder = OpusEncoder.Create(48000, 
+                mp3Reader.WaveFormat.Channels, 
+                OpusApplication.OPUS_APPLICATION_AUDIO);
+
+            encoder.Bitrate = 65536;
+            
+            var tags = new OpusTags();
+            tags.Fields[OpusTagName.Title] = "Title";
+            tags.Fields[OpusTagName.Artist] = "Artist";
+            
+            var oggOut = new OpusOggWriteStream(encoder, memo, tags);
+
+            oggOut.WriteSamples(buffShort, 0, buffShort.Length);
+            oggOut.Finish();
+
+            var result = memo.ToArray();
+
+            return new MemoryStream(result);
+        }
     }
 }
