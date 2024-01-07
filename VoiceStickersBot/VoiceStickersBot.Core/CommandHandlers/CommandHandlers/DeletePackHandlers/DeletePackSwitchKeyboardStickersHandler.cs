@@ -41,10 +41,13 @@ public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
             pageTo,
             countOnPage);
 
-        buttons.Add(new InlineKeyboardButtonDto(
-            "Удалить пак", 
-            $"DP:Confirm:{commandArguments.StickerPackId}"));
-        buttons.Add(new InlineKeyboardButtonDto("Назад", "DP:SwKbdPc:0:Increase:10"));
+
+        var actionRow = new List<InlineKeyboardButtonDto>
+        {
+            new ("Назад", "DP:SwKbdPc:0:Increase:10"),
+            new ("Удалить пак", $"DP:Confirm:{commandArguments.StickerPackId}")
+        };
+        buttons.Add(actionRow);
         
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "DP:SwKbdSt",

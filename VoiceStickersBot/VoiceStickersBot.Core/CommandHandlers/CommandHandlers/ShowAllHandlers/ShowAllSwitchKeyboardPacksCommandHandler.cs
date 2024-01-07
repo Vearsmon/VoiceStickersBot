@@ -31,10 +31,9 @@ public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
             .ConfigureAwait(false);
 
         if (!result)
-            //TODO: поцы поправте этот кал, я хз че там должно быть (случай когда у юзера нет паков)
             return new ShowAllSwitchKeyboardPacksResult(
                 chatId,
-                new InlineKeyboardDto(new List<InlineKeyboardButtonDto>(), new List<InlineKeyboardButtonDto>()),
+                new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;

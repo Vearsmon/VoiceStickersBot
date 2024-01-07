@@ -30,11 +30,10 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
             .ConfigureAwait(false);
 
         if (!result)
-            //TODO: поцы поправте этот кал, я хз че там должно быть (случай когда у юзера нет паков)
             return new DeletePackSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(
-                    new List<InlineKeyboardButtonDto>(),
+                    new List<List<InlineKeyboardButtonDto>>(),
                     new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
         
@@ -44,7 +43,7 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
 
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
             "DP:SwKbdSt",
-            "",
+            ":0:Increase:10",
             packs!,
             pageFrom,
             pageTo,

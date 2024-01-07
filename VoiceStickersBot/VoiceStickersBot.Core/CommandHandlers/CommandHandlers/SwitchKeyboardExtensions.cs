@@ -4,7 +4,7 @@ namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
 public class SwitchKeyboardExtensions
 {
-    public static List<InlineKeyboardButtonDto> BuildMainKeyboardStickers(
+    public static List<List<InlineKeyboardButtonDto>> BuildMainKeyboardStickers(
         string callbackPrefix,
         List<Sticker> stickers,
         int pageFrom,
@@ -20,14 +20,17 @@ public class SwitchKeyboardExtensions
             ? countOnPage * (pageFrom + 1)
             : pageTo * countOnPage;
 
-        var buttons = new List<InlineKeyboardButtonDto>();
+        var buttons = new List<List<InlineKeyboardButtonDto>>();
         for (var i = startIndex; i < stickers.Count && i < endIndex; i++)
-            buttons.Add(new InlineKeyboardButtonDto(stickers[i].Name!, callbackPrefix + $":{stickers[i].StickerFullId.StickerId}"));
+            buttons.Add(new List<InlineKeyboardButtonDto>
+            {
+                new (stickers[i].Name!, callbackPrefix + $":{stickers[i].StickerFullId.StickerId}")
+            });
 
         return buttons;
     }
     
-    public static List<InlineKeyboardButtonDto> BuildMainKeyboardPacks(
+    public static List<List<InlineKeyboardButtonDto>> BuildMainKeyboardPacks(
         string callbackPrefix,
         string callbackPostfix,
         List<StickerPack> packs,
@@ -44,11 +47,12 @@ public class SwitchKeyboardExtensions
             ? countOnPage * (pageFrom + 1)
             : pageTo * countOnPage;
 
-        var buttons = new List<InlineKeyboardButtonDto>();
+        var buttons = new List<List<InlineKeyboardButtonDto>>();
         for (var i = startIndex; i < packs!.Count && i < endIndex; i++)
-            buttons.Add(new InlineKeyboardButtonDto(
-                packs[i].Name!,
-                callbackPrefix + $":{packs[i].Id}" + callbackPostfix));
+            buttons.Add(new List<InlineKeyboardButtonDto>
+            {
+                new (packs[i].Name!, callbackPrefix + $":{packs[i].Id}" + callbackPostfix)
+            });
 
         return buttons;
     }

@@ -7,15 +7,22 @@ public class SwitchKeyboardResultExtensions
 {
     public static InlineKeyboardMarkup GetMarkupFromDto(InlineKeyboardDto keyboardDto)
     {
-        var currentPageKeyboard = new List<InlineKeyboardButton[]>();
-        foreach (var button in keyboardDto.Buttons)
-            currentPageKeyboard.Add(new[]
-                { InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData) });
+        var resultKeyboard = new List<InlineKeyboardButton[]>();
+        
+        foreach (var buttonRow in keyboardDto.ButtonsRows)
+        {
+            var currentRow = new List<InlineKeyboardButton>();
+            foreach (var button in buttonRow)
+                currentRow.Add(InlineKeyboardButton.WithCallbackData(button.ButtonText, button.CallbackData));
+            
+            resultKeyboard.Add(currentRow.ToArray());
+        }
+        
         var lastRow = new List<InlineKeyboardButton>();
         foreach (var lastButton in keyboardDto.LastButtons)
             lastRow.Add(InlineKeyboardButton.WithCallbackData(lastButton.ButtonText, lastButton.CallbackData));
-        currentPageKeyboard.Add(lastRow.ToArray());
+        resultKeyboard.Add(lastRow.ToArray());
 
-        return new InlineKeyboardMarkup(currentPageKeyboard);
+        return new InlineKeyboardMarkup(resultKeyboard);
     }
 }

@@ -20,10 +20,10 @@ public class DeletePackConfirmHandler : ICommandHandler
     {
         var line = new List<InlineKeyboardButtonDto>() 
         { 
-            new ("Удалить", $"DP:DeletePack:{commandArguments.StickerPackId}"), 
-            new ("Назад", $"DP:SwKbdPc:0:Increase:10") 
+            new ("Назад", "DP:SwKbdPc:0:Increase:10"),
+            new ("Удалить", $"DP:DeletePack:{commandArguments.StickerPackId}")
         };
-        var keyboardDto = new InlineKeyboardDto(line, new List<InlineKeyboardButtonDto>());
+        var keyboardDto = new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), line);
         return new DeletePackConfirmResult(commandArguments.ChatId, keyboardDto);
     }
 }

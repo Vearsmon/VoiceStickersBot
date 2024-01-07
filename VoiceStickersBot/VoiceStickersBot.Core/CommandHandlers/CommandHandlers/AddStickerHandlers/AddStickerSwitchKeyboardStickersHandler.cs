@@ -41,10 +41,12 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
             pageTo,
             countOnPage);
 
-        buttons.Add(new InlineKeyboardButtonDto(
-            "Добавить сюда", 
-            $"AS:SendNameInstr:{commandArguments.StickerPackId}"));
-        buttons.Add(new InlineKeyboardButtonDto("Назад", "AS:SwKbdPc:0:Increase:10"));
+        var actionRow = new List<InlineKeyboardButtonDto>
+        {
+            new ("Назад", "AS:SwKbdPc:0:Increase:10"),
+            new ("Добавить сюда", $"AS:SendNameInstr:{commandArguments.StickerPackId}"),
+        };
+        buttons.Add(actionRow);
         
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "AS:SwKbdSt",
