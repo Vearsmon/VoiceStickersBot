@@ -2,7 +2,7 @@ using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
-public class ShowAllSendStickerCommandArguments : IShowAllCommandArguments
+public class ShowAllSendStickerArguments : IShowAllCommandArguments
 {
     public CommandType CommandType => CommandType.ShowAll;
 
@@ -11,7 +11,7 @@ public class ShowAllSendStickerCommandArguments : IShowAllCommandArguments
     public Guid StickerId { get; }
     public long ChatId { get; }
     
-    public ShowAllSendStickerCommandArguments(Guid stickerPackId, Guid stickerId, long chatId)
+    public ShowAllSendStickerArguments(Guid stickerPackId, Guid stickerId, long chatId)
     {
         StickerPackId = stickerPackId;
         StickerId = stickerId;

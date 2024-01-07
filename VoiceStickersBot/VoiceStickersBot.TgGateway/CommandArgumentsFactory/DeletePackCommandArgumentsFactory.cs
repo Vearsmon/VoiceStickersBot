@@ -15,12 +15,12 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<DeletePackStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { DeletePackStepName.SwKbdPc, BuildDeletePackSwitchKeyboardPacksCommandArguments},
-            { DeletePackStepName.SwKbdSt, BuildDeletePackSwitchKeyboardStickersCommandArguments },
-            { DeletePackStepName.SendSticker, BuildDeletePackSendStickerCommandArguments },
+            { DeletePackStepName.SwKbdPc, BuildDeletePackSwitchKeyboardPacksArguments},
+            { DeletePackStepName.SwKbdSt, BuildDeletePackSwitchKeyboardStickersArguments },
+            { DeletePackStepName.SendSticker, BuildDeletePackSendStickerArguments },
             { DeletePackStepName.Cancel, r => new DeletePackCancelArguments()},
-            { DeletePackStepName.DeletePack, BuildDeletePackDeletePackCommandArguments },
-            { DeletePackStepName.Confirm, BuildDeletePackConfirmCommandArguments }
+            { DeletePackStepName.DeletePack, BuildDeletePackDeletePackArguments },
+            { DeletePackStepName.Confirm, BuildDeletePackConfirmArguments }
         };
     }
 
@@ -33,7 +33,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         return stepCommandBuilders[stepName](queryContext);
     }
 
-    private ICommandArguments BuildDeletePackSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildDeletePackSwitchKeyboardPacksArguments(QueryContext queryContext)
     {
         const int argumentsCount = 3;
         
@@ -61,7 +61,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
 
-    private ICommandArguments BuildDeletePackSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildDeletePackSwitchKeyboardStickersArguments(QueryContext queryContext)
     {
         const int argumentsCount = 4;
         
@@ -94,7 +94,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
 
-    private ICommandArguments BuildDeletePackSendStickerCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildDeletePackSendStickerArguments(QueryContext queryContext)
     {
         const int argumentsCount = 2;
         
@@ -116,7 +116,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.ChatId);
     }
 
-    private ICommandArguments BuildDeletePackDeletePackCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildDeletePackDeletePackArguments(QueryContext queryContext)
     {
         const int argumentsCount = 1;
         
@@ -131,7 +131,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         return new DeletePackDeletePackArguments(stickerPackId, queryContext.ChatId);
     }
 
-    private ICommandArguments BuildDeletePackConfirmCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildDeletePackConfirmArguments(QueryContext queryContext)
     {
         const int argumentsCount = 1;
         

@@ -6,15 +6,15 @@ using VoiceStickersBot.Core.Repositories.UsersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
-public class ShowAllSwitchKeyboardPacksCommandHandler : ICommandHandler
+public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    private readonly ShowAllSwitchKeyboardPacksCommandArguments commandArguments;
+    private readonly ShowAllSwitchKeyboardPacksArguments commandArguments;
     private readonly IUsersRepository usersRepository;
 
-    public ShowAllSwitchKeyboardPacksCommandHandler(
-        ShowAllSwitchKeyboardPacksCommandArguments commandArguments,
+    public ShowAllSwitchKeyboardPacksHandler(
+        ShowAllSwitchKeyboardPacksArguments commandArguments,
         IUsersRepository usersRepository)
     {
         this.commandArguments = commandArguments;

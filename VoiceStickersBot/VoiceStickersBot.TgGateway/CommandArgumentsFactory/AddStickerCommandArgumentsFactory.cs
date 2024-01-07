@@ -20,13 +20,13 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         
         stepCommandBuilders = new Dictionary<AddStickerStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { AddStickerStepName.SwKbdPc, BuildAddStickerSwitchKeyboardPacksCommandArguments},
+            { AddStickerStepName.SwKbdPc, BuildAddStickerSwitchKeyboardPacksArguments},
             { AddStickerStepName.Cancel, q => new AddStickerCancelArguments()},
-            { AddStickerStepName.SwKbdSt, BuildAddStickerSwitchKeyboardStickersCommandArguments},
-            { AddStickerStepName.SendSticker, BuildAddStickerSendStickerCommandArguments},
-            { AddStickerStepName.SendNameInstr, BuildAddStickerSendNameInstructionsCommandArguments },
-            { AddStickerStepName.SendFileInstr, BuildAddStickerSendFileInstructionsCommandArguments},
-            { AddStickerStepName.AddSticker, BuildAddStickerAddStickerCommandArguments}
+            { AddStickerStepName.SwKbdSt, BuildAddStickerSwitchKeyboardStickersArguments},
+            { AddStickerStepName.SendSticker, BuildAddStickerSendStickerArguments},
+            { AddStickerStepName.SendNameInstr, BuildAddStickerSendNameInstructionsArguments },
+            { AddStickerStepName.SendFileInstr, BuildAddStickerSendFileInstructionsArguments},
+            { AddStickerStepName.AddSticker, BuildAddStickerAddStickerArguments}
         };
     }
 
@@ -39,7 +39,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         return stepCommandBuilders[stepName](queryContext);
     }
 
-    private ICommandArguments BuildAddStickerSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSwitchKeyboardPacksArguments(QueryContext queryContext)
     {
         const int argumentsCount = 3;
         
@@ -67,7 +67,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
     
-    private ICommandArguments BuildAddStickerSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSwitchKeyboardStickersArguments(QueryContext queryContext)
     {
         const int argumentsCount = 4;
         
@@ -100,7 +100,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
 
-    private ICommandArguments BuildAddStickerSendStickerCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSendStickerArguments(QueryContext queryContext)
     {
         const int argumentsCount = 2;
         
@@ -122,7 +122,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.ChatId);
     }
     
-    private ICommandArguments BuildAddStickerSendNameInstructionsCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSendNameInstructionsArguments(QueryContext queryContext)
     {
         const int argumentsCount = 1;
         
@@ -137,7 +137,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         return new AddStickerSendNameInstructionsArguments(stickerPackId, queryContext.ChatId);
     }
     
-    private ICommandArguments BuildAddStickerSendFileInstructionsCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSendFileInstructionsArguments(QueryContext queryContext)
     {
         const int argumentsCount = 2;
         
@@ -157,7 +157,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         return new AddStickerSendFileInstructionsArguments(stickerPackId, stickerName, queryContext.ChatId);
     }
     
-    private ICommandArguments BuildAddStickerAddStickerCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerAddStickerArguments(QueryContext queryContext)
     {
         const int argumentsCount = 3;
         

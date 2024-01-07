@@ -99,7 +99,6 @@ public class TgApiGatewayService
                          && userInfo.State == UserState.WaitStickerName)
                 {
                     var stickerPackId = userInfo.StickerPackId;
-                    // UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
                     var args = new List<string> { stickerPackId, message.Text };
                     context = new QueryContext("AS", "SendFileInstr", args, chatId);
                 }

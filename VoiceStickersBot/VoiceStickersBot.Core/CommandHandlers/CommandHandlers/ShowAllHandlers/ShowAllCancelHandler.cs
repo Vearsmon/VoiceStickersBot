@@ -4,13 +4,13 @@ using VoiceStickersBot.Core.CommandResults;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
-public class ShowAllCancelCommandHandler : ICommandHandler
+public class ShowAllCancelHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    private readonly ShowAllCancelCommandArguments commandArguments;
+    private readonly ShowAllCancelArguments commandArguments;
     
-    public ShowAllCancelCommandHandler(ShowAllCancelCommandArguments commandArguments)
+    public ShowAllCancelHandler(ShowAllCancelArguments commandArguments)
     {
         this.commandArguments = commandArguments;
     }

@@ -24,23 +24,23 @@ public class ShowAllCommandHandlerFactory : CommandHandlerFactoryBase<IShowAllCo
         {
             { 
                 ShowAllStepName.Cancel, ca =>  
-                    new ShowAllCancelCommandHandler(
-                        (ShowAllCancelCommandArguments)ca) 
+                    new ShowAllCancelHandler(
+                        (ShowAllCancelArguments)ca) 
             },
             { 
                 ShowAllStepName.SwKbdPc, ca => 
-                    new ShowAllSwitchKeyboardPacksCommandHandler(
-                        (ShowAllSwitchKeyboardPacksCommandArguments)ca, usersRepository) 
+                    new ShowAllSwitchKeyboardPacksHandler(
+                        (ShowAllSwitchKeyboardPacksArguments)ca, usersRepository) 
             },
             { 
                 ShowAllStepName.SwKbdSt,  ca => 
-                    new ShowAllSwitchKeyboardStickersCommandHandler(
-                        (ShowAllSwitchKeyboardStickersCommandArguments)ca, stickerPacksRepository)
+                    new ShowAllSwitchKeyboardStickersHandler(
+                        (ShowAllSwitchKeyboardStickersArguments)ca, stickerPacksRepository)
             },
             { 
                 ShowAllStepName.SendSticker, ca => 
-                    new ShowAllSendStickerCommandHandler(
-                        (ShowAllSendStickerCommandArguments)ca, stickersRepository)
+                    new ShowAllSendStickerHandler(
+                        (ShowAllSendStickerArguments)ca, stickersRepository)
             }
         };
     }

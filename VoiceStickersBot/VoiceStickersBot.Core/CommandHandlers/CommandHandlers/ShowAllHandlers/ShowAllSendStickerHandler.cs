@@ -6,15 +6,15 @@ using VoiceStickersBot.Core.Repositories.StickersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
-public class ShowAllSendStickerCommandHandler : ICommandHandler
+public class ShowAllSendStickerHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    private readonly ShowAllSendStickerCommandArguments commandArguments;
+    private readonly ShowAllSendStickerArguments commandArguments;
     private readonly IStickersRepository stickersRepository;
 
-    public ShowAllSendStickerCommandHandler(
-        ShowAllSendStickerCommandArguments commandArguments,
+    public ShowAllSendStickerHandler(
+        ShowAllSendStickerArguments commandArguments,
         IStickersRepository stickersRepository)
     {
         this.commandArguments = commandArguments;

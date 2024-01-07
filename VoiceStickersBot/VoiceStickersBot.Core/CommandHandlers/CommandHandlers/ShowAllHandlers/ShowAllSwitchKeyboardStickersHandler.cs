@@ -7,15 +7,15 @@ using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.ShowAllHandlers;
 
-public class ShowAllSwitchKeyboardStickersCommandHandler : ICommandHandler
+public class ShowAllSwitchKeyboardStickersHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    private readonly ShowAllSwitchKeyboardStickersCommandArguments commandArguments;
+    private readonly ShowAllSwitchKeyboardStickersArguments commandArguments;
     private readonly IStickerPacksRepository stickerPacksRepository;
 
-    public ShowAllSwitchKeyboardStickersCommandHandler(
-        ShowAllSwitchKeyboardStickersCommandArguments commandArguments,
+    public ShowAllSwitchKeyboardStickersHandler(
+        ShowAllSwitchKeyboardStickersArguments commandArguments,
         IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;

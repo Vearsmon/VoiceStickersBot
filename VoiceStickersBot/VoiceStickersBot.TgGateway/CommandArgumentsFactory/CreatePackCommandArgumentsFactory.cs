@@ -13,9 +13,9 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<CreatePackStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { CreatePackStepName.SendInstructions, BuildCreatePackSendInstructionsCommandArguments },
+            { CreatePackStepName.SendInstructions, BuildCreatePackSendInstructionsArguments },
             { CreatePackStepName.Cancel, qc => new CreatePackCancelArguments() },
-            { CreatePackStepName.AddPack, BuildCreatePackAddPackCommandArguments }
+            { CreatePackStepName.AddPack, BuildCreatePackAddPackArguments }
         };
     }
 
@@ -29,7 +29,7 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
         return stepCommandBuilders[stepName](queryContext);
     }
 
-    private ICommandArguments BuildCreatePackSendInstructionsCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildCreatePackSendInstructionsArguments(QueryContext queryContext)
     {
         const int argumentsCount = 0;
         
@@ -40,7 +40,7 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
         return new CreatePackSendInstructionsArguments(queryContext.ChatId);
     }
     
-    private ICommandArguments BuildCreatePackAddPackCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildCreatePackAddPackArguments(QueryContext queryContext)
     {
         const int argumentsCount = 1;
         

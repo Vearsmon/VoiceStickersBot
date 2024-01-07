@@ -14,10 +14,10 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<ShowAllStepName, Func<QueryContext, ICommandArguments>>
         {
-            { ShowAllStepName.SwKbdPc, BuildShowAllSwitchKeyboardPacksCommandArguments },
-            { ShowAllStepName.Cancel, r => new ShowAllCancelCommandArguments() },
-            { ShowAllStepName.SwKbdSt, BuildShowAllSwitchKeyboardStickersCommandArguments },
-            { ShowAllStepName.SendSticker, BuildShowAllSendStickerCommandArguments }
+            { ShowAllStepName.SwKbdPc, BuildShowAllSwitchKeyboardPacksArguments },
+            { ShowAllStepName.Cancel, r => new ShowAllCancelArguments() },
+            { ShowAllStepName.SwKbdSt, BuildShowAllSwitchKeyboardStickersArguments },
+            { ShowAllStepName.SendSticker, BuildShowAllSendStickerArguments }
         };
     }
 
@@ -30,7 +30,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         return stepCommandBuilders[stepName](queryContext);
     }
 
-    private ICommandArguments BuildShowAllSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildShowAllSwitchKeyboardStickersArguments(QueryContext queryContext)
     {
         const int argumentsCount = 4;
         
@@ -54,7 +54,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 3. Should be positive int.");
 
-        return new ShowAllSwitchKeyboardStickersCommandArguments(
+        return new ShowAllSwitchKeyboardStickersArguments(
             stickerPackId, 
             pageFrom,
             direction, 
@@ -63,7 +63,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
     
-    private ICommandArguments BuildShowAllSwitchKeyboardPacksCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildShowAllSwitchKeyboardPacksArguments(QueryContext queryContext)
     {
         const int argumentsCount = 3;
         if (queryContext.CommandArguments.Count != argumentsCount)
@@ -82,7 +82,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 2. Should be positive int.");
 
-        return new ShowAllSwitchKeyboardPacksCommandArguments(
+        return new ShowAllSwitchKeyboardPacksArguments(
             pageFrom, 
             direction, 
             stickersOnPage, 
@@ -90,7 +90,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.BotMessageId);
     }
     
-    private ICommandArguments BuildShowAllSendStickerCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildShowAllSendStickerArguments(QueryContext queryContext)
     {
         const int argumentsCount = 2;
         
@@ -106,6 +106,6 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be Guid.");
 
-        return new ShowAllSendStickerCommandArguments(stickerPackId, stickerId, queryContext.ChatId);
+        return new ShowAllSendStickerArguments(stickerPackId, stickerId, queryContext.ChatId);
     }
 }

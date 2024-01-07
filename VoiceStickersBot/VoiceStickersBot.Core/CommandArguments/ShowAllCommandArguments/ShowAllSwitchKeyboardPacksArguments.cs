@@ -2,31 +2,28 @@ using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 
 namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
-public class ShowAllSwitchKeyboardStickersCommandArguments : IShowAllCommandArguments
+public class ShowAllSwitchKeyboardPacksArguments : IShowAllCommandArguments
 {
     public CommandType CommandType => CommandType.ShowAll;
 
-    public ShowAllStepName StepName => ShowAllStepName.SwKbdSt;
-
-    public readonly Guid StickerPackId;
+    public ShowAllStepName StepName => ShowAllStepName.SwKbdPc;
+    
     public int PageFrom { get; }
     public PageChangeDirection  Direction { get; }
-    public int StickersOnPage { get; }
+    public int PacksOnPage { get; }
     public long ChatId { get; }
     public string BotMessageId { get; }
-
-    public ShowAllSwitchKeyboardStickersCommandArguments(
-        Guid stickerPackId, 
+    
+    public ShowAllSwitchKeyboardPacksArguments(
         int pageFrom, 
         PageChangeDirection direction, 
-        int stickersOnPage,
+        int packsOnPage,
         long chatId, 
         string botMessageId)
     {
-        StickerPackId = stickerPackId;
         PageFrom = pageFrom;
         Direction = direction;
-        StickersOnPage = stickersOnPage;
+        PacksOnPage = packsOnPage;
         ChatId = chatId;
         BotMessageId = botMessageId;
     }
