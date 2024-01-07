@@ -72,25 +72,21 @@ public class UsersRepository : IUsersRepository
 
     public async Task AddStickerPackToUser(string userId, Guid stickerPackId)
     {
-        var stickerPackTable = vsbDatabaseCluster.GetTable<StickerPackEntity>();
-        var stickerPacks = await stickerPackTable.PerformReadonlyRequestAsync(
-                r => r.Where(p => p.Id == stickerPackId),
-                new CancellationToken())
-            .ConfigureAwait(false);
-        if (stickerPacks.IsEmpty())
+        var stickerPack = await GetStickerPack(stickerPackId).ConfigureAwait(false);
+        if (stickerPack is null)
             throw new StickerPackNotFoundException($"Sticker pack with id: {stickerPackId} was not found");
 
-        var stickerPack = stickerPacks.Single();
-        stickerPackTable.Dispose();
+        await InnerAddStickerPackToUser(userId, stickerPack).ConfigureAwait(false);
+    }
 
-        using var usersTable = vsbDatabaseCluster.GetTable<UserEntity>();
-        await usersTable.PerformUpdateRequestAsync(
-                r => r
-                    .Include(u => u.StickerPacks)
-                    .Single(u => u.Id == userId),
-                e => (e.StickerPacks ??= new List<StickerPackEntity>()).Add(stickerPack),
-                new CancellationToken())
-            .ConfigureAwait(false);
+    public async Task<bool> TryAddStickerPackToUser(string userId, Guid stickerPackId)
+    {
+        var stickerPack = await GetStickerPack(stickerPackId).ConfigureAwait(false);
+        if (stickerPack is null)
+            return false;
+
+        await InnerAddStickerPackToUser(userId, stickerPack).ConfigureAwait(false);
+        return true;
     }
 
     public async Task RemoveStickerPack(string userId, Guid stickerPackId)
@@ -108,6 +104,28 @@ public class UsersRepository : IUsersRepository
                     if (stickerPackToRemove is not null)
                         r.StickerPacks.Remove(stickerPackToRemove);
                 },
+                new CancellationToken())
+            .ConfigureAwait(false);
+    }
+
+    private async Task<StickerPackEntity?> GetStickerPack(Guid stickerPackId)
+    {
+        using var stickerPackTable = vsbDatabaseCluster.GetTable<StickerPackEntity>();
+        var stickerPacks = await stickerPackTable.PerformReadonlyRequestAsync(
+                r => r.Where(p => p.Id == stickerPackId),
+                new CancellationToken())
+            .ConfigureAwait(false);
+        return stickerPacks.FirstOrDefault();
+    }
+
+    private async Task InnerAddStickerPackToUser(string userId, StickerPackEntity stickerPack)
+    {
+        using var usersTable = vsbDatabaseCluster.GetTable<UserEntity>();
+        await usersTable.PerformUpdateRequestAsync(
+                r => r
+                    .Include(u => u.StickerPacks)
+                    .Single(u => u.Id == userId),
+                e => (e.StickerPacks ??= new List<StickerPackEntity>()).Add(stickerPack),
                 new CancellationToken())
             .ConfigureAwait(false);
     }
