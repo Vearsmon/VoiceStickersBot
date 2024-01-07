@@ -52,7 +52,7 @@ public class TgApiGatewayService
                     return;
 
                 if (UserInfoByChatId.TryGetValue(chatId, out var userInfo)
-                    && context.CommandStep == "SendSticker")
+                    && (context.CommandStep == "SendSticker" || context.CommandStep == "DeleteSticker"))
                 {
                     context.CommandArguments.Add(userInfo.StickerPackId);
                 }
@@ -182,7 +182,7 @@ public class TgApiGatewayService
         },
         {
             "Импорт/экспорт пака", chatId => new QueryContext(
-                "SP", "SwKbdCh", new() { "0", "Increase", "10" }, chatId)
+                "SP", "Choice", new(), chatId)
         }
     };
 

@@ -1,5 +1,6 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.SharePackResults;
@@ -140,10 +141,11 @@ public class SharePackResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(
             UserState.NoWait);
-        
+
         await bot.SendTextMessageAsync(
-            result.ChatId,
-            $"{result.StickerPackId}");
+            parseMode: ParseMode.Markdown,
+            chatId: result.ChatId,
+            text: $"```{result.StickerPackId}```");
     }
 
     private async Task Handle(

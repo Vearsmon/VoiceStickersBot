@@ -22,7 +22,7 @@ public static class DefaultKeyboard
         },
         new[] // fourth row
         {
-            new KeyboardButton("Поделиться паком"),
+            new KeyboardButton("Импорт/экспорт пака"),
         }
     }) { ResizeKeyboard = true };
 }
