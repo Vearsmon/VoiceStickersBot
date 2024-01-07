@@ -52,8 +52,7 @@ public class TgApiGatewayService
                 if (context.CommandType == "page") 
                     return;
 
-                if (UserInfoByChatId.TryGetValue(chatId, out var userInfo) 
-                    && (context.CommandType == "SA" || context.CommandType == "AS")
+                if (UserInfoByChatId.TryGetValue(chatId, out var userInfo)
                     && context.CommandStep == "SendSticker")
                 {
                     context.CommandArguments.Add(userInfo.StickerPackId);
@@ -102,6 +101,7 @@ public class TgApiGatewayService
                 
                 if (message.Text == "/start" || message.Text == "/cancel")
                 {
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait); // !
                     await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
                         replyMarkup: DefaultKeyboard.CommandsKeyboard);
                 }
@@ -109,7 +109,7 @@ public class TgApiGatewayService
                          && userInfo.State == UserState.WaitStickerName)
                 {
                     var stickerPackId = userInfo.StickerPackId;
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
+                    // UserInfoByChatId[chatId] = new UserInfo(UserState.WaitFile, userInfo.StickerPackId, message.Text);
                     var args = new List<string> { stickerPackId, message.Text };
                     var context = new QueryContext("AS", "SendFileInstr", args, chatId);
 

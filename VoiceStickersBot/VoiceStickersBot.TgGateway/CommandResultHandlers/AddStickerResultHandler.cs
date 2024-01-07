@@ -36,8 +36,8 @@ public class AddStickerResultHandler : ICommandResultHandler
                 (bot, infos, res) => Handle(bot, infos, (AddStickerSwitchKeyboardStickersResult)res)
             },
             {
-                typeof(AddStickerSendInstructionsResult),
-                (bot, infos, res) => Handle(bot, infos, (AddStickerSendInstructionsResult)res)
+                typeof(AddStickerSendNameInstructionsResult),
+                (bot, infos, res) => Handle(bot, infos, (AddStickerSendNameInstructionsResult)res)
             },
             {
                 typeof(AddStickerSendFileInstructionsResult),
@@ -60,7 +60,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Стикер успешно доавблен",
+            "Стикер успешно добавлен",
             replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
 
@@ -70,7 +70,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         AddStickerSendStickerResult result)
     {
         userInfos[result.ChatId] = new UserInfo(
-            UserState.WaitStickerName,
+            UserState.WaitStickerChoice,
             stickerPackId: result.StickerPackId.ToString());
         
         var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
@@ -83,7 +83,7 @@ public class AddStickerResultHandler : ICommandResultHandler
     private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        AddStickerSendInstructionsResult result)
+        AddStickerSendNameInstructionsResult result)
     {
         userInfos[result.ChatId] = new UserInfo(
             UserState.WaitStickerName,
@@ -91,7 +91,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Отправьте мне название будущего стикера");
+            "Отправьте название будущего стикера");
     }
     
     private async Task Handle(
@@ -148,8 +148,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         {
             var msg = await bot.SendTextMessageAsync(
                 result.ChatId,
-                "Вот все стикеры из выбранного набора. Отправьте голосовое или аудио файл с подписью," +
-                "если хотите добавить в этот набор.",
+                "Вот все стикеры из выбранного набора:",
                 replyMarkup: markup);
         }
         else

@@ -44,7 +44,8 @@ public class ShowAllResultHandler : ICommandResultHandler
         Dictionary<long, UserInfo> userInfos, 
         ShowAllSendStickerResult result)
     {
-        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        userInfos[result.ChatId] = new UserInfo(UserState.WaitStickerChoice,
+            stickerPackId: result.StickerPackId.ToString());
         
         var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var voiceFile = InputFile.FromStream(memoryStream);

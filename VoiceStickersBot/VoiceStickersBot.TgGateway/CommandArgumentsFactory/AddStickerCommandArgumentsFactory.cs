@@ -24,7 +24,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             { AddStickerStepName.Cancel, q => new AddStickerCancelArguments()},
             { AddStickerStepName.SwKbdSt, BuildAddStickerSwitchKeyboardStickersCommandArguments},
             { AddStickerStepName.SendSticker, BuildAddStickerSendStickerCommandArguments},
-            { AddStickerStepName.SendInstr, BuildAddStickerSendInstructionsCommandArguments },
+            { AddStickerStepName.SendNameInstr, BuildAddStickerSendNameInstructionsCommandArguments },
             { AddStickerStepName.SendFileInstr, BuildAddStickerSendFileInstructionsCommandArguments},
             { AddStickerStepName.AddSticker, BuildAddStickerAddStickerCommandArguments}
         };
@@ -122,7 +122,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             queryContext.ChatId);
     }
     
-    private ICommandArguments BuildAddStickerSendInstructionsCommandArguments(QueryContext queryContext)
+    private ICommandArguments BuildAddStickerSendNameInstructionsCommandArguments(QueryContext queryContext)
     {
         const int argumentsCount = 1;
         
@@ -134,7 +134,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
         
-        return new AddStickerSendInstructionsArguments(stickerPackId, queryContext.ChatId);
+        return new AddStickerSendNameInstructionsArguments(stickerPackId, queryContext.ChatId);
     }
     
     private ICommandArguments BuildAddStickerSendFileInstructionsCommandArguments(QueryContext queryContext)

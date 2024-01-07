@@ -21,7 +21,7 @@ public class DeletePackConfirmHandler : ICommandHandler
         var line = new List<InlineKeyboardButtonDto>() 
         { 
             new ("Удалить", $"DP:DeletePack:{commandArguments.StickerPackId}"), 
-            new ("Назад", $"DP:SwKbdPc:{commandArguments.StickerPackId}:0:Increase:10") 
+            new ("Назад", $"DP:SwKbdPc:0:Increase:10") 
         };
         var keyboardDto = new InlineKeyboardDto(line, new List<InlineKeyboardButtonDto>());
         return new DeletePackConfirmResult(commandArguments.ChatId, keyboardDto);

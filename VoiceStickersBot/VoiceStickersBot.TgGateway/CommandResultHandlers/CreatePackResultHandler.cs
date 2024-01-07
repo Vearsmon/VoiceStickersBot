@@ -36,7 +36,6 @@ public class CreatePackResultHandler : ICommandResultHandler
         Dictionary<long, UserInfo> userInfos,
         CreatePackAddPackResult result)
     {
-        //надо проверку на ошибки или отмену
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
         
         await bot.SendTextMessageAsync(result.ChatId, "Стикерпак успешно создан",
@@ -50,6 +49,6 @@ public class CreatePackResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.WaitPackName);
         
-        await bot.SendTextMessageAsync(result.ChatId, "Отправьте мне название стикерпака");
+        await bot.SendTextMessageAsync(result.ChatId, "Отправьте название стикерпака");
     }
 }

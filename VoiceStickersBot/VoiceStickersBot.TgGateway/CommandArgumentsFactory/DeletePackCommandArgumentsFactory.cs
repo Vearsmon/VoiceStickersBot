@@ -16,6 +16,8 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
         stepCommandBuilders = new Dictionary<DeletePackStepName, Func<QueryContext, ICommandArguments>>()
         {
             { DeletePackStepName.SwKbdPc, BuildDeletePackSwitchKeyboardPacksCommandArguments},
+            { DeletePackStepName.SwKbdSt, BuildDeletePackSwitchKeyboardStickersCommandArguments },
+            { DeletePackStepName.SendSticker, BuildDeletePackSendStickerCommandArguments },
             { DeletePackStepName.Cancel, r => new DeletePackCancelArguments()},
             { DeletePackStepName.DeletePack, BuildDeletePackDeletePackCommandArguments },
             { DeletePackStepName.Confirm, BuildDeletePackConfirmCommandArguments }
@@ -57,6 +59,61 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             packsOnPage,
             queryContext.ChatId,
             queryContext.BotMessageId);
+    }
+
+    private ICommandArguments BuildDeletePackSwitchKeyboardStickersCommandArguments(QueryContext queryContext)
+    {
+        const int argumentsCount = 4;
+        
+        if (queryContext.CommandArguments.Count != argumentsCount)
+            throw new ArgumentException(
+                $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
+
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
+            throw new ArgumentException(
+                "Invalid argument at index 0. Should be Guid.");
+        
+        if (!int.TryParse(queryContext.CommandArguments[1], out var pageFrom) || pageFrom < 0)
+            throw new ArgumentException(
+                "Invalid argument at index 1. Should be positive int.");
+
+        if (!Enum.TryParse(queryContext.CommandArguments[2], out PageChangeDirection direction))
+            throw new ArgumentException(
+                "Invalid argument at index 2. Should be PageChangeDirection.");
+        
+        if (!int.TryParse(queryContext.CommandArguments[3], out var stickersOnPage) || stickersOnPage < 0)
+            throw new ArgumentException(
+                "Invalid argument at index 3. Should be positive int.");
+        
+        return new DeletePackSwitchKeyboardStickersArguments(
+            stickerPackId,
+            pageFrom,
+            direction,
+            stickersOnPage,
+            queryContext.ChatId,
+            queryContext.BotMessageId);
+    }
+
+    private ICommandArguments BuildDeletePackSendStickerCommandArguments(QueryContext queryContext)
+    {
+        const int argumentsCount = 2;
+        
+        if (queryContext.CommandArguments.Count != argumentsCount)
+            throw new ArgumentException(
+                $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
+
+        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerId))
+            throw new ArgumentException(
+                "Invalid argument at index 0. Should be Guid.");
+        
+        if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerPackId))
+            throw new ArgumentException(
+                "Invalid argument at index 1. Should be Guid.");
+        
+        return new DeletePackSendStickerArguments(
+            stickerPackId,
+            stickerId,
+            queryContext.ChatId);
     }
 
     private ICommandArguments BuildDeletePackDeletePackCommandArguments(QueryContext queryContext)

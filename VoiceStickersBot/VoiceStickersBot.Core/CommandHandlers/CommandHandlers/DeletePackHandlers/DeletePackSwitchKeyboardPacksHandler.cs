@@ -43,7 +43,7 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
         var countOnPage = commandArguments.PacksOnPage;
 
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
-            "DP:Confirm",
+            "DP:SwKbdSt",
             "",
             packs!,
             pageFrom,

@@ -5,19 +5,19 @@ using VoiceStickersBot.Core.CommandResults.AddStickerResults;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
 
-public class AddStickerSendInstructionsHandler : ICommandHandler
+public class AddStickerSendNameInstructionsHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.AddSticker;
 
-    private readonly AddStickerSendInstructionsArguments commandArguments;
+    private readonly AddStickerSendNameInstructionsArguments commandArguments;
 
-    public AddStickerSendInstructionsHandler(AddStickerSendInstructionsArguments commandArguments)
+    public AddStickerSendNameInstructionsHandler(AddStickerSendNameInstructionsArguments commandArguments)
     {
         this.commandArguments = commandArguments;
     }
 
     public async Task<ICommandResult> Handle()
     {
-        return new AddStickerSendInstructionsResult(commandArguments.ChatId, commandArguments.StickerPackId);
+        return new AddStickerSendNameInstructionsResult(commandArguments.ChatId, commandArguments.StickerPackId);
     }
 }

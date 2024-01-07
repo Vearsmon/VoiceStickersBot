@@ -1,21 +1,21 @@
-﻿using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
+using VoiceStickersBot.Core.CommandArguments;
+using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.AddStickerResults;
+using VoiceStickersBot.Core.CommandResults.DeletePackResults;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;
 
-public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
+public class DeletePackSwitchKeyboardStickersHandler : ICommandHandler
 {
-    public CommandType CommandType => CommandType.AddSticker;
+    public CommandType CommandType => CommandType.DeletePack;
 
-    private readonly AddStickerSwitchKeyboardStickersArguments commandArguments;
+    private readonly DeletePackSwitchKeyboardStickersArguments commandArguments;
     private readonly IStickerPacksRepository stickerPacksRepository;
     
-    public AddStickerSwitchKeyboardStickersHandler(
-        AddStickerSwitchKeyboardStickersArguments commandArguments,
+    public DeletePackSwitchKeyboardStickersHandler(
+        DeletePackSwitchKeyboardStickersArguments commandArguments,
         IStickerPacksRepository stickerPacksRepository)
     {
         this.commandArguments = commandArguments;
@@ -33,7 +33,7 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.PacksOnPage;
 
-        var callbackPrefix = "AS:SendSticker";
+        var callbackPrefix = "DP:SendSticker";
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardStickers(
             callbackPrefix,
             stickers,
@@ -42,12 +42,12 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
             countOnPage);
 
         buttons.Add(new InlineKeyboardButtonDto(
-            "Добавить сюда", 
-            $"AS:SendNameInstr:{commandArguments.StickerPackId}"));
-        buttons.Add(new InlineKeyboardButtonDto("Назад", "AS:SwKbdPc:0:Increase:10"));
+            "Удалить пак", 
+            $"DP:Confirm:{commandArguments.StickerPackId}"));
+        buttons.Add(new InlineKeyboardButtonDto("Назад", "DP:SwKbdPc:0:Increase:10"));
         
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
-            "AS:SwKbdSt",
+            "DP:SwKbdSt",
             commandArguments.StickerPackId.ToString(),
             pageTo,
             countOnPage,
@@ -55,7 +55,7 @@ public class AddStickerSwitchKeyboardStickersHandler : ICommandHandler
         
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new AddStickerSwitchKeyboardStickersResult(
+        return new DeletePackSwitchKeyboardStickersResult(
             commandArguments.ChatId,
             keyboard,
             commandArguments.StickerPackId,

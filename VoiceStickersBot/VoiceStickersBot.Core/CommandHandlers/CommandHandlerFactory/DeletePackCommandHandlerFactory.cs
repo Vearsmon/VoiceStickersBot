@@ -4,6 +4,7 @@ using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 using VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;
 using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
+using VoiceStickersBot.Core.Repositories.StickersRepository;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlerFactory;
@@ -17,7 +18,8 @@ public class DeletePackCommandHandlerFactory : CommandHandlerFactoryBase<IDelete
 
     public DeletePackCommandHandlerFactory(
         IUsersRepository usersRepository,
-        IStickerPacksRepository stickerPacksRepository)
+        IStickerPacksRepository stickerPacksRepository,
+        IStickersRepository stickersRepository)
     {
         stepHandlerBuilders = new Dictionary<DeletePackStepName, Func<IDeletePackCommandArguments, ICommandHandler>>()
         {
@@ -25,6 +27,16 @@ public class DeletePackCommandHandlerFactory : CommandHandlerFactoryBase<IDelete
                 DeletePackStepName.SwKbdPc, ca =>
                     new DeletePackSwitchKeyboardPacksHandler(
                         (DeletePackSwitchKeyboardPacksArguments)ca, usersRepository)
+            },
+            {
+                DeletePackStepName.SwKbdSt, ca =>
+                    new DeletePackSwitchKeyboardStickersHandler(
+                        (DeletePackSwitchKeyboardStickersArguments)ca, stickerPacksRepository)
+            },
+            {
+                DeletePackStepName.SendSticker, ca =>
+                    new DeletePackSendStickerHandler(
+                        (DeletePackSendStickerArguments)ca, stickersRepository)
             },
             {
                 DeletePackStepName.Cancel, ca =>

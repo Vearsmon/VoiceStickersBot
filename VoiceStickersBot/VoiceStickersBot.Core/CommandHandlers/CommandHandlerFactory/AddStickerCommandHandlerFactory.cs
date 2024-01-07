@@ -46,9 +46,9 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
                         stickersRepository)
             },
             {
-                AddStickerStepName.SendInstr, ca =>
-                    new AddStickerSendInstructionsHandler(
-                        (AddStickerSendInstructionsArguments)ca)
+                AddStickerStepName.SendNameInstr, ca =>
+                    new AddStickerSendNameInstructionsHandler(
+                        (AddStickerSendNameInstructionsArguments)ca)
             },
             {
                 AddStickerStepName.SendFileInstr, ca =>
