@@ -2,50 +2,45 @@
 using Telegram.Bot.Types;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.DeletePackResults;
+using VoiceStickersBot.Core.CommandResults.DeleteStickerResults;
 using VoiceStickersBot.Infra.ObjectStorage;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
-public class DeletePackResultHandler : ICommandResultHandler
+public class DeleteStickerResultHandler : ICommandResultHandler
 {
-    public CommandType CommandType => CommandType.DeletePack;
-
-    private readonly ObjectStorageClient objectStorage = new();
+    public CommandType CommandType => CommandType.DeleteSticker;
     
+    private readonly ObjectStorageClient objectStorage = new();
     private readonly Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>> handlers;
 
-    public DeletePackResultHandler()
+    public DeleteStickerResultHandler()
     {
         handlers = new Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>>()
         {
             {
-                typeof(DeletePackSwitchKeyboardPacksResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeletePackSwitchKeyboardPacksResult)res)
+                typeof(DeleteStickerSwitchKeyboardPacksResult),
+                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerSwitchKeyboardPacksResult)res)
             },
             {
-                typeof(DeletePackSwitchKeyboardStickersResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeletePackSwitchKeyboardStickersResult)res)
+                typeof(DeleteStickerSwitchKeyboardStickersResult),
+                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerSwitchKeyboardStickersResult)res)
             },
             {
-                typeof(DeletePackSendStickerResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeletePackSendStickerResult)res)
+                typeof(DeleteStickerSendStickerResult),
+                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerSendStickerResult)res)
             },
             {
-                typeof(DeletePackDeletePackResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeletePackDeletePackResult)res)
+                typeof(DeleteStickerDeleteStickerResult),
+                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerDeleteStickerResult)res)
             },
-            {
-                typeof(DeletePackConfirmResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeletePackConfirmResult)res)
-            }
+            /*{
+                typeof(DeleteStickerConfirmResult),
+                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerConfirmResult)res)
+            }*/
         };
     }
-
-    public Task HandleResult(
-        ITelegramBotClient bot,
-        Dictionary<long, UserInfo> userInfos,
-        ICommandResult result)
+    public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
     {
         return handlers[result.GetType()](bot, userInfos, result);
     }
@@ -53,48 +48,34 @@ public class DeletePackResultHandler : ICommandResultHandler
     private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        DeletePackDeletePackResult result)
+        DeleteStickerDeleteStickerResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
         await bot.SendTextMessageAsync(
             result.ChatId,
-            "Стикерпак успешно удалён",
+            "Стикер успешно удалён",
             replyMarkup: DefaultKeyboard.CommandsKeyboard);
     }
     
     private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        DeletePackSwitchKeyboardPacksResult result)
+        DeleteStickerSwitchKeyboardPacksResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Выберите набор, который хотите удалить:";
+        var message = "Выберите набор, из которого хотите удалить стикер:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Выберите набор, который хотите удалить:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        DeletePackSwitchKeyboardStickersResult result)
+        DeleteStickerSwitchKeyboardStickersResult result)
     {
         userInfos[result.ChatId] = new UserInfo(
             UserState.WaitStickerChoice,
@@ -102,29 +83,15 @@ public class DeletePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все стикеры из выбранного набора:";
+        var message = "Выберите стикер, который хотите удалить:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            var msg = await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все стикеры из выбранного набора:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        DeletePackSendStickerResult result)
+        DeleteStickerSendStickerResult result)
     {
         userInfos[result.ChatId] = new UserInfo(
             UserState.WaitStickerChoice,
@@ -135,12 +102,20 @@ public class DeletePackResultHandler : ICommandResultHandler
         await bot.SendVoiceAsync(
             result.ChatId,
             voiceFile);
+
+        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
+        await bot.SendTextMessageAsync(
+            result.ChatId,
+            "Вы точно хотите удалить этот стикер?",
+            replyMarkup: markup);
+
+        await bot.DeleteMessageAsync(result.ChatId, result.BotMessageId!.Value);
     }
     
-    private async Task Handle(
+    /*private async Task Handle(
         ITelegramBotClient bot,
         Dictionary<long, UserInfo> userInfos,
-        DeletePackConfirmResult result)
+        DeleteStickerConfirmResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
@@ -149,10 +124,6 @@ public class DeletePackResultHandler : ICommandResultHandler
         var message = "Вы точно хотите удалить этот набор?";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*await bot.SendTextMessageAsync(
-            result.ChatId,
-            "Вы точно хотите удалить этот набор?",
-            replyMarkup: markup);*/
-    }
+    }*/
 }
+

@@ -1,21 +1,21 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
-using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
+using VoiceStickersBot.Core.CommandArguments.DeleteStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.DeletePackResults;
+using VoiceStickersBot.Core.CommandResults.DeleteStickerResults;
 
-namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;
+namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeleteStickerHandlers;
 
-public class DeletePackConfirmHandler : ICommandHandler
+public class DeleteStickerConfirmHandler : ICommandHandler
 {
-    public CommandType CommandType => CommandType.DeletePack;
+    public CommandType CommandType => CommandType.DeleteSticker;
 
-    private readonly DeletePackConfirmArguments commandArguments;
+    private readonly DeleteStickerConfirmArguments commandArguments;
 
-    public DeletePackConfirmHandler(DeletePackConfirmArguments commandArguments)
+    public DeleteStickerConfirmHandler(DeleteStickerConfirmArguments commandArguments)
     {
         this.commandArguments = commandArguments;
     }
-
+    
     public async Task<ICommandResult> Handle()
     {
         var line = new List<InlineKeyboardButtonDto>() 
@@ -24,7 +24,8 @@ public class DeletePackConfirmHandler : ICommandHandler
             new ("Удалить", $"DP:DeletePack:{commandArguments.StickerPackId}")
         };
         var keyboardDto = new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), line);
-        return new DeletePackConfirmResult(
+        
+        return new DeleteStickerConfirmResult(
             commandArguments.ChatId,
             keyboardDto,
             commandArguments.BotMessageId);

@@ -7,13 +7,13 @@ public class DeletePackSwitchKeyboardStickersResult : DeletePackCommandResultBas
     public override long ChatId { get; }
     public InlineKeyboardDto KeyboardDto { get; }
     public Guid StickerPackId { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
 
     public DeletePackSwitchKeyboardStickersResult(
         long chatId,
         InlineKeyboardDto keyboardDto,
         Guid stickerPackId,
-        string botMessageId)
+        int? botMessageId)
     {
         ChatId = chatId;
         KeyboardDto = keyboardDto;

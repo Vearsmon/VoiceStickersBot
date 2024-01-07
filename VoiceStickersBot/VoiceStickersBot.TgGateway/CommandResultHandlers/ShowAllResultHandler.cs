@@ -64,7 +64,11 @@ public class ShowAllResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        if (result.BotMessageId is null)
+        var message = "Вот все ваши наборы:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
+        
+        /*if (result.BotMessageId is null)
         {
             await bot.SendTextMessageAsync(
                 result.ChatId,
@@ -76,7 +80,7 @@ public class ShowAllResultHandler : ICommandResultHandler
             await bot.EditMessageReplyMarkupAsync(
                 inlineMessageId: result.BotMessageId,
                 replyMarkup: markup);
-        }
+        }*/
     }
 
     private async Task Handle(
@@ -90,7 +94,11 @@ public class ShowAllResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        if (result.BotMessageId is null)
+        var message = "Вот все стикеры из выбранного набора:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
+        
+        /*if (result.BotMessageId is null)
         {
             var msg = await bot.SendTextMessageAsync(
                 result.ChatId,
@@ -102,6 +110,6 @@ public class ShowAllResultHandler : ICommandResultHandler
             await bot.EditMessageReplyMarkupAsync(
                 inlineMessageId: result.BotMessageId,
                 replyMarkup: markup);
-        }
+        }*/
     }
 }

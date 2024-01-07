@@ -1,15 +1,14 @@
 ﻿using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
 
-namespace VoiceStickersBot.Core.CommandResults.ShowAllResults;
+namespace VoiceStickersBot.Core.CommandResults.DeleteStickerResults;
 
-public class ShowAllSwitchKeyboardPacksResult : ShowAllCommandResultBase
+public class DeleteStickerSwitchKeyboardPacksResult : DeleteStickerCommandResultBase
 {
     public override long ChatId { get; }
     public InlineKeyboardDto KeyboardDto { get; }
     public int? BotMessageId { get; }
-
-
-    public ShowAllSwitchKeyboardPacksResult(long chatId, InlineKeyboardDto keyboardDto, int? botMessageId)
+    
+    public DeleteStickerSwitchKeyboardPacksResult(long chatId, InlineKeyboardDto keyboardDto, int? botMessageId)
     {
         ChatId = chatId;
         KeyboardDto = keyboardDto;

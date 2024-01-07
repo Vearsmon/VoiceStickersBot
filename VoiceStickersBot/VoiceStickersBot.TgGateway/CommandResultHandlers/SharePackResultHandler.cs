@@ -65,19 +65,9 @@ public class SharePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        if (result.BotMessageId is null)
-        {
-            await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Выберите стикерпак, в который хотите добавить стикер:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }
+        var message = "Выберите стикерпак, которым хотите поделиться:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
 
     private async Task Handle(
@@ -91,19 +81,9 @@ public class SharePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        if (result.BotMessageId is null)
-        {
-            var msg = await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все стикеры из выбранного набора:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }
+        var message = "Вот все стикеры из выбранного набора:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
 
     private async Task Handle(

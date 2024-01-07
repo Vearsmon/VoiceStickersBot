@@ -8,13 +8,13 @@ public class ShowAllSwitchKeyboardStickersResult : ShowAllCommandResultBase
     public InlineKeyboardDto KeyboardDto { get; }
     public Guid StickerPackId { get; }
     
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
 
     public ShowAllSwitchKeyboardStickersResult(
         long chatId,
         InlineKeyboardDto keyboardDto,
         Guid stickerPackId,
-        string botMessageId)
+        int? botMessageId)
     {
         ChatId = chatId;
         KeyboardDto = keyboardDto;

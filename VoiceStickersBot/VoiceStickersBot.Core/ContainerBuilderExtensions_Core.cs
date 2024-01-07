@@ -11,6 +11,7 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandHandlerFactory>().To<CreatePackCommandHandlerFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandHandlerFactory>().To<AddStickerCommandHandlerFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandHandlerFactory>().To<DeletePackCommandHandlerFactory>().InSingletonScope();
+        containerBuilder.Bind<ICommandHandlerFactory>().To<DeleteStickerCommandHandlerFactory>().InSingletonScope();
         return containerBuilder;
     }
 }

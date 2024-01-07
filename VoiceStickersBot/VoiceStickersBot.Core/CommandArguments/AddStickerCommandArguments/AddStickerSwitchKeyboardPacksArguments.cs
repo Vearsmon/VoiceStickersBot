@@ -9,14 +9,14 @@ public class AddStickerSwitchKeyboardPacksArguments : IAddStickerCommandArgument
     public PageChangeDirection  Direction { get; }
     public int PacksOnPage { get; }
     public long ChatId { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
     
     public AddStickerSwitchKeyboardPacksArguments(
         int pageFrom, 
         PageChangeDirection direction, 
         int packsOnPage,
         long chatId, 
-        string botMessageId)
+        int? botMessageId)
     {
         PageFrom = pageFrom;
         Direction = direction;

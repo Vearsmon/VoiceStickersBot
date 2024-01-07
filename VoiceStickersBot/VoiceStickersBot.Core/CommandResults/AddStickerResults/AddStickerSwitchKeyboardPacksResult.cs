@@ -6,9 +6,9 @@ public class AddStickerSwitchKeyboardPacksResult : AddStickerCommandResultBase
 {
     public override long ChatId { get; }
     public InlineKeyboardDto KeyboardDto { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
 
-    public AddStickerSwitchKeyboardPacksResult(long chatId, InlineKeyboardDto keyboardDto, string botMessageId)
+    public AddStickerSwitchKeyboardPacksResult(long chatId, InlineKeyboardDto keyboardDto, int? botMessageId)
     {
         ChatId = chatId;
         KeyboardDto = keyboardDto;

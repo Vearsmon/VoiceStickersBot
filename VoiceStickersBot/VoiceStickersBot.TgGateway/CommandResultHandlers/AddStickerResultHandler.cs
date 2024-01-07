@@ -117,8 +117,12 @@ public class AddStickerResultHandler : ICommandResultHandler
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
-
-        if (result.BotMessageId is null)
+    
+        var message = "Выберите стикерпак, в который хотите добавить стикер:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
+        
+        /*if (result.BotMessageId is null)
         {
             await bot.SendTextMessageAsync(
                 result.ChatId,
@@ -128,9 +132,10 @@ public class AddStickerResultHandler : ICommandResultHandler
         else
         {
             await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
+                chatId: result.ChatId,
+                messageId: result.BotMessageId.Value,
                 replyMarkup: markup);
-        }
+        }*/
     }
 
     private async Task Handle(
@@ -144,7 +149,10 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        if (result.BotMessageId is null)
+        var message = "Вот все стикеры из выбранного набора:";
+        var botMessageId = result.BotMessageId;
+        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
+        /*if (result.BotMessageId is null)
         {
             var msg = await bot.SendTextMessageAsync(
                 result.ChatId,
@@ -156,6 +164,6 @@ public class AddStickerResultHandler : ICommandResultHandler
             await bot.EditMessageReplyMarkupAsync(
                 inlineMessageId: result.BotMessageId,
                 replyMarkup: markup);
-        }
+        }*/
     }
 }

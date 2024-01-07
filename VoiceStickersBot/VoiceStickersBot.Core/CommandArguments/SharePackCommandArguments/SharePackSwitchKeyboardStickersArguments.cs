@@ -11,7 +11,7 @@ public class SharePackSwitchKeyboardStickersArguments : ISharePackCommandArgumen
     public PageChangeDirection  Direction { get; }
     public int StickersOnPage { get; }
     public long ChatId { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
 
     public SharePackSwitchKeyboardStickersArguments(
         Guid stickerPackId, 
@@ -19,7 +19,7 @@ public class SharePackSwitchKeyboardStickersArguments : ISharePackCommandArgumen
         PageChangeDirection direction, 
         int stickersOnPage,
         long chatId, 
-        string botMessageId)
+        int? botMessageId)
     {
         StickerPackId = stickerPackId;
         PageFrom = pageFrom;

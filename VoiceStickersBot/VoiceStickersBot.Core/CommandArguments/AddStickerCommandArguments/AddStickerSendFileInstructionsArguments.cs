@@ -9,7 +9,7 @@ public class AddStickerSendFileInstructionsArguments : IAddStickerCommandArgumen
     public string StickerName { get; }
     public long ChatId { get; }
     
-    public AddStickerSendFileInstructionsArguments(Guid stickerPackId,string stickerName, long chatId)
+    public AddStickerSendFileInstructionsArguments(Guid stickerPackId, string stickerName, long chatId)
     {
         StickerPackId = stickerPackId;
         StickerName = stickerName;

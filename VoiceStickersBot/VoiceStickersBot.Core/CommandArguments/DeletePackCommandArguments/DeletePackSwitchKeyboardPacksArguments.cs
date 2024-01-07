@@ -9,14 +9,14 @@ public class DeletePackSwitchKeyboardPacksArguments : IDeletePackCommandArgument
     public PageChangeDirection  Direction { get; }
     public int PacksOnPage { get; }
     public long ChatId { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
     
     public DeletePackSwitchKeyboardPacksArguments(
         int pageFrom,
         PageChangeDirection direction,
         int packsOnPage,
         long chatId,
-        string botMessageId)
+        int? botMessageId)
     {
         ChatId = chatId;
         BotMessageId = botMessageId;

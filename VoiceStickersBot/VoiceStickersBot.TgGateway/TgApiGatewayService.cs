@@ -148,7 +148,7 @@ public class TgApiGatewayService
         var commandType = callbackData[0];
         var commandStep = callbackData[1];
         var callbackArguments = callbackData.Skip(2).ToList();
-        var botMessageId = update.CallbackQuery.InlineMessageId!;
+        var botMessageId = update.CallbackQuery.Message!.MessageId;
 
         return new QueryContext(
             commandType,

@@ -6,11 +6,11 @@ public class SharePackChoiceArguments : ISharePackCommandArguments
 
     public SharePackStepName StepName => SharePackStepName.Choice;
     public long ChatId { get; }
-    public string BotMessageId { get; }
+    public int? BotMessageId { get; }
     
     public SharePackChoiceArguments(
         long chatId, 
-        string botMessageId)
+        int? botMessageId)
     {
         ChatId = chatId;
         BotMessageId = botMessageId;
