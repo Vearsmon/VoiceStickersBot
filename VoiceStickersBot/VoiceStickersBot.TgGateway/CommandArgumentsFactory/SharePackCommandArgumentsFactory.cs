@@ -14,7 +14,6 @@ public class SharePackCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<SharePackStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { SharePackStepName.Cancel, q => new SharePackCancelArguments()},
             { SharePackStepName.Choice, BuildSharePackChoiceArguments},
             { SharePackStepName.SwKbdPc, BuildSharePackSwitchKeyboardPacksArguments},
             { SharePackStepName.SwKbdSt, BuildSharePackSwitchKeyboardStickersArguments},

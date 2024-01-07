@@ -136,7 +136,8 @@ public class TgApiGatewayService
         catch (Exception e)
         {
             log.Error(e, "Appppp crashed");
-            await botClient.SendTextMessageAsync(chatId, "Что-то пошло не так...");
+            await botClient.SendTextMessageAsync(chatId, "Что-то пошло не так... " +
+                                                         "Возможно, сообщение уже не актуально");
             UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
         }
     }

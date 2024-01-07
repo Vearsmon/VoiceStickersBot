@@ -18,11 +18,6 @@ public class CreatePackCommandHandlerFactory : CommandHandlerFactoryBase<ICreate
         stepHandlerBuilders = new Dictionary<CreatePackStepName, Func<ICreatePackCommandArguments, ICommandHandler>>()
         {
             { 
-                CreatePackStepName.Cancel, ca =>  
-                    new CreatePackCancelHandler(
-                        (CreatePackCancelArguments)ca) 
-            },
-            { 
                 CreatePackStepName.AddPack, ca => 
                     new CreatePackAddPackHandler(
                         (CreatePackAddPackArguments)ca, stickerPacksRepository) 

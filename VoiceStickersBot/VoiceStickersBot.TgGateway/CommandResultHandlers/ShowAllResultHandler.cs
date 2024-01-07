@@ -4,6 +4,7 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
 using VoiceStickersBot.Infra.ObjectStorage;
+using VoiceStickersBot.Infra.VSBApplication.Log;
 
 namespace VoiceStickersBot.TgGateway.CommandResultHandlers;
 
@@ -12,11 +13,13 @@ public class ShowAllResultHandler : ICommandResultHandler
     public CommandType CommandType => CommandType.ShowAll;
 
     private readonly ObjectStorageClient objectStorage = new();
+    private readonly ILog log;
 
     private readonly Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>> handlers;
 
-    public ShowAllResultHandler()
+    public ShowAllResultHandler(ILog log)
     {
+        this.log = log;
         handlers = new Dictionary<Type, Func<ITelegramBotClient, Dictionary<long, UserInfo>, ICommandResult, Task>>
         {
             {
@@ -53,6 +56,8 @@ public class ShowAllResultHandler : ICommandResultHandler
             result.ChatId,
             voiceFile,
             replyMarkup: DefaultKeyboard.CommandsKeyboard);
+
+        log.Info("Запрос от {0} на стикер {1}", result.ChatId, result.Sticker.StickerFullId.StickerId);
     }
 
     private async Task Handle(

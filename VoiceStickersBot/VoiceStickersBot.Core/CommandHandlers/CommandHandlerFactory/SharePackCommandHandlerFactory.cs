@@ -22,11 +22,6 @@ public class SharePackCommandHandlerFactory : CommandHandlerFactoryBase<ISharePa
         stepHandlerBuilders = new Dictionary<SharePackStepName, Func<ISharePackCommandArguments, ICommandHandler>>()
         {
             { 
-                SharePackStepName.Cancel, ca =>  
-                    new SharePackCancelHandler(
-                        (SharePackCancelArguments)ca) 
-            },
-            { 
                 SharePackStepName.SwKbdPc, ca => 
                     new SharePackSwitchKeyboardPacksHandler(
                         (SharePackSwitchKeyboardPacksArguments)ca, usersRepository) 

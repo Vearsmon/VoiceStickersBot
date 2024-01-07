@@ -41,11 +41,6 @@ public class DeleteStickerCommandHandlerFactory : CommandHandlerFactoryBase<IDel
                         (DeleteStickerSendStickerArguments)ca, stickersRepository)
             },
             {
-                DeleteStickerStepName.Cancel, ca =>
-                    new DeleteStickerCancelHandler(
-                        (DeleteStickerCancelArguments)ca)
-            },
-            {
                 DeleteStickerStepName.DeleteSticker, ca =>
                     new DeleteStickerDeleteStickerHandler(
                         (DeleteStickerDeleteStickerArguments)ca, stickersRepository)

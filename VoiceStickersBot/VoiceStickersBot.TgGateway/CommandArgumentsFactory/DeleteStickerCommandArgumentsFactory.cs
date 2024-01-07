@@ -18,7 +18,6 @@ public class DeleteStickerCommandArgumentsFactory : ICommandArgumentsFactory
             { DeleteStickerStepName.SwKbdPc, BuildDeleteStickerSwitchKeyboardPacksArguments},
             { DeleteStickerStepName.SwKbdSt, BuildDeleteStickerSwitchKeyboardStickersArguments },
             { DeleteStickerStepName.SendSticker, BuildDeleteStickerSendStickerArguments },
-            { DeleteStickerStepName.Cancel, r => new DeleteStickerCancelArguments()},
             { DeleteStickerStepName.DeleteSticker, BuildDeleteStickerDeleteStickerArguments },
             { DeleteStickerStepName.Confirm, BuildDeleteStickerConfirmArguments }
         };

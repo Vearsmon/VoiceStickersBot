@@ -38,11 +38,6 @@ public class DeletePackCommandHandlerFactory : CommandHandlerFactoryBase<IDelete
                         (DeletePackSendStickerArguments)ca, stickersRepository)
             },
             {
-                DeletePackStepName.Cancel, ca =>
-                    new DeletePackCancelHandler(
-                        (DeletePackCancelArguments)ca)
-            },
-            {
                 DeletePackStepName.DeletePack, ca =>
                     new DeletePackDeletePackHandler(
                         (DeletePackDeletePackArguments)ca, usersRepository, stickerPacksRepository)

@@ -17,7 +17,6 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             { DeletePackStepName.SwKbdPc, BuildDeletePackSwitchKeyboardPacksArguments},
             { DeletePackStepName.SwKbdSt, BuildDeletePackSwitchKeyboardStickersArguments },
             { DeletePackStepName.SendSticker, BuildDeletePackSendStickerArguments },
-            { DeletePackStepName.Cancel, r => new DeletePackCancelArguments()},
             { DeletePackStepName.DeletePack, BuildDeletePackDeletePackArguments },
             { DeletePackStepName.Confirm, BuildDeletePackConfirmArguments }
         };

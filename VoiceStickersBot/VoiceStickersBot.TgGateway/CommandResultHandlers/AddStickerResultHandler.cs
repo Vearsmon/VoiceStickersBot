@@ -121,21 +121,6 @@ public class AddStickerResultHandler : ICommandResultHandler
         var message = "Выберите стикерпак, в который хотите добавить стикер:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Выберите стикерпак, в который хотите добавить стикер:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                chatId: result.ChatId,
-                messageId: result.BotMessageId.Value,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
@@ -152,18 +137,5 @@ public class AddStickerResultHandler : ICommandResultHandler
         var message = "Вот все стикеры из выбранного набора:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        /*if (result.BotMessageId is null)
-        {
-            var msg = await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все стикеры из выбранного набора:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 }

@@ -23,7 +23,6 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         stepCommandBuilders = new Dictionary<AddStickerStepName, Func<QueryContext, ICommandArguments>>()
         {
             { AddStickerStepName.SwKbdPc, BuildAddStickerSwitchKeyboardPacksArguments},
-            { AddStickerStepName.Cancel, q => new AddStickerCancelArguments()},
             { AddStickerStepName.SwKbdSt, BuildAddStickerSwitchKeyboardStickersArguments},
             { AddStickerStepName.SendSticker, BuildAddStickerSendStickerArguments},
             { AddStickerStepName.SendNameInstr, BuildAddStickerSendNameInstructionsArguments },

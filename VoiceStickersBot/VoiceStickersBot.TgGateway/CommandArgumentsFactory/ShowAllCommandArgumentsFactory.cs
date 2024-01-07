@@ -14,7 +14,6 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         stepCommandBuilders = new Dictionary<ShowAllStepName, Func<QueryContext, ICommandArguments>>
         {
             { ShowAllStepName.SwKbdPc, BuildShowAllSwitchKeyboardPacksArguments },
-            { ShowAllStepName.Cancel, r => new ShowAllCancelArguments() },
             { ShowAllStepName.SwKbdSt, BuildShowAllSwitchKeyboardStickersArguments },
             { ShowAllStepName.SendSticker, BuildShowAllSendStickerArguments }
         };

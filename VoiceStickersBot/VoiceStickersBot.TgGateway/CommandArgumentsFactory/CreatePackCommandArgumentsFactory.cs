@@ -13,7 +13,6 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
         stepCommandBuilders = new Dictionary<CreatePackStepName, Func<QueryContext, ICommandArguments>>()
         {
             { CreatePackStepName.SendInstructions, BuildCreatePackSendInstructionsArguments },
-            { CreatePackStepName.Cancel, qc => new CreatePackCancelArguments() },
             { CreatePackStepName.AddPack, BuildCreatePackAddPackArguments }
         };
     }
