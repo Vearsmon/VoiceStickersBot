@@ -1,4 +1,4 @@
-﻿namespace VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
+﻿namespace VoiceStickersBot.Core.CommandArguments.CreatePackCommandArguments;
 
 public enum CreatePackStepName
 {

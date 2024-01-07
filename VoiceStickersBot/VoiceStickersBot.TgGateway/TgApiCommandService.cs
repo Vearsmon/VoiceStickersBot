@@ -1,6 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-using VoiceStickersBot.Infra.VSBApplication.Log;
-using VoiceStickersBot.TgGateway.CommandArgumentsFactory;
+﻿using VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 
 namespace VoiceStickersBot.Core.CommandArguments;
 

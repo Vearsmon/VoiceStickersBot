@@ -15,11 +15,3 @@ public class UserInfo
         StickerName = stickerName;
     }
 }
-// AddSticker:
-// WaitStickerName (Id)
-//     |
-//     V
-// WaitFile (Id, Name)
-//
-// CreatePack:
-// WaitPackName

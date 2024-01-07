@@ -2,7 +2,6 @@
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
-using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.AddStickerHandlers;

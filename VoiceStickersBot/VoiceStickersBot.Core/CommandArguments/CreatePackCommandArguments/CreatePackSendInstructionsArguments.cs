@@ -1,6 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-
-namespace VoiceStickersBot.Core.CommandArguments.CreatePackCommandArguments;
+﻿namespace VoiceStickersBot.Core.CommandArguments.CreatePackCommandArguments;
 
 public class CreatePackSendInstructionsArguments : ICreatePackCommandArguments
 {

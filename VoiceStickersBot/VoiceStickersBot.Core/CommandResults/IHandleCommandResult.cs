@@ -6,4 +6,3 @@ public interface IHandleCommandResult
     bool EnsureSuccess { get; set; }
     Exception Error { get; set; }
 }
-// на подумать*

@@ -3,7 +3,6 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
-using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
 using VoiceStickersBot.Infra.ObjectStorage;
 
@@ -17,7 +16,6 @@ public class AddStickerAddStickerHandler : ICommandHandler
     private IObjectStorageClient objectStorageClient;
     private IStickersRepository stickersRepository;
 
-    //TODO: может переименовать эту и подобные команды на CommandTypeUploadSticker...
     public AddStickerAddStickerHandler(
         AddStickerAddStickerArguments commandArguments,
         IObjectStorageClient objectStorageClient, 

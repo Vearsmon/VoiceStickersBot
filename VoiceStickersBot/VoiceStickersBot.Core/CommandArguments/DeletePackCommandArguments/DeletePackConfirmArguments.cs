@@ -1,7 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-using VoiceStickersBot.Core.CommandHandlers.CommandHandlers;
-
-namespace VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
+﻿namespace VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 
 public class DeletePackConfirmArguments : IDeletePackCommandArguments
 {

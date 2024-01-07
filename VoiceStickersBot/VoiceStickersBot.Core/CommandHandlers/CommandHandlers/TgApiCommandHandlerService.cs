@@ -34,3 +34,4 @@ public class TgApiCommandHandlerService
         return new HandleCommandResult(result, error);
     }
 }
+// TODO: разобраться

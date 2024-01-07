@@ -1,5 +1,4 @@
 ﻿using Ninject;
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
 using VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 using VoiceStickersBot.TgGateway.CommandResultHandlers;
 

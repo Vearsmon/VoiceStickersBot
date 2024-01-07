@@ -2,7 +2,6 @@ using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.DeletePackResults;
-using VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
 
 namespace VoiceStickersBot.Core.CommandHandlers.CommandHandlers.DeletePackHandlers;

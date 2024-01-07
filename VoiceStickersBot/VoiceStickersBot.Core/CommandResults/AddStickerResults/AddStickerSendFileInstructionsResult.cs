@@ -1,6 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments;
-
-namespace VoiceStickersBot.Core.CommandResults.AddStickerResults;
+﻿namespace VoiceStickersBot.Core.CommandResults.AddStickerResults;
 
 public class AddStickerSendFileInstructionsResult : AddStickerCommandResultBase
 {

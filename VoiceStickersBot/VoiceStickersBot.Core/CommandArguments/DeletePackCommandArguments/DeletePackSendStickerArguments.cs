@@ -1,5 +1,3 @@
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-
 namespace VoiceStickersBot.Core.CommandArguments.DeletePackCommandArguments;
 
 public class DeletePackSendStickerArguments : IDeletePackCommandArguments

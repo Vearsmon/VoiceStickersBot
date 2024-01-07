@@ -1,6 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-
-namespace VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
+﻿namespace VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
 
 public class AddStickerSendFileInstructionsArguments : IAddStickerCommandArguments
 {

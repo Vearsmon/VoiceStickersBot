@@ -1,6 +1,4 @@
-﻿using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-
-namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
+﻿namespace VoiceStickersBot.Core.CommandArguments.ShowAllCommandArguments;
 
 public interface IShowAllCommandArguments : ICommandArguments
 {

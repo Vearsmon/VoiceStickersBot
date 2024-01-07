@@ -2,7 +2,6 @@
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 using VoiceStickersBot.Core.Client;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
@@ -90,7 +89,7 @@ public class TgApiGatewayService
                 
                 if (message.Text == "/start" || message.Text == "/cancel")
                 {
-                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait); // !
+                    UserInfoByChatId[chatId] = new UserInfo(UserState.NoWait); // TODO: разобраться Артёму если будет время
                     await botClient.SendTextMessageAsync(chatId, "Выберите команду снизу:",
                         replyMarkup: DefaultKeyboard.CommandsKeyboard);
                     return;

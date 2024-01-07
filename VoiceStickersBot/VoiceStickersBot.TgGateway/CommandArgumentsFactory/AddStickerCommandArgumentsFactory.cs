@@ -2,8 +2,6 @@
 using VoiceStickersBot.Core;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.AddStickerCommandArguments;
-using VoiceStickersBot.Core.CommandArguments.CommandArgumentsFactory;
-using VoiceStickersBot.TgGateway.CommandResultHandlers;
 
 namespace VoiceStickersBot.TgGateway.CommandArgumentsFactory;
 

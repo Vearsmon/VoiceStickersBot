@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.SharePackCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
