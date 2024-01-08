@@ -12,10 +12,6 @@ public interface ITable<TEntity> : IDisposable
         Action<TEntity> updater,
         CancellationToken cancellationToken);
 
-    Task<List<TEntity>> PerformReadonlyRequestAsync(
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
-        CancellationToken cancellationToken);
-
     Task<List<TExtractedEntity>> PerformReadonlyRequestAsync<TExtractedEntity>(
         Func<IQueryable<TEntity>, IQueryable<TExtractedEntity>> request,
         CancellationToken cancellationToken);

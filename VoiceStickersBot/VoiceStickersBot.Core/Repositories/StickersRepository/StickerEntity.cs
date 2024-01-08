@@ -11,6 +11,7 @@ namespace VoiceStickersBot.Core.Repositories.StickersRepository;
 [Entity]
 [Table("stickers")]
 [PrimaryKey("Id", "StickerPackId")]
+[Index(nameof(Name), nameof(Id))]
 internal class StickerEntity
 {
     [Column("id")] public Guid Id { get; set; }

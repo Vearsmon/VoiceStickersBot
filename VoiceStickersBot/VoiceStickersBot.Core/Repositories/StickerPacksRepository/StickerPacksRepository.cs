@@ -54,7 +54,9 @@ public class StickerPacksRepository : IStickerPacksRepository
             .PerformReadonlyRequestAsync(
                 r => r
                     .Where(stickerPack => stickerPackId == stickerPack.Id)
-                    .IncludeStickers(includeStickers),
+                    .IncludeStickers(includeStickers)
+                    .OrderBy(stickerPack => stickerPack.Name)
+                    .ThenBy(stickerPack => stickerPack.Id),
                 new CancellationToken())
             .ConfigureAwait(false);
 

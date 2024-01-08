@@ -50,14 +50,10 @@ public class UsersRepository : IUsersRepository
 
     public async Task<List<StickerPack>> GetStickerPacks(
         string id,
-        int offset,
-        int count,
         bool includeStickers = false)
     {
         var stickerPacks = await GetUserStickerPacks(
                 id,
-                offset,
-                count,
                 includeStickers)
             .ConfigureAwait(false);
 
@@ -68,14 +64,10 @@ public class UsersRepository : IUsersRepository
 
     public async Task<(bool, List<StickerPack>?)> TryGetStickerPacks(
         string id,
-        int offset,
-        int count,
         bool includeStickers = false)
     {
         var stickerPacks = await GetUserStickerPacks(
                 id,
-                offset,
-                count,
                 includeStickers)
             .ConfigureAwait(false);
 
@@ -146,8 +138,6 @@ public class UsersRepository : IUsersRepository
 
     private async Task<List<StickerPackEntity>> GetUserStickerPacks(
         string id,
-        int offset,
-        int count,
         bool includeStickers)
     {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();
@@ -158,9 +148,7 @@ public class UsersRepository : IUsersRepository
                     .IncludeStickers(includeStickers)
                     .SelectMany(user => user.StickerPacks!)
                     .OrderBy(stickerPack => stickerPack.Name)
-                    .ThenBy(stickerPack => stickerPack.Id)
-                    .Skip(offset)
-                    .Take(count),
+                    .ThenBy(stickerPack => stickerPack.Id),
                 new CancellationToken())
             .ConfigureAwait(false);
         return users;

@@ -26,11 +26,7 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
         var chatId = commandArguments.ChatId;
 
         var (result, packs) = await usersRepository
-            .TryGetStickerPacks(
-                chatId.ToString(),
-                commandArguments.PageFrom * commandArguments.PacksOnPage,
-                commandArguments.PacksOnPage,
-                false)
+            .TryGetStickerPacks(chatId.ToString(), false)
             .ConfigureAwait(false);
 
         if (!result)

@@ -8,9 +8,9 @@ public interface IUsersRepository
 
     Task<bool> CreateIfNotExists(string id);
 
-    Task<List<StickerPack>> GetStickerPacks(string id, int offset, int count, bool includeStickers);
+    Task<List<StickerPack>> GetStickerPacks(string id, bool includeStickers);
 
-    Task<(bool, List<StickerPack>?)> TryGetStickerPacks(string id, int offset, int count, bool includeStickers);
+    Task<(bool, List<StickerPack>?)> TryGetStickerPacks(string id, bool includeStickers);
 
     Task AddStickerPackToUser(string userId, Guid stickerPackId);
 

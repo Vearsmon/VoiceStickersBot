@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -54,31 +53,6 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchema
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         entry.State = EntityState.Detached;
-    }
-
-    public async Task PerformUpdateRequestAsync(
-        TEntity entity,
-        CancellationToken cancellationToken)
-    {
-        var entry = await Task<EntityEntry<TEntity>>
-            .Factory
-            .StartNew(() => Entities.Update(entity), cancellationToken)
-            .ConfigureAwait(false);
-        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        entry.State = EntityState.Detached;
-    }
-
-    public async Task<List<TEntity>> PerformReadonlyRequestAsync(
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
-        CancellationToken cancellationToken)
-    {
-        var entities = await request(Entities)
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
-        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        return entities;
     }
 
     public async Task<List<TExtractedEntity>> PerformReadonlyRequestAsync<TExtractedEntity>(
