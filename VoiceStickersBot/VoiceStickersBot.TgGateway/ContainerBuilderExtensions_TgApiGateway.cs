@@ -14,6 +14,10 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandArgumentsFactory>().To<DeletePackCommandArgumentsFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandArgumentsFactory>().To<DeleteStickerCommandArgumentsFactory>().InSingletonScope();
         containerBuilder.Bind<ICommandArgumentsFactory>().To<SharePackCommandArgumentsFactory>().InSingletonScope();
+        
+        containerBuilder.Bind<ICommandArgumentsFactory>().To<CancelCommandArgumentsFactory>().InSingletonScope();
+        containerBuilder.Bind<ICommandArgumentsFactory>().To<StartCommandArgumentsFactory>().InSingletonScope();
+        
         return containerBuilder;
     }
 
@@ -25,6 +29,9 @@ public static class ContainerBuilderExtensions
         containerBuilder.Bind<ICommandResultHandler>().To<DeletePackResultHandler>().InSingletonScope();
         containerBuilder.Bind<ICommandResultHandler>().To<DeleteStickerResultHandler>().InSingletonScope();
         containerBuilder.Bind<ICommandResultHandler>().To<SharePackResultHandler>().InSingletonScope();
+        
+        containerBuilder.Bind<ICommandResultHandler>().To<CancelResultHandler>().InSingletonScope();
+        containerBuilder.Bind<ICommandResultHandler>().To<StartResultHandler>().InSingletonScope();
         
         return containerBuilder;
     }

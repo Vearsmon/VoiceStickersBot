@@ -28,13 +28,13 @@ public class AddStickerCommandHandlerFactory : CommandHandlerFactoryBase<IAddSti
                 AddStickerStepName.SwKbdPc, ca => 
                     new AddStickerSwitchKeyboardPacksHandler(
                         (AddStickerSwitchKeyboardPacksArguments)ca,
-                        usersRepository) 
+                        usersRepository)
             },
             { 
                 AddStickerStepName.SwKbdSt, ca => 
                     new AddStickerSwitchKeyboardStickersHandler(
                         (AddStickerSwitchKeyboardStickersArguments)ca,
-                        stickerPacksRepository) 
+                        stickerPacksRepository)
             },
             {
                 AddStickerStepName.SendSticker, ca =>

@@ -7,5 +7,7 @@ public enum CommandType
     DeletePack,
     AddSticker,
     DeleteSticker,
-    SharePack
+    SharePack,
+    Cancel,
+    Start
 }
