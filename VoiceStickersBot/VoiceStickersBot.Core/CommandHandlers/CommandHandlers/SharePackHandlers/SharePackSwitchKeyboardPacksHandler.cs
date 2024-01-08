@@ -25,9 +25,13 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
     {
         //chatId==userId
         var chatId = commandArguments.ChatId;
-        
+
         var (result, packs) = await usersRepository
-            .TryGetStickerPacks(chatId.ToString(), false)
+            .TryGetStickerPacks(
+                chatId.ToString(),
+                commandArguments.PageFrom * commandArguments.PacksOnPage,
+                commandArguments.PacksOnPage,
+                false)
             .ConfigureAwait(false);
 
         if (!result)
@@ -39,7 +43,7 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
         var pageFrom = commandArguments.PageFrom;
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.PacksOnPage;
-        
+
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
             "SP:SwKbdSt",
             ":0:Increase:10",
@@ -47,7 +51,7 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
             pageFrom,
             pageTo,
             countOnPage);
-        
+
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "SP:SwKbdPc",
             "",

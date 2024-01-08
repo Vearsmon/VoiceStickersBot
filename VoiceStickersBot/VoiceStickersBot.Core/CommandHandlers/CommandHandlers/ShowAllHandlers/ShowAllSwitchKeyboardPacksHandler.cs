@@ -25,9 +25,13 @@ public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
     {
         //chatId==userId
         var chatId = commandArguments.ChatId;
-        
+
         var (result, packs) = await usersRepository
-            .TryGetStickerPacks(chatId.ToString(), false)
+            .TryGetStickerPacks(
+                chatId.ToString(),
+                commandArguments.PageFrom * commandArguments.PacksOnPage,
+                commandArguments.PacksOnPage,
+                false)
             .ConfigureAwait(false);
 
         if (!result)

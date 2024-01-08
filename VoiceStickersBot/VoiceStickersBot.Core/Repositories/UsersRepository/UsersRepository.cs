@@ -50,24 +50,38 @@ public class UsersRepository : IUsersRepository
 
     public async Task<List<StickerPack>> GetStickerPacks(
         string id,
+        int offset,
+        int count,
         bool includeStickers = false)
     {
-        var users = await GetUser(id, includeStickers).ConfigureAwait(false);
+        var stickerPacks = await GetUserStickerPacks(
+                id,
+                offset,
+                count,
+                includeStickers)
+            .ConfigureAwait(false);
 
-        return users.IsEmpty()
+        return stickerPacks.IsEmpty()
             ? throw new UserNotFoundException($"User with id: {id} was not found")
-            : ExtractStickerPacks(users);
+            : ConvertStickerPacks(stickerPacks);
     }
 
     public async Task<(bool, List<StickerPack>?)> TryGetStickerPacks(
         string id,
+        int offset,
+        int count,
         bool includeStickers = false)
     {
-        var users = await GetUser(id, includeStickers).ConfigureAwait(false);
+        var stickerPacks = await GetUserStickerPacks(
+                id,
+                offset,
+                count,
+                includeStickers)
+            .ConfigureAwait(false);
 
-        return users.IsEmpty()
+        return stickerPacks.IsEmpty()
             ? (false, null)
-            : (true, ExtractStickerPacks(users));
+            : (true, ConvertStickerPacks(stickerPacks));
     }
 
     public async Task AddStickerPackToUser(string userId, Guid stickerPackId)
@@ -130,24 +144,32 @@ public class UsersRepository : IUsersRepository
             .ConfigureAwait(false);
     }
 
-    private async Task<List<UserEntity>> GetUser(string id, bool includeStickers)
+    private async Task<List<StickerPackEntity>> GetUserStickerPacks(
+        string id,
+        int offset,
+        int count,
+        bool includeStickers)
     {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();
-        var users = await table.PerformReadonlyRequestAsync(
+        var users = await table.PerformReadonlyRequestAsync<StickerPackEntity>(
                 r => r
                     .Where(user => user.Id == id)
                     .Include(user => user.StickerPacks)!
-                    .IncludeStickers(includeStickers),
+                    .IncludeStickers(includeStickers)
+                    .SelectMany(user => user.StickerPacks!)
+                    .OrderBy(stickerPack => stickerPack.Name)
+                    .ThenBy(stickerPack => stickerPack.Id)
+                    .Skip(offset)
+                    .Take(count),
                 new CancellationToken())
             .ConfigureAwait(false);
         return users;
     }
 
-    private static List<StickerPack> ExtractStickerPacks(IEnumerable<UserEntity> users)
+    private static List<StickerPack> ConvertStickerPacks(IEnumerable<StickerPackEntity> users)
     {
-        return users.Single()
-            .StickerPacks?
+        return users
             .Select(stickerPack => stickerPack.ToStickerPack())
-            .ToList() ?? new List<StickerPack>();
+            .ToList();
     }
 }

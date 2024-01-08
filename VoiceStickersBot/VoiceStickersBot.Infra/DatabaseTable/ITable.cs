@@ -16,6 +16,10 @@ public interface ITable<TEntity> : IDisposable
         Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
         CancellationToken cancellationToken);
 
+    Task<List<TExtractedEntity>> PerformReadonlyRequestAsync<TExtractedEntity>(
+        Func<IQueryable<TEntity>, IQueryable<TExtractedEntity>> request,
+        CancellationToken cancellationToken);
+
     Task<int> PerformDeletionRequestAsync(
         Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
         CancellationToken cancellationToken);

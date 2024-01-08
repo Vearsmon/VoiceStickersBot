@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using VoiceStickersBot.Core.Contracts;
 using VoiceStickersBot.Core.Repositories.ChatsRepository;
 using VoiceStickersBot.Core.Repositories.StickersRepository;
@@ -12,6 +13,7 @@ namespace VoiceStickersBot.Core.Repositories.StickerPacksRepository;
 
 [Entity]
 [Table("sticker_packs")]
+[Index(nameof(Name), nameof(Id))]
 internal class StickerPackEntity
 {
     [Key] [Column("id")] public Guid Id { get; set; }

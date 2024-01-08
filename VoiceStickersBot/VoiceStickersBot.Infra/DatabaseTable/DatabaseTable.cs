@@ -81,6 +81,18 @@ public sealed class DatabaseTable<TEntity> : DbContext, ITable<TEntity>, ISchema
         return entities;
     }
 
+    public async Task<List<TExtractedEntity>> PerformReadonlyRequestAsync<TExtractedEntity>(
+        Func<IQueryable<TEntity>, IQueryable<TExtractedEntity>> request,
+        CancellationToken cancellationToken)
+    {
+        var entities = await request(Entities)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        return entities;
+    }
+
     public async Task<int> PerformDeletionRequestAsync(
         Func<IQueryable<TEntity>, IQueryable<TEntity>> request,
         CancellationToken cancellationToken)

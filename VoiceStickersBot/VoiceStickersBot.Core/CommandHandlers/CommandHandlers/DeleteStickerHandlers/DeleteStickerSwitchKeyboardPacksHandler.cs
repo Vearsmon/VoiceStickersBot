@@ -1,7 +1,6 @@
 ﻿using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandArguments.DeleteStickerCommandArguments;
 using VoiceStickersBot.Core.CommandResults;
-using VoiceStickersBot.Core.CommandResults.DeletePackResults;
 using VoiceStickersBot.Core.CommandResults.DeleteStickerResults;
 using VoiceStickersBot.Core.Repositories.UsersRepository;
 
@@ -25,9 +24,13 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
     public async Task<ICommandResult> Handle()
     {
         var chatId = commandArguments.ChatId;
-        
+
         var (result, packs) = await usersRepository
-            .TryGetStickerPacks(chatId.ToString(), false)
+            .TryGetStickerPacks(
+                chatId.ToString(),
+                commandArguments.PageFrom * commandArguments.PacksOnPage,
+                commandArguments.PacksOnPage,
+                false)
             .ConfigureAwait(false);
 
         if (!result)
@@ -37,7 +40,7 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
                     new List<List<InlineKeyboardButtonDto>>(),
                     new List<InlineKeyboardButtonDto>()),
                 commandArguments.BotMessageId);
-        
+
         var pageFrom = commandArguments.PageFrom;
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.PacksOnPage;
