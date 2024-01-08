@@ -12,6 +12,8 @@ public interface IUsersRepository
 
     Task<(bool, List<StickerPack>?)> TryGetStickerPacks(string id, bool includeStickers);
 
+    Task<List<StickerPack>> GetStickerPacksOwned(string id, bool includeStickers);
+
     Task AddStickerPackToUser(string userId, Guid stickerPackId);
 
     Task<bool> TryAddStickerPackToUser(string userId, Guid stickerPackId);

@@ -54,7 +54,8 @@ public class UsersRepository : IUsersRepository
     {
         var stickerPacks = await GetUserStickerPacks(
                 id,
-                includeStickers)
+                includeStickers,
+                false)
             .ConfigureAwait(false);
 
         return stickerPacks.IsEmpty()
@@ -68,12 +69,24 @@ public class UsersRepository : IUsersRepository
     {
         var stickerPacks = await GetUserStickerPacks(
                 id,
-                includeStickers)
+                includeStickers,
+                false)
             .ConfigureAwait(false);
 
         return stickerPacks.IsEmpty()
             ? (false, null)
             : (true, ConvertStickerPacks(stickerPacks));
+    }
+
+    public async Task<List<StickerPack>> GetStickerPacksOwned(string id, bool includeStickers)
+    {
+        var stickerPacks = await GetUserStickerPacks(
+                id,
+                includeStickers,
+                true)
+            .ConfigureAwait(false);
+
+        return ConvertStickerPacks(stickerPacks);
     }
 
     public async Task AddStickerPackToUser(string userId, Guid stickerPackId)
@@ -137,16 +150,18 @@ public class UsersRepository : IUsersRepository
     }
 
     private async Task<List<StickerPackEntity>> GetUserStickerPacks(
-        string id,
-        bool includeStickers)
+        string userId,
+        bool includeStickers,
+        bool ownedOnly)
     {
         using var table = vsbDatabaseCluster.GetTable<UserEntity>();
         var users = await table.PerformReadonlyRequestAsync<StickerPackEntity>(
                 r => r
-                    .Where(user => user.Id == id)
+                    .Where(user => user.Id == userId)
                     .Include(user => user.StickerPacks)!
                     .IncludeStickers(includeStickers)
                     .SelectMany(user => user.StickerPacks!)
+                    .Where(stickerPack => !ownedOnly || stickerPack.OwnerId == userId)
                     .OrderBy(stickerPack => stickerPack.Name)
                     .ThenBy(stickerPack => stickerPack.Id),
                 new CancellationToken())
