@@ -17,12 +17,13 @@ public class TgApiGatewayService
 
     private readonly TgApiCommandService tgApiCommandService;
     private readonly TgApiCommandResultHandlerService tgApiCommandResultHandlerService;
-    
+
     private readonly Dictionary<long, UserInfo> userInfoByChatId = new();
-    
+
     private readonly ILog log;
 
     private readonly IUsersRepository userRepository;
+
     public TgApiGatewayService(
         Client client,
         TgApiCommandService tgApiCommandService,
@@ -43,21 +44,40 @@ public class TgApiGatewayService
         CancellationToken ct)
     {
         var nullableChatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
-        
-        if (nullableChatId is null) 
+
+        if (nullableChatId is null)
             return;
 
         var chatId = nullableChatId.Value;
+
+        if (userInfoByChatId.TryGetValue(chatId, out var userInfoForThrottling))
+        {
+            var now = DateTime.Now;
+            userInfoForThrottling.RequestTimes.Add(now);
+
+            var after = now - TimeSpan.FromSeconds(1);
+
+            var requestsByUserIn1SecondCount = ((IEnumerable<DateTime>)userInfoForThrottling.RequestTimes)
+                .Reverse()
+                .Count(time => time > after);
+            if (requestsByUserIn1SecondCount >= 10)
+                return;
+        }
+        else
+        {
+            return;
+        }
+
         try
         {
             await EnsureAuthenthicated(chatId);
-            
+
             QueryContext context;
-            
+
             if (update.Type == UpdateType.CallbackQuery)
             {
                 context = BuildQueryContext(update);
-                if (context.CommandType == "page") 
+                if (context.CommandType == "page")
                     return;
 
                 if (userInfoByChatId.TryGetValue(chatId, out var userInfo)
@@ -70,7 +90,7 @@ public class TgApiGatewayService
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
             {
                 var message = update.Message;
-                
+
                 if (!(userInfoByChatId.TryGetValue(chatId, out var userInfo) && userInfo.State == UserState.WaitFile))
                 {
                     await botClient.SendTextMessageAsync(
@@ -85,7 +105,7 @@ public class TgApiGatewayService
                 var stickerName = userInfo.StickerName;
                 var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
                 var mimeType = message.Audio?.MimeType!;
-                
+
                 var args = new List<string> { stickerPackId, stickerName, fileId, mimeType };
                 context = new QueryContext("AS", "AddSticker", args, chatId);
             }
@@ -97,7 +117,7 @@ public class TgApiGatewayService
                     context = ChatQueryContextByCommand[message.Text](chatId);
                 else if (GroupQueryContextByCommand.ContainsKey(message.Text))
                     context = GroupQueryContextByCommand[message.Text](chatId);
-                
+
                 else if (userInfoByChatId.TryGetValue(chatId, out var userInfo)
                          && userInfo.State == UserState.WaitStickerName)
                 {
@@ -134,11 +154,12 @@ public class TgApiGatewayService
             else
             {
                 await botClient.SendTextMessageAsync(
-                    chatId, 
+                    chatId,
                     "Неизвестная команда, попробуйте выбрать команду из меню",
                     cancellationToken: ct);
                 return;
             }
+
             var command = tgApiCommandService.CreateCommandArguments(context);
             var commandResult = await client.Handle(command);
 
@@ -148,7 +169,7 @@ public class TgApiGatewayService
         {
             log.Error(e, "Appppp crashed");
             await botClient.SendTextMessageAsync(
-                chatId, 
+                chatId,
                 "Что-то пошло не так... Возможно, сообщение уже не актуально",
                 cancellationToken: ct);
             userInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
@@ -159,9 +180,9 @@ public class TgApiGatewayService
     private static QueryContext BuildQueryContext(Update update)
     {
         var callbackData = update.CallbackQuery!.Data!.Split(
-            ':', 
+            ':',
             StringSplitOptions.RemoveEmptyEntries);
-        
+
         var callbackMsg = update.CallbackQuery!.Message!;
         var chatId = callbackMsg.Chat.Id;
         var chatType = callbackMsg.Chat.Type.ToString();
@@ -183,61 +204,61 @@ public class TgApiGatewayService
     {
         {
             "Показать все", chatId => new QueryContext(
-                "SA", "SwKbdPc", 
+                "SA", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Добавить стикер", chatId => new QueryContext(
-                "AS", "SwKbdPc", 
+                "AS", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Создать пак", chatId => new QueryContext(
-                "CP", "SendInstructions", 
+                "CP", "SendInstructions",
                 new(), chatId)
         },
         {
             "Удалить стикер", chatId => new QueryContext(
-                "DS", "SwKbdPc", 
+                "DS", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Удалить пак", chatId => new QueryContext(
-                "DP", "SwKbdPc", 
+                "DP", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Импорт/экспорт пака", chatId => new QueryContext(
-                "SP", "Choice", 
+                "SP", "Choice",
                 new(), chatId)
         },
         {
             "/cancel", chatId => new QueryContext(
-                "Cancel", "Cancel", 
+                "Cancel", "Cancel",
                 new(), chatId)
         },
         {
             "/start", chatId => new QueryContext(
-                "Start", "Start", 
+                "Start", "Start",
                 new(), chatId)
         }
     };
-    
+
     private static Dictionary<string, Func<long, QueryContext>> GroupQueryContextByCommand = new()
     {
         {
             "Показать все", chatId => new QueryContext(
-                "SA", "SwKbdPc", 
+                "SA", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId, ChatType.Group.ToString())
         },
         {
             "Удалить пак", chatId => new QueryContext(
-                "DP", "SwKbdPc", 
+                "DP", "SwKbdPc",
                 new() { "0", "Increase", "10" }, chatId, ChatType.Group.ToString())
         },
         {
             "Импорт/экспорт пака", chatId => new QueryContext(
-                "SP", "Choice", 
+                "SP", "Choice",
                 new(), chatId, ChatType.Group.ToString())
         },
         {
@@ -252,7 +273,7 @@ public class TgApiGatewayService
         },
         {
             "/start", chatId => new QueryContext(
-                "Start", "Start", 
+                "Start", "Start",
                 new(), chatId, ChatType.Group.ToString())
         }
     };
@@ -261,7 +282,7 @@ public class TgApiGatewayService
     {
         await userRepository.CreateIfNotExists(chatId.ToString());
     }
-    
+
     public Task HandlePollingErrorAsync(
         ITelegramBotClient botClient,
         Exception exception,

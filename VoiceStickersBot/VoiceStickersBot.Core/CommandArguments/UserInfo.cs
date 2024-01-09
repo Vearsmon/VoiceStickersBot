@@ -6,7 +6,9 @@ public class UserInfo
     public string StickerPackId { get; }
     public string StickerName { get; }
 
-    public UserInfo(UserState state, string stickerPackId="", string stickerName="")
+    public List<DateTime> RequestTimes { get; } = new();
+
+    public UserInfo(UserState state, string stickerPackId = "", string stickerName = "")
     {
         State = state;
         StickerPackId = stickerPackId;
