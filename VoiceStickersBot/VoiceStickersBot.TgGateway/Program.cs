@@ -38,26 +38,41 @@ public class TgApiGatewayHost : VsbApplicationBase
         var me = await botClient.GetMeAsync(cancellationToken);
         Console.WriteLine($"Start listening for @{me.Username}");
 
-        var service = Container.Get<TgApiGatewayService>();
+        var requestTimesPerGroup = new Dictionary<long, List<DateTime>>();
         var requestTimes = new List<DateTime>();
         while (true)
         {
-            if (!service.Requests.TryDequeue(out var request))
+            if (!handler.Requests.TryDequeue(out var request))
             {
-                Thread.Sleep(100);
                 continue;
             }
 
             var now = DateTime.Now;
             var after = now - TimeSpan.FromSeconds(1);
             var requestsPerSecond = ((IEnumerable<DateTime>)requestTimes).Reverse().Count(t => t > after);
-            if (requestsPerSecond > 10)
+            if (requestsPerSecond > 25)
             {
-                Thread.Sleep(100);
                 continue;
             }
 
-            await service.Handle(botClient, request, cancellationToken);
+            var chatId = handler.ExtractChatId(request);
+            if (chatId is null)
+                continue;
+
+            if (requestTimesPerGroup.TryGetValue(chatId.Value, out var times))
+            {
+                after = now - TimeSpan.FromMinutes(1);
+                requestsPerSecond = ((IEnumerable<DateTime>)times).Reverse().Count(t => t > after);
+                if (requestsPerSecond > 15) continue;
+            }
+            else
+            {
+                requestTimesPerGroup[chatId.Value] = new List<DateTime> { now };
+            }
+
+            requestTimesPerGroup[chatId.Value].Add(now);
+
+            await handler.Handle(botClient, request, cancellationToken);
         }
     }
 

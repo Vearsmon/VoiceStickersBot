@@ -168,6 +168,12 @@ public class TgApiGatewayService
         }
     }
 
+    public long? ExtractChatId(Update request)
+    {
+        return request.Message?.Chat.Id ?? request.CallbackQuery?.Message?.Chat.Id;
+    }
+
+
     public Task HandleUpdateAsync(
         ITelegramBotClient botClient,
         Update update,
