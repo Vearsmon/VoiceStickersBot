@@ -73,6 +73,10 @@ public class TgApiGatewayService
                     context.CommandArguments.Add(userInfo.StickerPackId);
                 }
             }
+            
+            else if (update.Message.Type == MessageType.ChatMembersAdded)
+                return;
+            
             else if (update.Type == UpdateType.Message &&
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
             {
@@ -275,6 +279,7 @@ public class TgApiGatewayService
         Exception exception,
         CancellationToken cancellationToken)
     {
+        Console.Beep();
         var errorMessage = exception switch
         {
             ApiRequestException apiRequestException
