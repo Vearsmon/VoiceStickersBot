@@ -24,6 +24,8 @@ public class TgApiGatewayService
 
     private readonly IUsersRepository userRepository;
 
+    private readonly Queue<Update> requests = new();
+
     public TgApiGatewayService(
         Client client,
         TgApiCommandService tgApiCommandService,
@@ -43,30 +45,15 @@ public class TgApiGatewayService
         Update update,
         CancellationToken ct)
     {
+        if (requests.Count < 30) requests.Enqueue(update);
+        update = requests.Dequeue();
+
         var nullableChatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
 
         if (nullableChatId is null)
             return;
 
         var chatId = nullableChatId.Value;
-
-        if (userInfoByChatId.TryGetValue(chatId, out var userInfoForThrottling))
-        {
-            var now = DateTime.Now;
-            userInfoForThrottling.RequestTimes.Add(now);
-
-            var after = now - TimeSpan.FromSeconds(1);
-
-            var requestsByUserIn1SecondCount = ((IEnumerable<DateTime>)userInfoForThrottling.RequestTimes)
-                .Reverse()
-                .Count(time => time > after);
-            if (requestsByUserIn1SecondCount >= 10)
-                return;
-        }
-        else
-        {
-            return;
-        }
 
         try
         {
