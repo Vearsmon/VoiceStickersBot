@@ -79,6 +79,7 @@ public class StickerPacksRepository : IStickerPacksRepository
                         sticker.Name,
                         sticker.Location,
                         sticker.StickerPackId))
+                .OrderBy(sticker => sticker.Name)
                 .ToList());
     }
 }
