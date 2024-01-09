@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.ShowAllResults;
@@ -52,12 +53,13 @@ public class ShowAllResultHandler : ICommandResultHandler
         
         var memoryStream = await objectStorage.GetObjectFromStorage(ObjectLocation.Parse(result.Sticker.Location));
         var voiceFile = InputFile.FromStream(memoryStream);
+        
         await bot.SendVoiceAsync(
             result.ChatId,
-            voiceFile,
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            voiceFile);
 
-        log.Info("Запрос от {0} на стикер {1}", result.ChatId, result.Sticker.StickerFullId.StickerId);
+        log.Info("Запрос от {0} на стикер {1}", 
+            result.ChatId, result.Sticker.StickerFullId.StickerId);
     }
 
     private async Task Handle(
@@ -72,20 +74,6 @@ public class ShowAllResultHandler : ICommandResultHandler
         var message = "Вот все ваши наборы:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все ваши наборы:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
@@ -102,19 +90,5 @@ public class ShowAllResultHandler : ICommandResultHandler
         var message = "Вот все стикеры из выбранного набора:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            var msg = await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все стикеры из выбранного набора:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 }

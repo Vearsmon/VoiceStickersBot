@@ -18,6 +18,6 @@ public class CancelCancelHandler: ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        return new CancelCancelResult(commandArguments.ChatId);
+        return new CancelCancelResult(commandArguments.ChatId, commandArguments.ChatType);
     }
 }

@@ -12,17 +12,14 @@ public class DeletePackDeletePackHandler : ICommandHandler
     public CommandType CommandType => CommandType.DeletePack;
 
     private readonly DeletePackDeletePackArguments commandArguments;
-    private readonly IStickerPacksRepository stickerPacksRepository;
     private readonly IUsersRepository usersRepository;
 
     public DeletePackDeletePackHandler(
         DeletePackDeletePackArguments commandArguments,
-        IUsersRepository usersRepository,
-        IStickerPacksRepository stickerPacksRepository)
+        IUsersRepository usersRepository)
     {
         this.commandArguments = commandArguments;
         this.usersRepository = usersRepository;
-        this.stickerPacksRepository = stickerPacksRepository;
     }
 
     public async Task<ICommandResult> Handle()

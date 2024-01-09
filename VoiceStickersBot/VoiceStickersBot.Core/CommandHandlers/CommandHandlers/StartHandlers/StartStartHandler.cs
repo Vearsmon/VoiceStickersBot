@@ -18,6 +18,6 @@ public class StartStartHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        return new StartStartResult(commandArguments.ChatId);
+        return new StartStartResult(commandArguments.ChatId, commandArguments.ChatType);
     }
 }

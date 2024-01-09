@@ -12,7 +12,10 @@ public class CancelCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<CancelStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { CancelStepName.Cancel, q => new CacncelCancelArguments(q.ChatId) }
+            {
+                CancelStepName.Cancel, q => 
+                    new CacncelCancelArguments(q.ChatType, q.ChatId) 
+            }
         };
     }
     

@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.DeletePackResults;
@@ -57,10 +58,12 @@ public class DeletePackResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
+        var keyboard = Keyboards.DialogKeyboard;
+        
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Стикерпак успешно удалён",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            replyMarkup: keyboard);
     }
     
     private async Task Handle(
@@ -75,20 +78,6 @@ public class DeletePackResultHandler : ICommandResultHandler
         var message = "Выберите набор, который хотите удалить:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Выберите набор, который хотите удалить:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
@@ -105,20 +94,6 @@ public class DeletePackResultHandler : ICommandResultHandler
         var message = "Вот все стикеры из выбранного набора:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*if (result.BotMessageId is null)
-        {
-            var msg = await bot.SendTextMessageAsync(
-                result.ChatId,
-                "Вот все стикеры из выбранного набора:",
-                replyMarkup: markup);
-        }
-        else
-        {
-            await bot.EditMessageReplyMarkupAsync(
-                inlineMessageId: result.BotMessageId,
-                replyMarkup: markup);
-        }*/
     }
 
     private async Task Handle(
@@ -149,10 +124,5 @@ public class DeletePackResultHandler : ICommandResultHandler
         var message = "Вы точно хотите удалить этот набор?";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-        
-        /*await bot.SendTextMessageAsync(
-            result.ChatId,
-            "Вы точно хотите удалить этот набор?",
-            replyMarkup: markup);*/
     }
 }

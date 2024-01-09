@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.CancelResult;
@@ -36,9 +37,13 @@ public class CancelResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
+        if (!Enum.TryParse(result.ChatType, out ChatType chatType))
+            throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
+
+        var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Команда отменена",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            replyMarkup: keyboard);
     }
 }

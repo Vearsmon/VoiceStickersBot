@@ -169,8 +169,9 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
-        
-        if (queryContext.CommandArguments[1].Length == 0)
+
+        var stickerName = queryContext.CommandArguments[1];
+        if (stickerName.Length == 0)
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be non empty string.");
 
@@ -183,23 +184,23 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         bot.GetInfoAndDownloadFileAsync(fileId, stream)
             .GetAwaiter()
             .GetResult();
-        if (queryContext.CommandArguments[3] == "audio/mpeg")
+        /*if (queryContext.CommandArguments[3] == "audio/mpeg")
         {
             var convertedByteArray = ConvertAudioToOpus(stream)
                 .GetAwaiter()
                 .GetResult();
             stream = new MemoryStream(convertedByteArray);
-        }
+        }*/
         
         return new AddStickerAddStickerArguments(
             stickerPackId,
-            queryContext.CommandArguments[1],
+            stickerName,
             stream,
             queryContext.ChatId);
     }
 
     //TODO: вынести кудато
-    private async Task<byte[]> ConvertAudioToOpus(MemoryStream audio)
+    /*private async Task<byte[]> ConvertAudioToOpus(MemoryStream audio)
     {
         /*var byteBuffer = new byte[16 * 1024];
         var memoryStream = new MemoryStream();
@@ -208,7 +209,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
         {
             await memoryStream.WriteAsync(byteBuffer, 0, bytesRead).ConfigureAwait(false);
         }
-        memoryStream.Seek(0, SeekOrigin.Begin);*/
+        memoryStream.Seek(0, SeekOrigin.Begin);#1#
         audio.Seek(0, SeekOrigin.Begin);
         using (var source = audio)
         using (var mp3Reader = new Mp3FileReader(source))
@@ -229,7 +230,7 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
             var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
             mp3Reader.Seek(0, SeekOrigin.Begin);
             var count = mp3Reader.Read(bufferFloat, 0, bufferFloat.Length);
-            mp3Reader.Seek(0, SeekOrigin.Begin);*/
+            mp3Reader.Seek(0, SeekOrigin.Begin);#1#
             
             var bufferFloat = new byte[mp3Reader.Length / (mp3Reader.WaveFormat.BitsPerSample / 8)];
 
@@ -261,5 +262,5 @@ public class AddStickerCommandArgumentsFactory : ICommandArgumentsFactory
 
             return memo.ToArray();
         }
-    }
+    }*/
 }

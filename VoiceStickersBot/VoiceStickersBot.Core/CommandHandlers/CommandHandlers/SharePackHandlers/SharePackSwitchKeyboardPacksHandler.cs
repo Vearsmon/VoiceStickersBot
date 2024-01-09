@@ -23,7 +23,6 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        //chatId==userId
         var chatId = commandArguments.ChatId;
 
         var (result, packs) = await usersRepository

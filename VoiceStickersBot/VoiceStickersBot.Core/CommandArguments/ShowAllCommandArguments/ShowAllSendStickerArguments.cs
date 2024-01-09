@@ -9,7 +9,10 @@ public class ShowAllSendStickerArguments : IShowAllCommandArguments
     public Guid StickerId { get; }
     public long ChatId { get; }
     
-    public ShowAllSendStickerArguments(Guid stickerPackId, Guid stickerId, long chatId)
+    public ShowAllSendStickerArguments(
+        Guid stickerPackId,
+        Guid stickerId,
+        long chatId)
     {
         StickerPackId = stickerPackId;
         StickerId = stickerId;

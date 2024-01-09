@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.StartResults;
@@ -36,10 +37,15 @@ public class StartResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
+        if (!Enum.TryParse(result.ChatType, out ChatType chatType))
+            throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
+
+        var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
+        
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Для взаимодействия с ботом используйте кнопки ниже.\n" +
             "Для начала создайте или импортируйте стикерпак",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            replyMarkup: keyboard);
     }
 }

@@ -21,40 +21,40 @@ public class SharePackCommandHandlerFactory : CommandHandlerFactoryBase<ISharePa
     {
         stepHandlerBuilders = new Dictionary<SharePackStepName, Func<ISharePackCommandArguments, ICommandHandler>>()
         {
-            { 
+            {
                 SharePackStepName.SwKbdPc, ca => 
                     new SharePackSwitchKeyboardPacksHandler(
-                        (SharePackSwitchKeyboardPacksArguments)ca, usersRepository) 
+                        (SharePackSwitchKeyboardPacksArguments)ca, usersRepository)
             },
-            { 
+            {
                 SharePackStepName.SwKbdSt,  ca => 
                     new SharePackSwitchKeyboardStickersHandler(
                         (SharePackSwitchKeyboardStickersArguments)ca, stickerPacksRepository)
             },
-            { 
+            {
                 SharePackStepName.SendSticker, ca => 
                     new SharePackSendStickerHandler(
                         (SharePackSendStickerArguments)ca, stickersRepository)
             },
-            { 
+            {
                 SharePackStepName.SendImportInstr, ca =>  
                     new SharePackSendImportInstructionsHandler(
-                        (SharePackSendImportInstructionsArguments)ca) 
+                        (SharePackSendImportInstructionsArguments)ca)
             },
-            { 
+            {
                 SharePackStepName.SendPackId, ca =>  
                     new SharePackSendPackIdHandler(
-                        (SharePackSendPackIdArguments)ca) 
+                        (SharePackSendPackIdArguments)ca)
             },
-            { 
+            {
                 SharePackStepName.Choice, ca =>  
                     new SharePackChoiceHandler(
-                        (SharePackChoiceArguments)ca) 
+                        (SharePackChoiceArguments)ca)
             },
-            { 
+            {
                 SharePackStepName.ImportPack, ca =>  
                     new SharePackImportPackHandler(
-                        (SharePackImportPackArguments)ca, usersRepository) 
+                        (SharePackImportPackArguments)ca, usersRepository, stickerPacksRepository)
             }
         };
     }

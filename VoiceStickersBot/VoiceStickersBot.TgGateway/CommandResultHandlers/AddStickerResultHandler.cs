@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.AddStickerResults;
@@ -58,10 +59,11 @@ public class AddStickerResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
         
+        var keyboard = Keyboards.DialogKeyboard;
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Стикер успешно добавлен",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            replyMarkup: keyboard);
     }
 
     private async Task Handle(

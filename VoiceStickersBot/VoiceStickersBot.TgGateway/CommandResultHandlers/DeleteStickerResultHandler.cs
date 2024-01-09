@@ -1,5 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using VoiceStickersBot.Core.CommandArguments;
 using VoiceStickersBot.Core.CommandResults;
 using VoiceStickersBot.Core.CommandResults.DeleteStickerResults;
@@ -33,11 +34,7 @@ public class DeleteStickerResultHandler : ICommandResultHandler
             {
                 typeof(DeleteStickerDeleteStickerResult),
                 async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerDeleteStickerResult)res)
-            },
-            /*{
-                typeof(DeleteStickerConfirmResult),
-                async (bot, infos, res) => await Handle(bot, infos, (DeleteStickerConfirmResult)res)
-            }*/
+            }
         };
     }
     public Task HandleResult(ITelegramBotClient bot, Dictionary<long, UserInfo> userInfos, ICommandResult result)
@@ -51,11 +48,13 @@ public class DeleteStickerResultHandler : ICommandResultHandler
         DeleteStickerDeleteStickerResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
-
+        
+        var keyboard = Keyboards.DialogKeyboard;
+        
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Стикер успешно удалён",
-            replyMarkup: DefaultKeyboard.CommandsKeyboard);
+            replyMarkup: keyboard);
     }
     
     private async Task Handle(
@@ -111,19 +110,5 @@ public class DeleteStickerResultHandler : ICommandResultHandler
 
         await bot.DeleteMessageAsync(result.ChatId, result.BotMessageId!.Value);
     }
-    
-    /*private async Task Handle(
-        ITelegramBotClient bot,
-        Dictionary<long, UserInfo> userInfos,
-        DeleteStickerConfirmResult result)
-    {
-        userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
-
-        var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
-        
-        var message = "Вы точно хотите удалить этот набор?";
-        var botMessageId = result.BotMessageId;
-        await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
-    }*/
 }
 

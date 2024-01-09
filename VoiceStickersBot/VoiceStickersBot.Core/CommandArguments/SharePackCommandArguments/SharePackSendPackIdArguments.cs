@@ -6,11 +6,13 @@ public class SharePackSendPackIdArguments : ISharePackCommandArguments
     public SharePackStepName StepName => SharePackStepName.SendPackId;
     
     public Guid StickerPackId { get; }
+    public string ChatType { get; }
     public long ChatId { get; }
     
-    public SharePackSendPackIdArguments(Guid stickerPackId, long chatId)
+    public SharePackSendPackIdArguments(Guid stickerPackId, string chatType, long chatId)
     {
         StickerPackId = stickerPackId;
+        ChatType = chatType;
         ChatId = chatId;
     }
 }

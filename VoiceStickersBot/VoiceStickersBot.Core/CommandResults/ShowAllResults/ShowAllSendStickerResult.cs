@@ -8,7 +8,10 @@ public class ShowAllSendStickerResult : ShowAllCommandResultBase
     public Sticker Sticker { get; }
     public Guid StickerPackId { get; }
 
-    public ShowAllSendStickerResult(long chatId, Sticker sticker, Guid stickerPackId)
+    public ShowAllSendStickerResult(
+        long chatId,
+        Sticker sticker,
+        Guid stickerPackId)
     {
         ChatId = chatId;
         Sticker = sticker;

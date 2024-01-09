@@ -29,6 +29,7 @@ public class CreatePackAddPackHandler : ICommandHandler
                 commandArguments.PackName,
                 commandArguments.ChatId.ToString())
             .ConfigureAwait(false);
+        
         return new CreatePackAddPackResult(commandArguments.ChatId);
     }
 }

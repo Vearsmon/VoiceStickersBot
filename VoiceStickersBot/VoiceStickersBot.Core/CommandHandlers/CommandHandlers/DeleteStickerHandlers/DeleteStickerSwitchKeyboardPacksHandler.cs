@@ -25,11 +25,11 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
     {
         var chatId = commandArguments.ChatId;
 
-        var (result, packs) = await usersRepository
-            .TryGetStickerPacks(chatId.ToString(), false)
+        var packs = await usersRepository
+            .GetStickerPacksOwned(chatId.ToString(), false)
             .ConfigureAwait(false);
 
-        if (!result)
+        if (packs.Count == 0)
             return new DeleteStickerSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(
@@ -44,14 +44,14 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
             "DS:SwKbdSt",
             ":0:Increase:10",
-            packs!,
+            packs,
             pageFrom,
             pageTo,
             countOnPage);
 
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "DS:SwKbdPc",
-            chatId.ToString(),
+            "",
             pageTo,
             countOnPage,
             packs!.Count);

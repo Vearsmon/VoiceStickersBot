@@ -64,6 +64,7 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
     private ICommandArguments BuildShowAllSwitchKeyboardPacksArguments(QueryContext queryContext)
     {
         const int argumentsCount = 3;
+        
         if (queryContext.CommandArguments.Count != argumentsCount)
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
@@ -103,7 +104,10 @@ public class ShowAllCommandArgumentsFactory : ICommandArgumentsFactory
         if (!Guid.TryParse(queryContext.CommandArguments[1], out var stickerPackId))
             throw new ArgumentException(
                 "Invalid argument at index 1. Should be Guid.");
-
-        return new ShowAllSendStickerArguments(stickerPackId, stickerId, queryContext.ChatId);
+        
+        return new ShowAllSendStickerArguments(
+            stickerPackId,
+            stickerId,
+            queryContext.ChatId);
     }
 }

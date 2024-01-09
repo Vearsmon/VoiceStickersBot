@@ -124,8 +124,8 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
 
         if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
             throw new ArgumentException(
-                "Invalid argument at index 0. Should be Guid.");        
-
+                "Invalid argument at index 0. Should be Guid.");
+        
         return new DeletePackDeletePackArguments(stickerPackId, queryContext.ChatId);
     }
 

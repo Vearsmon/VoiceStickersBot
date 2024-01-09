@@ -4,12 +4,13 @@ public class CreatePackAddPackArguments : ICreatePackCommandArguments
 {
     public CommandType CommandType => CommandType.CreatePack;
     public CreatePackStepName StepName => CreatePackStepName.AddPack;
-    public long ChatId { get; }
-    public string PackName { get; }
     
-    public CreatePackAddPackArguments(long chatId, string packName)
+    public string PackName { get; }
+    public long ChatId { get; }
+    
+    public CreatePackAddPackArguments(string packName, long chatId)
     {
-        ChatId = chatId;
         PackName = packName;
+        ChatId = chatId;
     }
 }

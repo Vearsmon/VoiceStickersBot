@@ -6,7 +6,10 @@ public class AddStickerAddStickerResult : AddStickerCommandResultBase
     public string StickerName { get; }
     public Guid StickerId { get; }
 
-    public AddStickerAddStickerResult(long chatId, string stickerName, Guid stickerId)
+    public AddStickerAddStickerResult(
+        long chatId,
+        string stickerName,
+        Guid stickerId)
     {
         ChatId = chatId;
         StickerName = stickerName;

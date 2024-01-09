@@ -46,10 +46,13 @@ public class CreatePackCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
 
-        if (queryContext.CommandArguments[0].Length == 0)
+        var packName = queryContext.CommandArguments[0];
+        if (packName.Length == 0)
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be non empty string.");
 
-        return new CreatePackAddPackArguments(queryContext.ChatId, queryContext.CommandArguments[0]);
+        return new CreatePackAddPackArguments(
+            packName,
+            queryContext.ChatId);
     }
 }

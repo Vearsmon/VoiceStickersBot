@@ -64,6 +64,9 @@ public class SwitchKeyboardExtensions
         int countOnPage,
         int entityCount)
     {
+        if (entityCount <= countOnPage)
+            return new List<InlineKeyboardButtonDto>();
+        
         var lastLineButtons = new List<InlineKeyboardButtonDto>();
         
         if (pageTo > 1)

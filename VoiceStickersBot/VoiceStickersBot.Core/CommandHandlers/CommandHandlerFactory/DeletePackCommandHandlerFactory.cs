@@ -40,7 +40,7 @@ public class DeletePackCommandHandlerFactory : CommandHandlerFactoryBase<IDelete
             {
                 DeletePackStepName.DeletePack, ca =>
                     new DeletePackDeletePackHandler(
-                        (DeletePackDeletePackArguments)ca, usersRepository, stickerPacksRepository)
+                        (DeletePackDeletePackArguments)ca, usersRepository)
             },
             {
                 DeletePackStepName.Confirm, ca =>

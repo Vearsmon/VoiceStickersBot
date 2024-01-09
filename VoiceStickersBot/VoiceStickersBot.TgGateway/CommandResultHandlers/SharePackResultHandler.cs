@@ -109,16 +109,22 @@ public class SharePackResultHandler : ICommandResultHandler
         SharePackImportPackResult result)
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
+        
+        if (!Enum.TryParse(result.ChatType, out ChatType chatType))
+            throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
+
+        var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
+        
         if (result.IsSucceeded)
             await bot.SendTextMessageAsync(
                 result.ChatId,
-                "Пак успешно импортирован",
-                replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                $"Пак \"{result.PackName}\" успешно импортирован",
+                replyMarkup: keyboard);
         else
             await bot.SendTextMessageAsync(
                 result.ChatId,
-                "Ошибка при импорте пака, попробуйте ещё раз",
-                replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                "Ошибка при импорте пака, возможно, такого пака не существует",
+                replyMarkup: keyboard);
     }
 
     private async Task Handle(
@@ -141,11 +147,18 @@ public class SharePackResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(
             UserState.NoWait);
+        
+        if (!Enum.TryParse(result.ChatType, out ChatType chatType))
+            throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
 
+        var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
+        Console.WriteLine(chatType);
         await bot.SendTextMessageAsync(
             parseMode: ParseMode.Markdown,
             chatId: result.ChatId,
-            text: $"```{result.StickerPackId}```");
+            text: $"Нажмите на ID, чтобы скопировать:\n\n" +
+                  $"`{result.StickerPackId}`",
+            replyMarkup: keyboard);
     }
 
     private async Task Handle(

@@ -71,7 +71,7 @@ public class TgApiGatewayService
                     await botClient.SendTextMessageAsync(
                         chatId,
                         "Бот не ожидает от вас файла...",
-                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                        replyMarkup: Keyboards.DialogKeyboard);
                     return;
                 }
                 
@@ -85,47 +85,57 @@ public class TgApiGatewayService
                 var stickerPackId = userInfo.StickerPackId;
                 var stickerName = userInfo.StickerName;
                 var fileId = message.Voice == null ? message.Audio!.FileId : message.Voice.FileId;
-
-                var args = new List<string> { stickerPackId, stickerName, fileId, message.Audio?.MimeType! };
+                var mimeType = message.Audio?.MimeType!;
+                
+                var args = new List<string> { stickerPackId, stickerName, fileId, mimeType };
                 context = new QueryContext("AS", "AddSticker", args, chatId);
             }
             else if (update.Type == UpdateType.Message && update.Message!.Text is not null)
             {
                 var message = update.Message;
+                var chatType = message.Chat.Type;
+                if (ChatQueryContextByCommand.ContainsKey(message.Text) && chatType == ChatType.Private)
+                    context = ChatQueryContextByCommand[message.Text](chatId);
+                else if (GroupQueryContextByCommand.ContainsKey(message.Text))
+                    context = GroupQueryContextByCommand[message.Text](chatId);
                 
-                if (QueryContextByCommand.ContainsKey(message.Text))
-                    context = QueryContextByCommand[message.Text](chatId);
-                
-                else if (userInfoByChatId.TryGetValue(chatId, out var userInfo) 
+                else if (userInfoByChatId.TryGetValue(chatId, out var userInfo)
                          && userInfo.State == UserState.WaitStickerName)
                 {
                     var stickerPackId = userInfo.StickerPackId;
                     var args = new List<string> { stickerPackId, message.Text };
                     context = new QueryContext("AS", "SendFileInstr", args, chatId);
                 }
-                else if (userInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackName)
+                else if (userInfoByChatId.TryGetValue(chatId, out userInfo)
+                         && userInfo.State == UserState.WaitPackName)
                 {
                     var args = new List<string> { message.Text };
                     context = new QueryContext("CP", "AddPack", args, chatId);
                 }
-                else if (userInfoByChatId.TryGetValue(chatId, out userInfo) && userInfo.State == UserState.WaitPackId)
+                else if (userInfoByChatId.TryGetValue(chatId, out userInfo)
+                         && userInfo.State == UserState.WaitPackId)
                 {
                     var args = new List<string> { message.Text };
-                    context = new QueryContext("SP", "ImportPack", args, chatId);
+                    context = new QueryContext(
+                        "SP",
+                        "ImportPack",
+                        args,
+                        chatId,
+                        chatType.ToString());
                 }
                 else
                 {
                     await botClient.SendTextMessageAsync(
-                        chatId, 
-                        "Неизвестная команда, попробуйте выбрать команду из меню",
-                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                        chatId,
+                        "Неизвестная команда, попробуйте выбрать команду из меню");
                     return;
                 }
             }
             else
             {
-                await botClient.SendTextMessageAsync(chatId, "Неизвестная команда, попробуйте выбрать команду из меню",
-                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
+                await botClient.SendTextMessageAsync(
+                    chatId, 
+                    "Неизвестная команда, попробуйте выбрать команду из меню");
                 return;
             }
             var command = tgApiCommandService.CreateCommandArguments(context);
@@ -136,8 +146,9 @@ public class TgApiGatewayService
         catch (Exception e)
         {
             log.Error(e, "Appppp crashed");
-            await botClient.SendTextMessageAsync(chatId, "Что-то пошло не так... " +
-                                                         "Возможно, сообщение уже не актуально");
+            await botClient.SendTextMessageAsync(
+                chatId, 
+                "Что-то пошло не так... Возможно, сообщение уже не актуально");
             userInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
         }
     }
@@ -151,6 +162,7 @@ public class TgApiGatewayService
         
         var callbackMsg = update.CallbackQuery!.Message!;
         var chatId = callbackMsg.Chat.Id;
+        var chatType = callbackMsg.Chat.Type.ToString();
         var commandType = callbackData[0];
         var commandStep = callbackData[1];
         var callbackArguments = callbackData.Skip(2).ToList();
@@ -161,10 +173,11 @@ public class TgApiGatewayService
             commandStep,
             callbackArguments,
             chatId,
+            chatType,
             botMessageId);
     }
 
-    private static Dictionary<string, Func<long, QueryContext>> QueryContextByCommand = new()
+    private static Dictionary<string, Func<long, QueryContext>> ChatQueryContextByCommand = new()
     {
         {
             "Показать все", chatId => new QueryContext(
@@ -192,11 +205,37 @@ public class TgApiGatewayService
         },
         {
             "/cancel", chatId => new QueryContext(
-                "Cancel", "Cancel", new(), chatId)
+                "Cancel", "Cancel", 
+                new(), chatId)
         },
         {
             "/start", chatId => new QueryContext(
-                "Start", "Start", new(), chatId)
+                "Start", "Start", 
+                new(), chatId)
+        }
+    };
+    
+    private static Dictionary<string, Func<long, QueryContext>> GroupQueryContextByCommand = new()
+    {
+        {
+            "Показать все", chatId => new QueryContext(
+                "SA", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId, ChatType.Group.ToString())
+        },
+        {
+            "Импорт/экспорт пака", chatId => new QueryContext(
+                "SP", "Choice", 
+                new(), chatId, ChatType.Group.ToString())
+        },
+        {
+            "/cancel", chatId => new QueryContext(
+                "Cancel", "Cancel",
+                new(), chatId, ChatType.Group.ToString())
+        },
+        {
+            "/start", chatId => new QueryContext(
+                "Start", "Start", 
+                new(), chatId, ChatType.Group.ToString())
         }
     };
 

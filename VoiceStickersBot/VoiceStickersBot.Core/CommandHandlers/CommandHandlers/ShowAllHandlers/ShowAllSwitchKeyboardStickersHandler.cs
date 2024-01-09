@@ -40,7 +40,10 @@ public class ShowAllSwitchKeyboardStickersHandler : ICommandHandler
             pageTo,
             countOnPage);
 
-        buttons.Add(new List<InlineKeyboardButtonDto> {new ("Назад", $"SA:SwKbdPc:0:Increase:10")});
+        buttons.Add(new List<InlineKeyboardButtonDto>
+        {
+            new ("Назад", $"SA:SwKbdPc:0:Increase:10")
+        });
 
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "SA:SwKbdSt",

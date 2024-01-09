@@ -23,7 +23,6 @@ public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        //chatId==userId
         var chatId = commandArguments.ChatId;
 
         var (result, packs) = await usersRepository
@@ -47,7 +46,7 @@ public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
             pageFrom,
             pageTo,
             countOnPage);
-
+        
         var lastLineButtons = SwitchKeyboardExtensions.BuildLastLine(
             "SA:SwKbdPc",
             "",

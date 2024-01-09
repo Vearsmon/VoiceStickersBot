@@ -10,7 +10,11 @@ public class AddStickerAddStickerArguments : IAddStickerCommandArguments
     public MemoryStream Audio { get; }
     public long ChatId { get; }
     
-    public AddStickerAddStickerArguments(Guid stickerPackId, string stickerName, MemoryStream audio, long chatId)
+    public AddStickerAddStickerArguments(
+        Guid stickerPackId,
+        string stickerName,
+        MemoryStream audio,
+        long chatId)
     {
         StickerPackId = stickerPackId;
         StickerName = stickerName;

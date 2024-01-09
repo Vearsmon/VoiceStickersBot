@@ -18,6 +18,9 @@ public class SharePackSendPackIdHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        return new SharePackSendPackIdResult(commandArguments.ChatId, commandArguments.StickerPackId);
+        return new SharePackSendPackIdResult(
+            commandArguments.ChatId,
+            commandArguments.StickerPackId,
+            commandArguments.ChatType);
     }
 }

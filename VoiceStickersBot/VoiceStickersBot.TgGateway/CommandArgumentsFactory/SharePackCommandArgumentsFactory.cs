@@ -152,7 +152,7 @@ public class SharePackCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
         
-        return new SharePackSendPackIdArguments(stickerPackId, queryContext.ChatId);
+        return new SharePackSendPackIdArguments(stickerPackId, queryContext.ChatType, queryContext.ChatId);
     }
     
     private ICommandArguments BuildSharePackImportPackArguments(QueryContext queryContext)
@@ -169,6 +169,7 @@ public class SharePackCommandArgumentsFactory : ICommandArgumentsFactory
         
         return new SharePackImportPackArguments(
             stickerPackId,
+            queryContext.ChatType,
             queryContext.ChatId);
     }
 }

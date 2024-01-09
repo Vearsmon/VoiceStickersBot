@@ -9,6 +9,7 @@ public class QueryContext
     public List<string> CommandArguments { get; }
 
     public long ChatId { get; }
+    public string ChatType { get; }
     public int? BotMessageId { get; }
 
     public QueryContext(
@@ -16,13 +17,16 @@ public class QueryContext
         string commandStep,
         List<string> commandArguments,
         long chatId,
-        int? botMessageId = null)
+        string chatType="Private",
+        int? botMessageId=null)
     {
         CommandType = commandType;
         CommandStep = commandStep;
         CommandArguments = commandArguments;
-
-        BotMessageId = botMessageId;
+        
         ChatId = chatId;
+        ChatType = chatType;
+        
+        BotMessageId = botMessageId;
     }
 }

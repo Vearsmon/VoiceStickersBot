@@ -27,6 +27,9 @@ public class ShowAllSendStickerHandler : ICommandHandler
             .GetAsync(commandArguments.StickerPackId, commandArguments.StickerId)
             .ConfigureAwait(false);
 
-        return new ShowAllSendStickerResult(commandArguments.ChatId, sticker, commandArguments.StickerPackId);
+        return new ShowAllSendStickerResult(
+            commandArguments.ChatId,
+            sticker,
+            commandArguments.StickerPackId);
     }
 }

@@ -23,14 +23,13 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
 
     public async Task<ICommandResult> Handle()
     {
-        //chatId==userId
         var chatId = commandArguments.ChatId;
 
-        var (result, packs) = await usersRepository
-            .TryGetStickerPacks(chatId.ToString(), false)
+        var packs = await usersRepository
+            .GetStickerPacksOwned(chatId.ToString(), false)
             .ConfigureAwait(false);
 
-        if (!result)
+        if (packs.Count == 0)
             return new AddStickerSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), new List<InlineKeyboardButtonDto>()),
@@ -43,7 +42,7 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
         var buttons = SwitchKeyboardExtensions.BuildMainKeyboardPacks(
             "AS:SwKbdSt",
             ":0:Increase:10",
-            packs!,
+            packs,
             pageFrom,
             pageTo,
             countOnPage);

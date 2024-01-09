@@ -14,7 +14,10 @@ public class StartCommandArgumentsFactory : ICommandArgumentsFactory
     {
         stepCommandBuilders = new Dictionary<StartStepName, Func<QueryContext, ICommandArguments>>()
         {
-            { StartStepName.Start, q => new StartStartArguments(q.ChatId) }
+            { 
+                StartStepName.Start, q 
+                    => new StartStartArguments(q.ChatType, q.ChatId) 
+            }
         };
     }
     
