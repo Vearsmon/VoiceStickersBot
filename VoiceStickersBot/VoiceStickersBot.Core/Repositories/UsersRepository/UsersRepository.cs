@@ -104,7 +104,15 @@ public class UsersRepository : IUsersRepository
         if (stickerPack is null)
             return false;
 
-        await InnerAddStickerPackToUser(userId, stickerPack).ConfigureAwait(false);
+        try
+        {
+            await InnerAddStickerPackToUser(userId, stickerPack).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        
         return true;
     }
 

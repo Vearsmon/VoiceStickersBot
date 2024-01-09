@@ -29,10 +29,14 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
             .GetStickerPacksOwned(chatId.ToString(), false)
             .ConfigureAwait(false);
 
+        var hasPacks = packs.Count != 0;
         if (packs.Count == 0)
             return new AddStickerSwitchKeyboardPacksResult(
                 chatId,
-                new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), new List<InlineKeyboardButtonDto>()),
+                new InlineKeyboardDto(
+                    new List<List<InlineKeyboardButtonDto>>(),
+                    new List<InlineKeyboardButtonDto>()),
+                hasPacks,
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;
@@ -56,6 +60,10 @@ public class AddStickerSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new AddStickerSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new AddStickerSwitchKeyboardPacksResult(
+            chatId,
+            keyboard,
+            hasPacks,
+            commandArguments.BotMessageId);
     }
 }

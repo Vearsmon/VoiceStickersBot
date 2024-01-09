@@ -3,7 +3,6 @@
 public enum AddStickerStepName
 {
     SwKbdPc,
-    Cancel,
     SwKbdSt,
     SendSticker,
     SendNameInstr,

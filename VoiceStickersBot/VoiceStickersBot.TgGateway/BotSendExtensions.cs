@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace VoiceStickersBot.TgGateway;
@@ -21,15 +22,22 @@ public static class BotSendExtensions
         }
         else
         {
-            await bot.EditMessageTextAsync(
-                chatId: chatId,
-                messageId: botMessageId.Value,
-                text: message);
-            
-            await bot.EditMessageReplyMarkupAsync(
-                chatId: chatId,
-                messageId: botMessageId.Value,
-                replyMarkup: (InlineKeyboardMarkup)markup);
+            try
+            {
+                await bot.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: botMessageId.Value,
+                    text: message);
+
+                await bot.EditMessageReplyMarkupAsync(
+                    chatId: chatId,
+                    messageId: botMessageId.Value,
+                    replyMarkup: (InlineKeyboardMarkup)markup);
+            }
+            catch (ApiRequestException ex)
+            {
+                // ignored
+            }
         }
     }
 }

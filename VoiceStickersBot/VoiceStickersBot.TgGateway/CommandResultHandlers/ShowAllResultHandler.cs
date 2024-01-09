@@ -71,7 +71,9 @@ public class ShowAllResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все ваши наборы:";
+        var message = result.HasPacks
+            ? "Вот все ваши стикерпаки:"
+            : "У вас нет стикерпаков, создайте первый!";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -87,7 +89,7 @@ public class ShowAllResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все стикеры из выбранного набора:";
+        var message = "Вот все стикеры из выбранного стикерпака:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }

@@ -8,6 +8,5 @@ public enum SharePackStepName
     SwKbdPc,
     SwKbdSt,
     SendSticker,
-    SendPackId,
-    Cancel
+    SendPackId
 }

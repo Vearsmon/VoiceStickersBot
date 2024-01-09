@@ -3,16 +3,10 @@
 public class AddStickerAddStickerResult : AddStickerCommandResultBase
 {
     public override long ChatId { get; }
-    public string StickerName { get; }
-    public Guid StickerId { get; }
 
     public AddStickerAddStickerResult(
-        long chatId,
-        string stickerName,
-        Guid stickerId)
+        long chatId)
     {
         ChatId = chatId;
-        StickerName = stickerName;
-        StickerId = stickerId;
     }
 }

@@ -120,7 +120,10 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
     
-        var message = "Выберите стикерпак, в который хотите добавить стикер:";
+        var message = result.HasPacks 
+            ? "Выберите стикерпак, в который хотите добавить стикер:"
+            : "У вас нет стикерпаков, создайте первый!";
+        
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -136,7 +139,7 @@ public class AddStickerResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все стикеры из выбранного набора:";
+        var message = "Вот все стикеры из выбранного стикерпака:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }

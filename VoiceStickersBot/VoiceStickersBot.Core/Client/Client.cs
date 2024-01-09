@@ -25,6 +25,6 @@ public class Client
         if (result.EnsureSuccess)
             return result.Result;
 
-        throw result.Error; //обработка ошибок
+        throw result.Error;
     }
 }

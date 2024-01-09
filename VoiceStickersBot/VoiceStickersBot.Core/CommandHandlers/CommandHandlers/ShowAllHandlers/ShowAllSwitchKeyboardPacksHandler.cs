@@ -33,6 +33,7 @@ public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
             return new ShowAllSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), new List<InlineKeyboardButtonDto>()),
+                result,
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;
@@ -56,6 +57,6 @@ public class ShowAllSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new ShowAllSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new ShowAllSwitchKeyboardPacksResult(chatId, keyboard, result, commandArguments.BotMessageId);
     }
 }

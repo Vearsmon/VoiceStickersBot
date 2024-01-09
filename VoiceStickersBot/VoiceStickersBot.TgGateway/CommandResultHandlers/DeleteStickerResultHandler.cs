@@ -66,7 +66,9 @@ public class DeleteStickerResultHandler : ICommandResultHandler
 
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Выберите набор, из которого хотите удалить стикер:";
+        var message = result.HasPacks 
+            ? "Выберите стикерпак, из которого хотите удалить стикер:"
+            : "У вас нет стикерпаков";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }

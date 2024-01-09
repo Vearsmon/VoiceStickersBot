@@ -29,12 +29,14 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
             .GetStickerPacksOwned(chatId.ToString(), false)
             .ConfigureAwait(false);
 
-        if (packs.Count == 0)
+        var hasPacks = packs.Count != 0;
+        if (!hasPacks)
             return new DeleteStickerSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(
                     new List<List<InlineKeyboardButtonDto>>(),
                     new List<InlineKeyboardButtonDto>()),
+                hasPacks,
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;
@@ -58,6 +60,6 @@ public class DeleteStickerSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new DeleteStickerSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new DeleteStickerSwitchKeyboardPacksResult(chatId, keyboard, hasPacks, commandArguments.BotMessageId);
     }
 }

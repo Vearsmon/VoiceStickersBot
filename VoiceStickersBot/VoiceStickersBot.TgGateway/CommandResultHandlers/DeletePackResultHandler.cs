@@ -58,7 +58,11 @@ public class DeletePackResultHandler : ICommandResultHandler
     {
         userInfos[result.ChatId] = new UserInfo(UserState.NoWait);
 
-        var keyboard = Keyboards.DialogKeyboard;
+        
+        if (!Enum.TryParse(result.ChatType, out ChatType chatType))
+            throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
+
+        var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
         
         await bot.SendTextMessageAsync(
             result.ChatId,
@@ -75,7 +79,9 @@ public class DeletePackResultHandler : ICommandResultHandler
 
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Выберите набор, который хотите удалить:";
+        var message = result.HasPacks 
+            ? "Выберите стикерпак, который хотите удалить:"
+            : "У вас нет стикерпаков";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -91,7 +97,7 @@ public class DeletePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все стикеры из выбранного набора:";
+        var message = "Вот все стикеры из выбранного стикерпака:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -121,7 +127,7 @@ public class DeletePackResultHandler : ICommandResultHandler
 
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
         
-        var message = "Вы точно хотите удалить этот набор?";
+        var message = "Вы точно хотите удалить этот стикерпак?";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }

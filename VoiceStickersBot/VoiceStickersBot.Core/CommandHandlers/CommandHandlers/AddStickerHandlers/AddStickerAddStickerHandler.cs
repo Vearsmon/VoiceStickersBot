@@ -12,9 +12,9 @@ public class AddStickerAddStickerHandler : ICommandHandler
 {
     public CommandType CommandType => CommandType.AddSticker;
 
-    private AddStickerAddStickerArguments commandArguments;
-    private IObjectStorageClient objectStorageClient;
-    private IStickersRepository stickersRepository;
+    private readonly AddStickerAddStickerArguments commandArguments;
+    private readonly IObjectStorageClient objectStorageClient;
+    private readonly IStickersRepository stickersRepository;
 
     public AddStickerAddStickerHandler(
         AddStickerAddStickerArguments commandArguments,
@@ -46,9 +46,6 @@ public class AddStickerAddStickerHandler : ICommandHandler
                 commandArguments.StickerPackId)
             .ConfigureAwait(false);
 
-        return new AddStickerAddStickerResult(
-            commandArguments.ChatId,
-            commandArguments.StickerName,
-            stickerId);
+        return new AddStickerAddStickerResult(commandArguments.ChatId);
     }
 }

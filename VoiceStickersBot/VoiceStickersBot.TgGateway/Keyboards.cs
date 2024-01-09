@@ -34,6 +34,10 @@ public static class Keyboards
         },
         new[]
         {
+            new KeyboardButton("Удалить пак"),
+        },
+        new[]
+        {
             new KeyboardButton("Импорт/экспорт пака"),
         }
     }) { ResizeKeyboard = true };

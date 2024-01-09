@@ -45,7 +45,9 @@ public class StartResultHandler : ICommandResultHandler
         await bot.SendTextMessageAsync(
             result.ChatId,
             "Для взаимодействия с ботом используйте кнопки ниже.\n" +
-            "Для начала создайте или импортируйте стикерпак",
+            "Для начала создайте или импортируйте стикерпак.\n" +
+            "Создание стикерпака происходит в лс с ботом.\n" +
+            "В группах отправляйте сообщения ответом боту.",
             replyMarkup: keyboard);
     }
 }

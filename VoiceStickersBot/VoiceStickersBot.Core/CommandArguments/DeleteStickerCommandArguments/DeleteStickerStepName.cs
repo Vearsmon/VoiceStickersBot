@@ -4,8 +4,6 @@ public enum DeleteStickerStepName
 {
     SwKbdPc,
     SwKbdSt,
-    Cancel,
     SendSticker,
-    DeleteSticker,
-    Confirm
+    DeleteSticker
 }

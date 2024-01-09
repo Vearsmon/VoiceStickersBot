@@ -28,6 +28,6 @@ public class DeletePackDeletePackHandler : ICommandHandler
             .RemoveStickerPack(commandArguments.ChatId.ToString(), commandArguments.StickerPackId)
             .ConfigureAwait(false);
 
-        return new DeletePackDeletePackResult(commandArguments.ChatId);
+        return new DeletePackDeletePackResult(commandArguments.ChatId, commandArguments.ChatType);
     }
 }

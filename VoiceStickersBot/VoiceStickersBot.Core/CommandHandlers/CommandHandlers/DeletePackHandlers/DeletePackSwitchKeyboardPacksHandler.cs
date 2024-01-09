@@ -25,18 +25,19 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
     {
         var chatId = commandArguments.ChatId;
 
-        var packs = await usersRepository
-            .GetStickerPacksOwned(chatId.ToString(), false)
+        var (result, packs) = await usersRepository
+            .TryGetStickerPacks(chatId.ToString(), false)
             .ConfigureAwait(false);
 
-        if (packs.Count == 0)
+        if (!result)
             return new DeletePackSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(
                     new List<List<InlineKeyboardButtonDto>>(),
                     new List<InlineKeyboardButtonDto>()),
+                result,
                 commandArguments.BotMessageId);
-
+        
         var pageFrom = commandArguments.PageFrom;
         var pageTo = commandArguments.Direction == PageChangeDirection.Increase ? pageFrom + 1 : pageFrom - 1;
         var countOnPage = commandArguments.PacksOnPage;
@@ -58,6 +59,6 @@ public class DeletePackSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new DeletePackSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new DeletePackSwitchKeyboardPacksResult(chatId, keyboard, result, commandArguments.BotMessageId);
     }
 }

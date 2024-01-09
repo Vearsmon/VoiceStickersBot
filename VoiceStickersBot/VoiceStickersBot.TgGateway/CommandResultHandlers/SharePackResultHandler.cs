@@ -66,7 +66,9 @@ public class SharePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Выберите стикерпак, которым хотите поделиться:";
+        var message = result.HasPacks 
+            ? "Выберите стикерпак, которым хотите поделиться:"
+            : "У вас нет стикерпаков, создайте первый!";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -82,7 +84,7 @@ public class SharePackResultHandler : ICommandResultHandler
         
         var markup = SwitchKeyboardResultExtensions.GetMarkupFromDto(result.KeyboardDto);
 
-        var message = "Вот все стикеры из выбранного набора:";
+        var message = "Вот все стикеры из выбранного стикерпака:";
         var botMessageId = result.BotMessageId;
         await BotSendExtensions.SendOrEdit(bot, botMessageId, message, markup, result.ChatId);
     }
@@ -118,12 +120,13 @@ public class SharePackResultHandler : ICommandResultHandler
         if (result.IsSucceeded)
             await bot.SendTextMessageAsync(
                 result.ChatId,
-                $"Пак \"{result.PackName}\" успешно импортирован",
+                $"Стикерпак \"{result.PackName}\" успешно импортирован",
                 replyMarkup: keyboard);
         else
             await bot.SendTextMessageAsync(
                 result.ChatId,
-                "Ошибка при импорте пака, возможно, такого пака не существует",
+                "Ошибка при импорте стикерпака, возможно, " +
+                "такого стикерпака не существует, или он у вас уже есть",
                 replyMarkup: keyboard);
     }
 
@@ -152,7 +155,7 @@ public class SharePackResultHandler : ICommandResultHandler
             throw new ArgumentException($"Wrong ChatType: {result.ChatType}");
 
         var keyboard = chatType == ChatType.Private ? Keyboards.DialogKeyboard : Keyboards.GroupKeyboard;
-        Console.WriteLine(chatType);
+        
         await bot.SendTextMessageAsync(
             parseMode: ParseMode.Markdown,
             chatId: result.ChatId,

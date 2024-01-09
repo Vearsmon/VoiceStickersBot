@@ -40,9 +40,14 @@ public class TgApiGatewayService
     public async Task HandleUpdateAsync(
         ITelegramBotClient botClient,
         Update update,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var chatId = update.Message?.Chat.Id ?? update.CallbackQuery!.Message!.Chat.Id;
+        var nullableChatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
+        
+        if (nullableChatId is null) 
+            return;
+
+        var chatId = nullableChatId.Value;
         try
         {
             await EnsureAuthenthicated(chatId);
@@ -71,16 +76,10 @@ public class TgApiGatewayService
                     await botClient.SendTextMessageAsync(
                         chatId,
                         "Бот не ожидает от вас файла...",
-                        replyMarkup: Keyboards.DialogKeyboard);
+                        replyMarkup: Keyboards.DialogKeyboard,
+                        cancellationToken: ct);
                     return;
                 }
-                
-                /*if (message.Audio is not null && message.Audio?.MimeType != "audio/x-opus+ogg")
-                {
-                    await botClient.SendTextMessageAsync(chatId, "Расширение файла должно быть .opus",
-                        replyMarkup: DefaultKeyboard.CommandsKeyboard);
-                    return;
-                }*/
 
                 var stickerPackId = userInfo.StickerPackId;
                 var stickerName = userInfo.StickerName;
@@ -127,7 +126,8 @@ public class TgApiGatewayService
                 {
                     await botClient.SendTextMessageAsync(
                         chatId,
-                        "Неизвестная команда, попробуйте выбрать команду из меню");
+                        "Неизвестная команда, попробуйте выбрать команду из меню",
+                        cancellationToken: ct);
                     return;
                 }
             }
@@ -135,7 +135,8 @@ public class TgApiGatewayService
             {
                 await botClient.SendTextMessageAsync(
                     chatId, 
-                    "Неизвестная команда, попробуйте выбрать команду из меню");
+                    "Неизвестная команда, попробуйте выбрать команду из меню",
+                    cancellationToken: ct);
                 return;
             }
             var command = tgApiCommandService.CreateCommandArguments(context);
@@ -148,7 +149,8 @@ public class TgApiGatewayService
             log.Error(e, "Appppp crashed");
             await botClient.SendTextMessageAsync(
                 chatId, 
-                "Что-то пошло не так... Возможно, сообщение уже не актуально");
+                "Что-то пошло не так... Возможно, сообщение уже не актуально",
+                cancellationToken: ct);
             userInfoByChatId[chatId] = new UserInfo(UserState.NoWait);
         }
     }
@@ -181,27 +183,33 @@ public class TgApiGatewayService
     {
         {
             "Показать все", chatId => new QueryContext(
-                "SA", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+                "SA", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Добавить стикер", chatId => new QueryContext(
-                "AS", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+                "AS", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Создать пак", chatId => new QueryContext(
-                "CP", "SendInstructions", new(), chatId)
+                "CP", "SendInstructions", 
+                new(), chatId)
         },
         {
             "Удалить стикер", chatId => new QueryContext(
-                "DS", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+                "DS", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Удалить пак", chatId => new QueryContext(
-                "DP", "SwKbdPc", new() { "0", "Increase", "10" }, chatId)
+                "DP", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId)
         },
         {
             "Импорт/экспорт пака", chatId => new QueryContext(
-                "SP", "Choice", new(), chatId)
+                "SP", "Choice", 
+                new(), chatId)
         },
         {
             "/cancel", chatId => new QueryContext(
@@ -223,6 +231,11 @@ public class TgApiGatewayService
                 new() { "0", "Increase", "10" }, chatId, ChatType.Group.ToString())
         },
         {
+            "Удалить пак", chatId => new QueryContext(
+                "DP", "SwKbdPc", 
+                new() { "0", "Increase", "10" }, chatId, ChatType.Group.ToString())
+        },
+        {
             "Импорт/экспорт пака", chatId => new QueryContext(
                 "SP", "Choice", 
                 new(), chatId, ChatType.Group.ToString())
@@ -233,12 +246,22 @@ public class TgApiGatewayService
                 new(), chatId, ChatType.Group.ToString())
         },
         {
+            "/cancel@MVoiceStickersBot", chatId => new QueryContext(
+                "Cancel", "Cancel",
+                new(), chatId, ChatType.Group.ToString())
+        },
+        {
             "/start", chatId => new QueryContext(
                 "Start", "Start", 
                 new(), chatId, ChatType.Group.ToString())
         }
     };
 
+    private async Task EnsureAuthenthicated(long chatId)
+    {
+        await userRepository.CreateIfNotExists(chatId.ToString());
+    }
+    
     public Task HandlePollingErrorAsync(
         ITelegramBotClient botClient,
         Exception exception,
@@ -253,10 +276,5 @@ public class TgApiGatewayService
 
         Console.WriteLine(errorMessage);
         return Task.CompletedTask;
-    }
-
-    private async Task EnsureAuthenthicated(long chatId)
-    {
-        await userRepository.CreateIfNotExists(chatId.ToString());
     }
 }

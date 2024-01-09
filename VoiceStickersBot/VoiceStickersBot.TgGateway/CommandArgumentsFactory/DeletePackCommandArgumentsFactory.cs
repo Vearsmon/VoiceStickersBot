@@ -126,7 +126,7 @@ public class DeletePackCommandArgumentsFactory : ICommandArgumentsFactory
             throw new ArgumentException(
                 "Invalid argument at index 0. Should be Guid.");
         
-        return new DeletePackDeletePackArguments(stickerPackId, queryContext.ChatId);
+        return new DeletePackDeletePackArguments(stickerPackId, queryContext.ChatType, queryContext.ChatId);
     }
 
     private ICommandArguments BuildDeletePackConfirmArguments(QueryContext queryContext)

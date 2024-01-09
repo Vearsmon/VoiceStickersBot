@@ -18,8 +18,7 @@ public class DeleteStickerCommandArgumentsFactory : ICommandArgumentsFactory
             { DeleteStickerStepName.SwKbdPc, BuildDeleteStickerSwitchKeyboardPacksArguments},
             { DeleteStickerStepName.SwKbdSt, BuildDeleteStickerSwitchKeyboardStickersArguments },
             { DeleteStickerStepName.SendSticker, BuildDeleteStickerSendStickerArguments },
-            { DeleteStickerStepName.DeleteSticker, BuildDeleteStickerDeleteStickerArguments },
-            { DeleteStickerStepName.Confirm, BuildDeleteStickerConfirmArguments }
+            { DeleteStickerStepName.DeleteSticker, BuildDeleteStickerDeleteStickerArguments }
         };
     }
     
@@ -133,23 +132,5 @@ public class DeleteStickerCommandArgumentsFactory : ICommandArgumentsFactory
                 "Invalid argument at index 1. Should be Guid.");
 
         return new DeleteStickerDeleteStickerArguments(stickerPackId, stickerId, queryContext.ChatId);
-    }
-
-    private ICommandArguments BuildDeleteStickerConfirmArguments(QueryContext queryContext)
-    {
-        const int argumentsCount = 1;
-        
-        if (queryContext.CommandArguments.Count != argumentsCount)
-            throw new ArgumentException(
-                $"Invalid arguments count [{queryContext.CommandArguments.Count}]. Should be {argumentsCount}");
-        
-        if (!Guid.TryParse(queryContext.CommandArguments[0], out var stickerPackId))
-            throw new ArgumentException(
-                "Invalid argument at index 0. Should be Guid.");
-
-        return new DeleteStickerConfirmArguments(
-            stickerPackId,
-            queryContext.ChatId,
-            queryContext.BotMessageId);
     }
 }

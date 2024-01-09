@@ -33,6 +33,7 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
             return new SharePackSwitchKeyboardPacksResult(
                 chatId,
                 new InlineKeyboardDto(new List<List<InlineKeyboardButtonDto>>(), new List<InlineKeyboardButtonDto>()),
+                result,
                 commandArguments.BotMessageId);
 
         var pageFrom = commandArguments.PageFrom;
@@ -56,6 +57,6 @@ public class SharePackSwitchKeyboardPacksHandler : ICommandHandler
 
         var keyboard = new InlineKeyboardDto(buttons, lastLineButtons);
 
-        return new SharePackSwitchKeyboardPacksResult(chatId, keyboard, commandArguments.BotMessageId);
+        return new SharePackSwitchKeyboardPacksResult(chatId, keyboard, result, commandArguments.BotMessageId);
     }
 }
