@@ -37,6 +37,28 @@ public class TgApiGatewayHost : VsbApplicationBase
 
         var me = await botClient.GetMeAsync(cancellationToken);
         Console.WriteLine($"Start listening for @{me.Username}");
+
+        var service = Container.Get<TgApiGatewayService>();
+        var requestTimes = new List<DateTime>();
+        while (true)
+        {
+            if (!service.Requests.TryDequeue(out var request))
+            {
+                Thread.Sleep(100);
+                continue;
+            }
+
+            var now = DateTime.Now;
+            var after = now - TimeSpan.FromSeconds(1);
+            var requestsPerSecond = ((IEnumerable<DateTime>)requestTimes).Reverse().Count(t => t > after);
+            if (requestsPerSecond > 10)
+            {
+                Thread.Sleep(100);
+                continue;
+            }
+
+            await service.Handle(botClient, request, cancellationToken);
+        }
     }
 
     protected override void ConfigureContainer(StandardKernel containerBuilder)

@@ -24,11 +24,7 @@ public class TgApiGatewayService
 
     private readonly IUsersRepository userRepository;
 
-    private readonly Queue<Update> requests = new();
-
-    private readonly List<DateTime> requestTimes = new();
-
-    private readonly object lockObject = new();
+    public Queue<Update> Requests { get; } = new();
 
     public TgApiGatewayService(
         Client client,
@@ -44,21 +40,11 @@ public class TgApiGatewayService
         this.userRepository = userRepository;
     }
 
-    public async Task HandleUpdateAsync(
+    public async Task Handle(
         ITelegramBotClient botClient,
         Update update,
         CancellationToken ct)
     {
-        lock (lockObject)
-        {
-            requests.Enqueue(update);
-            var now = DateTime.Now;
-            var after = now - TimeSpan.FromSeconds(1);
-            if (((IEnumerable<DateTime>)requestTimes).Reverse().Count(t => t > after) > 15) return;
-            update = requests.Dequeue();
-            requestTimes.Add(now);
-        }
-
         var nullableChatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
 
         if (nullableChatId is null)
@@ -80,14 +66,14 @@ public class TgApiGatewayService
 
                 if (userInfoByChatId.TryGetValue(chatId, out var userInfo)
                     && (context.CommandStep == "SendSticker" || context.CommandStep == "DeleteSticker"))
-                {
                     context.CommandArguments.Add(userInfo.StickerPackId);
-                }
             }
-            
+
             else if (update.Message.Type == MessageType.ChatMembersAdded)
+            {
                 return;
-            
+            }
+
             else if (update.Type == UpdateType.Message &&
                      (update.Message!.Voice is not null || update.Message!.Audio is not null))
             {
@@ -116,9 +102,13 @@ public class TgApiGatewayService
                 var message = update.Message;
                 var chatType = message.Chat.Type;
                 if (ChatQueryContextByCommand.ContainsKey(message.Text) && chatType == ChatType.Private)
+                {
                     context = ChatQueryContextByCommand[message.Text](chatId);
+                }
                 else if (GroupQueryContextByCommand.ContainsKey(message.Text))
+                {
                     context = GroupQueryContextByCommand[message.Text](chatId);
+                }
 
                 else if (userInfoByChatId.TryGetValue(chatId, out var userInfo)
                          && userInfo.State == UserState.WaitStickerName)
@@ -178,6 +168,14 @@ public class TgApiGatewayService
         }
     }
 
+    public Task HandleUpdateAsync(
+        ITelegramBotClient botClient,
+        Update update,
+        CancellationToken ct)
+    {
+        Requests.Enqueue(update);
+        return Task.CompletedTask;
+    }
 
     private static QueryContext BuildQueryContext(Update update)
     {
