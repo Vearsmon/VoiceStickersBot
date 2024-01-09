@@ -26,6 +26,10 @@ public class TgApiGatewayService
 
     private readonly Queue<Update> requests = new();
 
+    private readonly List<DateTime> requestTimes = new();
+
+    private readonly object lockObject = new();
+
     public TgApiGatewayService(
         Client client,
         TgApiCommandService tgApiCommandService,
@@ -45,8 +49,15 @@ public class TgApiGatewayService
         Update update,
         CancellationToken ct)
     {
-        if (requests.Count < 30) requests.Enqueue(update);
-        update = requests.Dequeue();
+        lock (lockObject)
+        {
+            requests.Enqueue(update);
+            var now = DateTime.Now;
+            var after = now - TimeSpan.FromSeconds(1);
+            if (((IEnumerable<DateTime>)requestTimes).Reverse().Count(t => t > after) > 15) return;
+            update = requests.Dequeue();
+            requestTimes.Add(now);
+        }
 
         var nullableChatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
 
